@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,13 +21,17 @@ import vn.uet.volunteerhub.service.error.IdInvalidException;
 public class UserController {
     // Dependency Injection
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/users")
     public ResponseEntity<User> createNewUser(@RequestBody User createUser) {
+        String hashPasword = this.passwordEncoder.encode(createUser.getPassword());
+        createUser.setPassword(hashPasword);
         User newUser = this.userService.handleCreateUser(createUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
