@@ -2,6 +2,8 @@ package vn.uet.volunteerhub.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,30 +24,31 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/user")
-    public User createNewUser(@RequestBody User createUser) {
+    @PostMapping("/users")
+    public ResponseEntity<User> createNewUser(@RequestBody User createUser) {
         User newUser = this.userService.handleCreateUser(createUser);
-        return newUser;
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @DeleteMapping("/user/{id}")
-    public String deleteUser(@PathVariable("id") long id) {
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) {
         this.userService.handleDeleteUser(id);
-        return "delete successful";
+        return ResponseEntity.ok("delete successful");
     }
 
-    @GetMapping("/user/{id}")
-    public User getUserById(@PathVariable("id") long id) {
-        return this.userService.fetchUserById(id);
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
+        User fetchUser = this.userService.fetchUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(fetchUser);
     }
 
-    @GetMapping("/user")
-    public List<User> getAllUsers() {
-        return this.userService.fetchAllUsers();
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(this.userService.fetchAllUsers());
     }
 
-    @PutMapping("/user")
-    public User updateUser(@RequestBody User requestUser) {
-        return this.userService.handleUpdateUser(requestUser);
+    @PutMapping("/users")
+    public ResponseEntity<User> updateUser(@RequestBody User requestUser) {
+        return ResponseEntity.ok(this.userService.handleUpdateUser(requestUser));
     }
 }
