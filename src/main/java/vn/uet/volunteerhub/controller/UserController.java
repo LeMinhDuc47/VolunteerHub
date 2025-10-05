@@ -1,6 +1,13 @@
 package vn.uet.volunteerhub.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.uet.volunteerhub.domain.User;
@@ -15,16 +22,30 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/create")
-    public String createNewUser() {
+    @PostMapping("/user")
+    public User createNewUser(@RequestBody User createUser) {
+        User newUser = this.userService.handleCreateUser(createUser);
+        return newUser;
+    }
 
-        User user = new User();
-        user.setEmail("test@gmail.com");
-        user.setName("test");
-        user.setPassword("123456");
+    @DeleteMapping("/user/{id}")
+    public String deleteUser(@PathVariable("id") long id) {
+        this.userService.handleDeleteUser(id);
+        return "delete successful";
+    }
 
-        this.userService.handleCreateUser(user);
+    @GetMapping("/user/{id}")
+    public User getUserById(@PathVariable("id") long id) {
+        return this.userService.fetchUserById(id);
+    }
 
-        return "create user";
+    @GetMapping("/user")
+    public List<User> getAllUsers() {
+        return this.userService.fetchAllUsers();
+    }
+
+    @PutMapping("/user")
+    public User updateUser(@RequestBody User requestUser) {
+        return this.userService.handleUpdateUser(requestUser);
     }
 }
