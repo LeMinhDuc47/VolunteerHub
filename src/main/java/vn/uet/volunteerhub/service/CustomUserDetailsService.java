@@ -21,6 +21,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         vn.uet.volunteerhub.domain.User user = this.userService.handleGetUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("Username/password không hợp lệ");
+        }
 
         return new User(
                 user.getEmail(),

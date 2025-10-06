@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.service.UserService;
-import vn.uet.volunteerhub.service.error.IdInvalidException;
+import vn.uet.volunteerhub.util.error.IdInvalidException;
 
 @RestController
 public class UserController {
