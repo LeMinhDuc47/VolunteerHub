@@ -2,19 +2,19 @@ package vn.uet.volunteerhub.service;
 
 import org.springframework.stereotype.Service;
 
-import vn.uet.volunteerhub.domain.Company;
-import vn.uet.volunteerhub.repository.CompanyRepository;
+import vn.uet.volunteerhub.domain.Event;
+import vn.uet.volunteerhub.repository.EventRepository;
 
 @Service
-public class CompanyService {
+public class EventService {
 
-    private final CompanyRepository companyRepository;
+    private final EventRepository eventRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
+    public EventService(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
     }
 
-    public Company handleCreateCompany(Company createCompany) {
-        return this.companyRepository.save(createCompany);
+    public Event handleCreateEvent(Event createEvent) {
+        return this.eventRepository.save(createEvent);
     }
 }

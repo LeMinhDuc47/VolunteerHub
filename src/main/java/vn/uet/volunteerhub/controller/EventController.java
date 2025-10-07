@@ -7,21 +7,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import vn.uet.volunteerhub.domain.Company;
-import vn.uet.volunteerhub.service.CompanyService;
+import vn.uet.volunteerhub.domain.Event;
+import vn.uet.volunteerhub.service.EventService;
 
 @RestController
-public class CompanyController {
+public class EventController {
 
-    private final CompanyService companyService;
+    private final EventService companyService;
 
-    public CompanyController(CompanyService companyService) {
+    public EventController(EventService companyService) {
         this.companyService = companyService;
     }
 
-    @PostMapping("/companies")
-    public ResponseEntity<Company> createNewCompany(@Valid @RequestBody Company reqCompany) {
-        Company newCompany = this.companyService.handleCreateCompany(reqCompany);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newCompany);
+    @PostMapping("/events")
+    public ResponseEntity<Event> createNewEvent(@Valid @RequestBody Event reqEvent) {
+        Event newEvent = this.companyService.handleCreateEvent(reqEvent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newEvent);
     }
 }
