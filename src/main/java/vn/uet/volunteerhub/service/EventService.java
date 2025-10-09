@@ -3,9 +3,13 @@ package vn.uet.volunteerhub.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.Event;
+import vn.uet.volunteerhub.domain.dto.Meta;
+import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.EventRepository;
 
 @Service
@@ -21,8 +25,21 @@ public class EventService {
         return this.eventRepository.save(createEvent);
     }
 
-    public List<Event> fetchAllEvents() {
-        return this.eventRepository.findAll();
+    public ResultPaginationDTO fetchAllEvents(Pageable pageable) {
+        Page<Event> pageEvent = this.eventRepository.findAll(pageable);
+        ResultPaginationDTO result = new ResultPaginationDTO();
+        Meta meta = new Meta();
+
+        meta.setPage(pageEvent.getNumber());
+        meta.setPageSize(pageEvent.getSize());
+
+        meta.setPages(pageEvent.getTotalPages());
+        meta.setTotal(pageEvent.getTotalElements());
+
+        result.setMeta(meta);
+        result.setResult(pageEvent.getContent());
+
+        return result;
     }
 
     public Event handleUpdateEvent(Event requestEvent) {
