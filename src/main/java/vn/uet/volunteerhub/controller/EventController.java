@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Event;
 import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.EventService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 @RestController
 public class EventController {
@@ -36,18 +39,8 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public ResponseEntity<ResultPaginationDTO> getEvents(
-            @RequestParam("current") Optional<String> currentOptional,
-            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
-
-        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
-        String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
-
-        int current = Integer.parseInt(sCurrent);
-        int pageSize = Integer.parseInt(sPageSize);
-
-        Pageable pageable = PageRequest.of(current - 1, pageSize);
-        ResultPaginationDTO listEvents = this.eventService.fetchAllEvents(pageable);
+    public ResponseEntity<ResultPaginationDTO> getEvents(@Filter Specification<Event> spec, Pageable pageable) {
+        ResultPaginationDTO listEvents = this.eventService.fetchAllEvents(spec, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(listEvents);
     }
