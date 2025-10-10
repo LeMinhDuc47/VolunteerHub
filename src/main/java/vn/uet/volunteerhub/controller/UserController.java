@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-
+    @ApiMessage("fetch all users")
     public ResponseEntity<ResultPaginationDTO> getAllUsers(@Filter Specification<User> spec, Pageable pageable) {
 
         return ResponseEntity.ok(this.userService.fetchAllUsers(spec, pageable));
