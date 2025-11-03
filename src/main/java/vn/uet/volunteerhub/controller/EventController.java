@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,10 +21,13 @@ import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Event;
 import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.EventService;
+import vn.uet.volunteerhub.util.annotation.ApiMessage;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 @RestController
+@RequestMapping("/api/v1")
 public class EventController {
 
     private final EventService eventService;
@@ -39,6 +43,7 @@ public class EventController {
     }
 
     @GetMapping("/events")
+    @ApiMessage("fetch all companies")
     public ResponseEntity<ResultPaginationDTO> getEvents(@Filter Specification<Event> spec, Pageable pageable) {
         ResultPaginationDTO listEvents = this.eventService.fetchAllEvents(spec, pageable);
 
