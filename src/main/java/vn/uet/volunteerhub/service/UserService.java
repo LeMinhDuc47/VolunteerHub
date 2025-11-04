@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.dto.Meta;
+import vn.uet.volunteerhub.domain.dto.ResCreateUserDTO;
 import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.UserRepository;
 
@@ -67,5 +68,21 @@ public class UserService {
 
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByEmail(username);
+    }
+
+    public ResCreateUserDTO convertToResCreateUserDTO(User user) {
+        ResCreateUserDTO res = new ResCreateUserDTO();
+        res.setId(user.getId());
+        res.setEmail(user.getEmail());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setCreatedAt(user.getCreatedAt());
+        res.setGender(user.getGender());
+        res.setAddress(user.getAddress());
+        return res;
+    }
+
+    public boolean isEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
     }
 }

@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
+import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.User;
+import vn.uet.volunteerhub.domain.dto.ResCreateUserDTO;
 import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.UserService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
@@ -40,11 +42,21 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createNewUser(@RequestBody User createUser) {
+    @ApiMessage("Create a new user")
+    public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User createUser)
+            throws IdInvalidException {
+        // check email exist in database
+        boolean isEmailExist = this.userService.isEmailExist(createUser.getEmail());
+
+        if (isEmailExist) {
+            throw new IdInvalidException(
+                    "Email " + createUser.getEmail() + " đã tồn tại, vui lòng sử dụng email khác.");
+        }
         String hashPasword = this.passwordEncoder.encode(createUser.getPassword());
         createUser.setPassword(hashPasword);
         User newUser = this.userService.handleCreateUser(createUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        ResCreateUserDTO resCreateUserDTO = this.userService.convertToResCreateUserDTO(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resCreateUserDTO);
     }
 
     @DeleteMapping("/users/{id}")
