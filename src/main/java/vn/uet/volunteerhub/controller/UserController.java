@@ -24,6 +24,7 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.dto.ResCreateUserDTO;
+import vn.uet.volunteerhub.domain.dto.ResUserDTO;
 import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.UserService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
@@ -70,9 +71,14 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
+    @ApiMessage("fetch user by id")
+    public ResponseEntity<ResUserDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
         User fetchUser = this.userService.fetchUserById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(fetchUser);
+        if (fetchUser == null) {
+            throw new IdInvalidException("User với id = " + id + " không tồn tại");
+        }
+        ResUserDTO responseUserDTO = this.userService.convertToResUserDTO(fetchUser);
+        return ResponseEntity.status(HttpStatus.OK).body(responseUserDTO);
     }
 
     @GetMapping("/users")
