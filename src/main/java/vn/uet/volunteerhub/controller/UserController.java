@@ -24,6 +24,7 @@ import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.dto.ResCreateUserDTO;
+import vn.uet.volunteerhub.domain.dto.ResUpdateUserDTO;
 import vn.uet.volunteerhub.domain.dto.ResUserDTO;
 import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.UserService;
@@ -89,7 +90,16 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User requestUser) {
-        return ResponseEntity.ok(this.userService.handleUpdateUser(requestUser));
+    @ApiMessage("Update a user")
+    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User requestUser) throws IdInvalidException {
+        User fetchUserById = this.userService.fetchUserById(requestUser.getId());
+        if (fetchUserById == null) {
+            throw new IdInvalidException("User với id = " + requestUser.getId() + " không tồn tại");
+        }
+
+        User userUpdate = this.userService.handleUpdateUser(requestUser);
+
+        ResUpdateUserDTO res = this.userService.convertToResUpdateUserDTO(userUpdate);
+        return ResponseEntity.ok(res);
     }
 }

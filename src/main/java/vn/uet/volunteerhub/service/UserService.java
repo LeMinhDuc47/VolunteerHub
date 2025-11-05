@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.dto.Meta;
 import vn.uet.volunteerhub.domain.dto.ResCreateUserDTO;
+import vn.uet.volunteerhub.domain.dto.ResUpdateUserDTO;
 import vn.uet.volunteerhub.domain.dto.ResUserDTO;
 import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.UserRepository;
@@ -73,9 +74,10 @@ public class UserService {
     public User handleUpdateUser(User requestUser) {
         User currentUser = this.fetchUserById(requestUser.getId());
         if (currentUser != null) {
+            currentUser.setAddress(requestUser.getAddress());
             currentUser.setName(requestUser.getName());
-            currentUser.setEmail(requestUser.getEmail());
-            currentUser.setPassword(requestUser.getPassword());
+            currentUser.setGender(requestUser.getGender());
+            currentUser.setAge(requestUser.getAge());
 
             // update
             currentUser = this.userRepository.save(currentUser);
@@ -111,6 +113,18 @@ public class UserService {
         res.setAge(user.getAge());
         res.setUpdatedAt(user.getUpdatedAt());
         res.setCreatedAt(user.getCreatedAt());
+        res.setGender(user.getGender());
+        res.setAddress(user.getAddress());
+
+        return res;
+    }
+
+    public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
+        ResUpdateUserDTO res = new ResUpdateUserDTO();
+        res.setId(user.getId());
+        res.setName(user.getName());
+        res.setAge(user.getAge());
+        res.setUpdatedAt(user.getUpdatedAt());
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
 
