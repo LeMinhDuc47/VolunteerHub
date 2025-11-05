@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.dto.LoginDTO;
 import vn.uet.volunteerhub.domain.dto.ResLoginDTO;
+import vn.uet.volunteerhub.domain.dto.ResLoginDTO.UserGetAccount;
 import vn.uet.volunteerhub.domain.dto.ResLoginDTO.UserLogin;
 import vn.uet.volunteerhub.service.UserService;
 import vn.uet.volunteerhub.util.SecurityUtil;
@@ -93,22 +94,24 @@ public class AuthController {
 
     @GetMapping("/auth/account")
     @ApiMessage("Get user information")
-    public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
+    public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount() {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
 
         ResLoginDTO res = new ResLoginDTO();
         // Constructor Inner Class
         UserLogin userLogin = res.new UserLogin();
-
+        UserGetAccount userGetAccount = res.new UserGetAccount();
         User currentUserDB = this.userService.handleGetUserByUsername(email);
         if (currentUserDB != null) {
             // Set Data into Inner class: UserLogin
             userLogin.setId(currentUserDB.getId());
             userLogin.setEmail(currentUserDB.getEmail());
             userLogin.setName(currentUserDB.getName());
+            // Set userLogin into UserGetAccount
+            userGetAccount.setUser(userLogin);
         }
 
-        return ResponseEntity.ok().body(userLogin);
+        return ResponseEntity.ok().body(userGetAccount);
     }
 
     @GetMapping("/auth/refresh")
