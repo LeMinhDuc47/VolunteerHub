@@ -2,6 +2,7 @@ package vn.uet.volunteerhub.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,11 @@ public class SecurityUtil {
     public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin resLoginDTO) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
+        // hardcode permission (for testing)
+        List<String> listAuthority = new ArrayList<String>();
+
+        listAuthority.add("ROLE_USER_CREATE");
+        listAuthority.add("ROLE_USER_UPDATE");
 
         // Payload
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -48,6 +54,7 @@ public class SecurityUtil {
                 .expiresAt(validity)
                 .subject(authentication.getName())
                 .claim("user", resLoginDTO)
+                .claim("permission", listAuthority)
                 .build();
 
         // Header: chỉ lưu thông tin thuật toán
