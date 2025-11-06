@@ -9,17 +9,21 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.Event;
+import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.response.Meta;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.EventRepository;
+import vn.uet.volunteerhub.repository.UserRepository;
 
 @Service
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository) {
         this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
     }
 
     public Event handleCreateEvent(Event createEvent) {
@@ -57,6 +61,12 @@ public class EventService {
     }
 
     public void handleDeleteEvent(long id) {
+        Event event = fetchEventById(id);
+        if (event != null) {
+            // Fetch all user belong to this event
+            List<User> users = this.userRepository.findByEvent(event);
+            this.userRepository.deleteAll(users);
+        }
         this.eventRepository.deleteById(id);
     }
 

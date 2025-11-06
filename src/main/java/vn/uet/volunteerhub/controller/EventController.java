@@ -22,6 +22,7 @@ import vn.uet.volunteerhub.domain.Event;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.EventService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
+import vn.uet.volunteerhub.util.error.IdInvalidException;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -58,7 +59,11 @@ public class EventController {
     }
 
     @DeleteMapping("/events/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable("id") long id) {
+    public ResponseEntity<Void> deleteEvent(@PathVariable("id") long id) throws IdInvalidException {
+        Event event = this.eventService.fetchEventById(id);
+        if (event == null) {
+            throw new IdInvalidException("Event với id = " + id + " không tồn tại");
+        }
         this.eventService.handleDeleteEvent(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
