@@ -21,4 +21,14 @@ public class ResUserDTO {
     private GenderEnum gender;
     private Instant createdAt;
     private Instant updatedAt;
+    private EventUser event;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EventUser {
+        private long id;
+        private String name;
+    }
 }
