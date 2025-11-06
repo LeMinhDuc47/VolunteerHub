@@ -26,7 +26,7 @@ public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    @NotBlank(message = "name không được để trống")
     private String name;
 
     private Instant createdAt;
