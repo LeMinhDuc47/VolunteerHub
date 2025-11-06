@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.Skill;
 import vn.uet.volunteerhub.domain.response.ResCreateJobDTO;
+import vn.uet.volunteerhub.domain.response.ResUpdateJobDTO;
 import vn.uet.volunteerhub.repository.JobRepository;
 import vn.uet.volunteerhub.repository.SkillRepository;
 
@@ -71,4 +72,54 @@ public class JobService {
     public String convertToSkillName(Skill skill) {
         return skill.getName();
     }
+
+    public ResUpdateJobDTO updateJob(Job requestJob, Job jobUpdate) {
+        // check skill isExist before save Job to database (ManyToMany Relationship)
+        if (requestJob.getSkills() != null) {
+            List<Long> listIdSkill = requestJob.getSkills()
+                    .stream().map(item -> item.getId())
+                    .collect(Collectors.toList());
+
+            List<Skill> listSkills = this.skillRepository.findByIdIn(listIdSkill);
+            jobUpdate.setSkills(listSkills);
+        }
+
+        // update correct info
+        jobUpdate.setName(requestJob.getName());
+        jobUpdate.setStipend(requestJob.getStipend());
+        jobUpdate.setQuantity(requestJob.getQuantity());
+        jobUpdate.setLocation(requestJob.getLocation());
+        jobUpdate.setLevel(requestJob.getLevel());
+        jobUpdate.setStartDate(requestJob.getStartDate());
+        jobUpdate.setEndDate(requestJob.getEndDate());
+        jobUpdate.setActive(requestJob.isActive());
+        jobUpdate.setDescription(requestJob.getDescription());
+
+        // update job
+        Job currentJob = this.jobRepository.save(jobUpdate);
+
+        // convert Job Object into ResponseDTO
+        ResUpdateJobDTO dto = new ResUpdateJobDTO();
+        dto.setId(currentJob.getId());
+        dto.setName(currentJob.getName());
+        dto.setStipend(currentJob.getStipend());
+        dto.setQuantity(currentJob.getQuantity());
+        dto.setLocation(currentJob.getLocation());
+        dto.setLevel(currentJob.getLevel());
+        dto.setStartDate(currentJob.getStartDate());
+        dto.setEndDate(currentJob.getEndDate());
+        dto.setActive(currentJob.isActive());
+        dto.setUpdatedAt(currentJob.getUpdatedAt());
+        dto.setUpdatedBy(currentJob.getUpdatedBy());
+
+        if (currentJob.getSkills() != null) {
+            List<String> ListNameSkills = currentJob.getSkills()
+                    .stream().map(item -> item.getName())
+                    .collect(Collectors.toList());
+            dto.setSkills(ListNameSkills);
+        }
+
+        return dto;
+    }
+
 }
