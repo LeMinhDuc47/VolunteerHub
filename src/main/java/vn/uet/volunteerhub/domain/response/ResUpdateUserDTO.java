@@ -15,4 +15,12 @@ public class ResUpdateUserDTO {
     private String address;
     private int age;
     private Instant updatedAt;
+    private EventUser event;
+
+    @Getter
+    @Setter
+    public static class EventUser {
+        private long id;
+        private String name;
+    }
 }

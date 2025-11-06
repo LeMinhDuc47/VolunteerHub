@@ -94,7 +94,11 @@ public class UserService {
             currentUser.setName(requestUser.getName());
             currentUser.setGender(requestUser.getGender());
             currentUser.setAge(requestUser.getAge());
-
+            // check event: If user change event
+            if (requestUser.getEvent() != null) {
+                Event eventOptional = this.eventService.fetchEventById(requestUser.getEvent().getId());
+                currentUser.setEvent(eventOptional != null ? eventOptional : null);
+            }
             // update
             currentUser = this.userRepository.save(currentUser);
         }
@@ -142,6 +146,12 @@ public class UserService {
 
     public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
         ResUpdateUserDTO res = new ResUpdateUserDTO();
+        ResUpdateUserDTO.EventUser event = new ResUpdateUserDTO.EventUser();
+        if (user.getEvent() != null) {
+            event.setId(user.getEvent().getId());
+            event.setName(user.getEvent().getName());
+            res.setEvent(event);
+        }
         res.setId(user.getId());
         res.setName(user.getName());
         res.setAge(user.getAge());
