@@ -23,10 +23,10 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.User;
-import vn.uet.volunteerhub.domain.dto.ResCreateUserDTO;
-import vn.uet.volunteerhub.domain.dto.ResUpdateUserDTO;
-import vn.uet.volunteerhub.domain.dto.ResUserDTO;
-import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
+import vn.uet.volunteerhub.domain.response.ResCreateUserDTO;
+import vn.uet.volunteerhub.domain.response.ResUpdateUserDTO;
+import vn.uet.volunteerhub.domain.response.ResUserDTO;
+import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.UserService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
 import vn.uet.volunteerhub.util.error.IdInvalidException;

@@ -1,4 +1,4 @@
-package vn.uet.volunteerhub.domain.dto;
+package vn.uet.volunteerhub.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 

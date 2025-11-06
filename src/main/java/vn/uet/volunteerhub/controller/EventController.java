@@ -19,7 +19,7 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Event;
-import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
+import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.EventService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
 

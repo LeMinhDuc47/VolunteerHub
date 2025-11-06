@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.User;
-import vn.uet.volunteerhub.domain.dto.ReqLoginDTO;
-import vn.uet.volunteerhub.domain.dto.ResLoginDTO;
-import vn.uet.volunteerhub.domain.dto.ResLoginDTO.UserGetAccount;
-import vn.uet.volunteerhub.domain.dto.ResLoginDTO.UserLogin;
+import vn.uet.volunteerhub.domain.request.ReqLoginDTO;
+import vn.uet.volunteerhub.domain.response.ResLoginDTO;
+import vn.uet.volunteerhub.domain.response.ResLoginDTO.UserGetAccount;
+import vn.uet.volunteerhub.domain.response.ResLoginDTO.UserLogin;
 import vn.uet.volunteerhub.service.UserService;
 import vn.uet.volunteerhub.util.SecurityUtil;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;

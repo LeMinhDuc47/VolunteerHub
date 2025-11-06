@@ -10,11 +10,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.User;
-import vn.uet.volunteerhub.domain.dto.Meta;
-import vn.uet.volunteerhub.domain.dto.ResCreateUserDTO;
-import vn.uet.volunteerhub.domain.dto.ResUpdateUserDTO;
-import vn.uet.volunteerhub.domain.dto.ResUserDTO;
-import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
+import vn.uet.volunteerhub.domain.response.Meta;
+import vn.uet.volunteerhub.domain.response.ResCreateUserDTO;
+import vn.uet.volunteerhub.domain.response.ResUpdateUserDTO;
+import vn.uet.volunteerhub.domain.response.ResUserDTO;
+import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.UserRepository;
 
 @Service

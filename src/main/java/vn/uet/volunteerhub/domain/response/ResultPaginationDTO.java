@@ -1,4 +1,4 @@
-package vn.uet.volunteerhub.domain.dto;
+package vn.uet.volunteerhub.domain.response;
 
 import lombok.Getter;
 import lombok.Setter;

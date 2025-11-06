@@ -1,4 +1,4 @@
-package vn.uet.volunteerhub.domain.dto;
+package vn.uet.volunteerhub.domain.response;
 
 import java.time.Instant;
 

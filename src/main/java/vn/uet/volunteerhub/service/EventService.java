@@ -9,8 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.Event;
-import vn.uet.volunteerhub.domain.dto.Meta;
-import vn.uet.volunteerhub.domain.dto.ResultPaginationDTO;
+import vn.uet.volunteerhub.domain.response.Meta;
+import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.EventRepository;
 
 @Service
