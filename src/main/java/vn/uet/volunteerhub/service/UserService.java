@@ -67,19 +67,22 @@ public class UserService {
         meta.setTotal(pUser.getTotalElements());
         result.setMeta(meta);
         // remove sensitive data
-        // List<ResUserDTO> listUser = pUser.getContent()
-        // .stream().map(item -> new ResUserDTO(
-        // item.getId(),
-        // item.getName(),
-        // item.getEmail(),
-        // item.getAge(),
-        // item.getAddress(),
-        // item.getGender(),
-        // item.getUpdatedAt(),
-        // item.getCreatedAt()))
-        // .collect(Collectors.toList());
+        List<ResUserDTO> listUser = pUser.getContent()
+                .stream().map(item -> new ResUserDTO(
+                        item.getId(),
+                        item.getName(),
+                        item.getEmail(),
+                        item.getAge(),
+                        item.getAddress(),
+                        item.getGender(),
+                        item.getUpdatedAt(),
+                        item.getCreatedAt(),
+                        new ResUserDTO.EventUser(
+                                item.getEvent() != null ? item.getEvent().getId() : 0,
+                                item.getEvent() != null ? item.getEvent().getName() : null)))
+                .collect(Collectors.toList());
 
-        // result.setResult(listUser);
+        result.setResult(listUser);
 
         return result;
     }
