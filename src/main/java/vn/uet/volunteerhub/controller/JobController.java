@@ -2,6 +2,8 @@ package vn.uet.volunteerhub.controller;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkraft.springfilter.boot.Filter;
+
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.response.ResCreateJobDTO;
 import vn.uet.volunteerhub.domain.response.ResUpdateJobDTO;
+import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.service.JobService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
 import vn.uet.volunteerhub.util.error.IdInvalidException;
@@ -71,5 +76,12 @@ public class JobController {
         }
         Job currentJob = jobOptional.get();
         return ResponseEntity.status(HttpStatus.OK).body(currentJob);
+    }
+
+    @GetMapping("/jobs")
+    @ApiMessage("Get job with pagination")
+    public ResponseEntity<ResultPaginationDTO> getAllJobs(@Filter Specification<Job> spec, Pageable pageable) {
+        ResultPaginationDTO listJobs = this.jobService.fetchAllSkills(spec, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(listJobs);
     }
 }
