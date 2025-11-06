@@ -81,7 +81,10 @@ public class UserService {
                                 item.getEvent() != null ? item.getEvent().getId() : 0,
                                 item.getEvent() != null ? item.getEvent().getName() : null)))
                 .collect(Collectors.toList());
-
+        // Refactoring code
+        // List<ResUserDTO> listUser = pUser.getContent()
+        // .stream().map(this::convertToResUserDTO)
+        // .collect(Collectors.toList());
         result.setResult(listUser);
 
         return result;
