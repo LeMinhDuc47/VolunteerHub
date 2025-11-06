@@ -60,10 +60,10 @@ public class EventService {
         this.eventRepository.deleteById(id);
     }
 
-    public Company fetchCompanyById(long id) {
-        Optional<Company> companyOptional = this.companyRepository.findById(id);
-        if (companyOptional.isPresent()) {
-            return companyOptional.get();
+    public Event fetchEventById(long id) {
+        Optional<Event> eventOptional = this.eventRepository.findById(id);
+        if (eventOptional.isPresent()) {
+            return eventOptional.get();
         }
         return null;
     }

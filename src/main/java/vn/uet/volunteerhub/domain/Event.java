@@ -1,6 +1,7 @@
 package vn.uet.volunteerhub.domain;
 
 import java.time.Instant;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -45,7 +46,7 @@ public class Event {
     private String createdBy;
 
     private String updatedBy;
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private List<User> users;
 
     @PrePersist
