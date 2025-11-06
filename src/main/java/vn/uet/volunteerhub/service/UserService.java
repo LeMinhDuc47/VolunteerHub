@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import vn.uet.volunteerhub.domain.Event;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.response.Meta;
 import vn.uet.volunteerhub.domain.response.ResCreateUserDTO;
@@ -19,14 +20,26 @@ import vn.uet.volunteerhub.repository.UserRepository;
 
 @Service
 public class UserService {
+
+    private final EventService eventService;
     // Dependency Injection
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EventService eventService) {
         this.userRepository = userRepository;
+        this.eventService = eventService;
     }
 
     public User handleCreateUser(User user) {
+        // check event
+        if (user.getEvent() != null) {
+            Event event = this.eventService.fetchEventById(user.getEvent().getId());
+            if (event != null) {
+                user.setEvent(event);
+            } else {
+                user.setEvent(null);
+            }
+        }
         return this.userRepository.save(user);
     }
 

@@ -59,4 +59,12 @@ public class EventService {
     public void handleDeleteEvent(long id) {
         this.eventRepository.deleteById(id);
     }
+
+    public Company fetchCompanyById(long id) {
+        Optional<Company> companyOptional = this.companyRepository.findById(id);
+        if (companyOptional.isPresent()) {
+            return companyOptional.get();
+        }
+        return null;
+    }
 }

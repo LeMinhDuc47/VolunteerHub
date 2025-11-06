@@ -16,4 +16,12 @@ public class ResCreateUserDTO {
     private String address;
     private int age;
     private Instant createdAt;
+    private EventUser event;
+
+    @Getter
+    @Setter
+    public static class EventUser {
+        private long id;
+        private String name;
+    }
 }
