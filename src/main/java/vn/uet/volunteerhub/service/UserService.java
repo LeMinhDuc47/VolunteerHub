@@ -67,19 +67,19 @@ public class UserService {
         meta.setTotal(pUser.getTotalElements());
         result.setMeta(meta);
         // remove sensitive data
-        List<ResUserDTO> listUser = pUser.getContent()
-                .stream().map(item -> new ResUserDTO(
-                        item.getId(),
-                        item.getName(),
-                        item.getEmail(),
-                        item.getAge(),
-                        item.getAddress(),
-                        item.getGender(),
-                        item.getUpdatedAt(),
-                        item.getCreatedAt()))
-                .collect(Collectors.toList());
+        // List<ResUserDTO> listUser = pUser.getContent()
+        // .stream().map(item -> new ResUserDTO(
+        // item.getId(),
+        // item.getName(),
+        // item.getEmail(),
+        // item.getAge(),
+        // item.getAddress(),
+        // item.getGender(),
+        // item.getUpdatedAt(),
+        // item.getCreatedAt()))
+        // .collect(Collectors.toList());
 
-        result.setResult(listUser);
+        // result.setResult(listUser);
 
         return result;
     }
@@ -120,6 +120,7 @@ public class UserService {
 
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
+        ResUserDTO.EventUser event = new ResUserDTO.EventUser();
         res.setId(user.getId());
         res.setEmail(user.getEmail());
         res.setName(user.getName());
@@ -128,7 +129,11 @@ public class UserService {
         res.setCreatedAt(user.getCreatedAt());
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
-
+        if (user.getEvent() != null) {
+            event.setId(user.getEvent().getId());
+            event.setName(user.getEvent().getName());
+            res.setEvent(event);
+        }
         return res;
     }
 
