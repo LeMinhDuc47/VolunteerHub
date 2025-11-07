@@ -44,7 +44,7 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    @ApiMessage("fetch all companies")
+    @ApiMessage("fetch all events")
     public ResponseEntity<ResultPaginationDTO> getEvents(@Filter Specification<Event> spec, Pageable pageable) {
         ResultPaginationDTO listEvents = this.eventService.fetchAllEvents(spec, pageable);
 
@@ -66,5 +66,17 @@ public class EventController {
         }
         this.eventService.handleDeleteEvent(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/events/{id}")
+    @ApiMessage("fetch event by id")
+    public ResponseEntity<Event> fetchEventById(@PathVariable("id") long id) throws IdInvalidException {
+        Event event = this.eventService.fetchEventById(id);
+
+        if (event == null) {
+            throw new IdInvalidException("Event with id = " + id + " not exist");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(event);
     }
 }

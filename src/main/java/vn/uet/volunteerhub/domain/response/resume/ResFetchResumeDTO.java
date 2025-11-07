@@ -23,7 +23,7 @@ public class ResFetchResumeDTO {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-
+    private String eventName;
     private UserResume user;
     private JobResume job;
 

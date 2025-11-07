@@ -10,12 +10,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import vn.uet.volunteerhub.domain.Event;
 import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.Skill;
 import vn.uet.volunteerhub.domain.response.Meta;
 import vn.uet.volunteerhub.domain.response.ResUpdateJobDTO;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.domain.response.job.ResCreateJobDTO;
+import vn.uet.volunteerhub.repository.EventRepository;
 import vn.uet.volunteerhub.repository.JobRepository;
 import vn.uet.volunteerhub.repository.SkillRepository;
 
@@ -23,10 +25,12 @@ import vn.uet.volunteerhub.repository.SkillRepository;
 public class JobService {
     private final JobRepository jobRepository;
     private final SkillRepository skillRepository;
+    private final EventRepository eventRepository;
 
-    public JobService(JobRepository jobRepository, SkillRepository skillRepository) {
+    public JobService(JobRepository jobRepository, SkillRepository skillRepository, EventRepository eventRepository) {
         this.jobRepository = jobRepository;
         this.skillRepository = skillRepository;
+        this.eventRepository = eventRepository;
     }
 
     public Optional<Job> fetchJobById(long id) {
@@ -88,7 +92,13 @@ public class JobService {
             List<Skill> listSkills = this.skillRepository.findByIdIn(listIdSkill);
             jobUpdate.setSkills(listSkills);
         }
-
+        // check event
+        if (requestJob.getEvent() != null) {
+            Optional<Event> eventOptional = this.eventRepository.findById(requestJob.getEvent().getId());
+            if (eventOptional.isPresent()) {
+                jobUpdate.setEvent(eventOptional.get());
+            }
+        }
         // update correct info
         jobUpdate.setName(requestJob.getName());
         jobUpdate.setStipend(requestJob.getStipend());
