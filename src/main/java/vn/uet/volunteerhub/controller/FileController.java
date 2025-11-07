@@ -1,5 +1,6 @@
 package vn.uet.volunteerhub.controller;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,14 +27,14 @@ public class FileController {
 
     @PostMapping("/files")
     public String upload(@RequestParam("file") MultipartFile file, @RequestParam("folder") String folder)
-            throws URISyntaxException {
+            throws URISyntaxException, IOException {
         // validate
 
         // create a directory if not exist
         this.fileService.createDirectory(baseURI + folder);
 
         // store file
-
+        String uploadFile = this.fileService.store(baseURI + folder, file);
         return file.getOriginalFilename();
     }
 }

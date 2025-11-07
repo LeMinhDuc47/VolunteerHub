@@ -3,8 +3,6 @@ package vn.uet.volunteerhub.domain;
 import java.time.Instant;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
