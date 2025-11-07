@@ -8,6 +8,7 @@ import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.Resume;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.response.resume.ResCreateResumeDTO;
+import vn.uet.volunteerhub.domain.response.resume.ResUpdateResumeDTO;
 import vn.uet.volunteerhub.repository.JobRepository;
 import vn.uet.volunteerhub.repository.ResumeRepository;
 import vn.uet.volunteerhub.repository.UserRepository;
@@ -24,6 +25,10 @@ public class ResumeService {
         this.resumeRepository = resumeRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
+    }
+
+    public Optional<Resume> fetchResumeById(long id) {
+        return this.resumeRepository.findById(id);
     }
 
     public boolean checkResumeExistByUserAndJob(Resume requestResume) {
@@ -55,6 +60,21 @@ public class ResumeService {
         dto.setId(newResume.getId());
         dto.setCreatedAt(newResume.getCreatedAt());
         dto.setCreatedBy(newResume.getCreatedBy());
+
+        return dto;
+    }
+
+    public ResUpdateResumeDTO updateStatusResume(Resume currentResume, Resume requestResume) {
+        // set status current resume
+        currentResume.setStatus(requestResume.getStatus());
+
+        // update database
+        this.resumeRepository.save(currentResume);
+
+        // convert Resume Object into DTO
+        ResUpdateResumeDTO dto = new ResUpdateResumeDTO();
+        dto.setUpdatedAt(currentResume.getUpdatedAt());
+        dto.setUpdatedBy(currentResume.getUpdatedBy());
 
         return dto;
     }
