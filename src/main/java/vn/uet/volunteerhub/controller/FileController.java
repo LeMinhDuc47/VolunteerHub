@@ -3,6 +3,8 @@ package vn.uet.volunteerhub.controller;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,14 @@ public class FileController {
         // check 1: check file is empty and check does not param "file"
         if (file == null || file.isEmpty()) {
             throw new StorageException("File is empty. Please upload a file.");
+        }
+        // check 2: File extensions
+        String fileName = file.getOriginalFilename();
+        List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
+        boolean isValid = allowedExtensions.stream().anyMatch(item -> fileName.toLowerCase().endsWith(item));
+
+        if (!isValid) {
+            throw new StorageException("Invalid file extension. Only allows " + allowedExtensions.toString());
         }
 
         // create a directory if not exist
