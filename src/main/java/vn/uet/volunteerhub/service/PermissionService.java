@@ -2,10 +2,15 @@ package vn.uet.volunteerhub.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Permission;
+import vn.uet.volunteerhub.domain.response.Meta;
+import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.PermissionRepository;
 
 @Service
@@ -44,5 +49,23 @@ public class PermissionService {
         // update
         currentPermission = this.permissionRepository.save(currentPermission);
         return currentPermission;
+    }
+
+    public ResultPaginationDTO fetchAllPermissions(Specification<Permission> spec, Pageable pageable) {
+        Page<Permission> pagePermission = this.permissionRepository.findAll(spec, pageable);
+
+        ResultPaginationDTO result = new ResultPaginationDTO();
+        Meta meta = new Meta();
+
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+
+        meta.setPages(pagePermission.getTotalPages());
+        meta.setTotal(pagePermission.getTotalElements());
+
+        result.setMeta(meta);
+        result.setResult(pagePermission.getContent());
+
+        return result;
     }
 }
