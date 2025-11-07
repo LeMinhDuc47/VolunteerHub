@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +17,7 @@ import io.micrometer.core.ipc.http.HttpSender.Response;
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Resume;
 import vn.uet.volunteerhub.domain.response.resume.ResCreateResumeDTO;
+import vn.uet.volunteerhub.domain.response.resume.ResFetchResumeDTO;
 import vn.uet.volunteerhub.domain.response.resume.ResUpdateResumeDTO;
 import vn.uet.volunteerhub.service.ResumeService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
@@ -71,5 +73,20 @@ public class ResumeController {
 
         this.resumeService.deleteResume(id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/resumes/{id}")
+    @ApiMessage("Fetch a resume by id")
+    public ResponseEntity<ResFetchResumeDTO> getResumeById(@PathVariable("id") long id) throws IdInvalidException {
+        // check resume id
+        Optional<Resume> resumeOptional = this.resumeService.fetchResumeById(id);
+        if (resumeOptional.isEmpty()) {
+            throw new IdInvalidException("Resume with id = " + id + " not exist");
+        }
+
+        Resume currentResume = resumeOptional.get();
+        ResFetchResumeDTO response = this.resumeService.convertToResFetchResumeDTO(currentResume);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
