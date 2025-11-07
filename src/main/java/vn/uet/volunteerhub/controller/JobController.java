@@ -19,9 +19,9 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Job;
-import vn.uet.volunteerhub.domain.response.ResCreateJobDTO;
 import vn.uet.volunteerhub.domain.response.ResUpdateJobDTO;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
+import vn.uet.volunteerhub.domain.response.job.ResCreateJobDTO;
 import vn.uet.volunteerhub.service.JobService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
 import vn.uet.volunteerhub.util.error.IdInvalidException;

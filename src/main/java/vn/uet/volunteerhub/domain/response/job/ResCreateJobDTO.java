@@ -1,4 +1,4 @@
-package vn.uet.volunteerhub.domain.response;
+package vn.uet.volunteerhub.domain.response.job;
 
 import java.time.Instant;
 import java.util.List;

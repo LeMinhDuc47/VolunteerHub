@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.Skill;
 import vn.uet.volunteerhub.domain.response.Meta;
-import vn.uet.volunteerhub.domain.response.ResCreateJobDTO;
 import vn.uet.volunteerhub.domain.response.ResUpdateJobDTO;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
+import vn.uet.volunteerhub.domain.response.job.ResCreateJobDTO;
 import vn.uet.volunteerhub.repository.JobRepository;
 import vn.uet.volunteerhub.repository.SkillRepository;
 
