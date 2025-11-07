@@ -1,5 +1,6 @@
 package vn.uet.volunteerhub.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Permission;
+import vn.uet.volunteerhub.domain.Role;
 import vn.uet.volunteerhub.domain.response.Meta;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.PermissionRepository;
@@ -67,5 +69,24 @@ public class PermissionService {
         result.setResult(pagePermission.getContent());
 
         return result;
+    }
+
+    public void deletePermission(long id) {
+        // get permission by id
+        Permission currentPermission = this.fetchPermissionById(id);
+
+        // check role exist
+        if (currentPermission.getRoles() != null) {
+            List<Role> roles = currentPermission.getRoles();
+            for (int i = 0; i < roles.size(); i++) {
+                // Lấy từng Role trong danh sách
+                Role role = roles.get(i);
+                // Xóa currentPermission khỏi danh sách permissions của Role
+                role.getPermissions().remove(currentPermission);
+            }
+        }
+
+        // delete permission
+        this.permissionRepository.delete(currentPermission);
     }
 }
