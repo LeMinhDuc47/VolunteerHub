@@ -8,5 +8,5 @@ import vn.uet.volunteerhub.domain.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
-
+    boolean existsByName(String name);
 }
