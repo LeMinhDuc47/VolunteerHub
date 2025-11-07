@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.Event;
+import vn.uet.volunteerhub.domain.Role;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.response.Meta;
 import vn.uet.volunteerhub.domain.response.ResCreateUserDTO;
@@ -24,10 +25,12 @@ public class UserService {
     private final EventService eventService;
     // Dependency Injection
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, EventService eventService) {
+    public UserService(UserRepository userRepository, EventService eventService, RoleService roleService) {
         this.userRepository = userRepository;
         this.eventService = eventService;
+        this.roleService = roleService;
     }
 
     public User handleCreateUser(User user) {
@@ -39,6 +42,11 @@ public class UserService {
             } else {
                 user.setEvent(null);
             }
+        }
+        // check role
+        if (user.getRole() != null) {
+            Role role = this.roleService.fetchRoleById(user.getRole().getId());
+            user.setRole(role != null ? role : null);
         }
         return this.userRepository.save(user);
     }
@@ -102,6 +110,11 @@ public class UserService {
                 Event eventOptional = this.eventService.fetchEventById(requestUser.getEvent().getId());
                 currentUser.setEvent(eventOptional != null ? eventOptional : null);
             }
+            // check role exist
+            if (requestUser.getRole() != null) {
+                Role role = this.roleService.fetchRoleById(requestUser.getRole().getId());
+                currentUser.setRole(role != null ? role : null);
+            }
             // update
             currentUser = this.userRepository.save(currentUser);
         }
@@ -114,6 +127,8 @@ public class UserService {
 
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
+        ResCreateUserDTO.EventUser event = new ResCreateUserDTO.EventUser();
+        ResCreateUserDTO.RoleUser role = new ResCreateUserDTO.RoleUser();
         res.setId(user.getId());
         res.setEmail(user.getEmail());
         res.setName(user.getName());
@@ -121,6 +136,17 @@ public class UserService {
         res.setCreatedAt(user.getCreatedAt());
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
+        if (user.getEvent() != null) {
+            event.setId(user.getEvent().getId());
+            event.setName(user.getEvent().getName());
+            res.setEvent(event);
+        }
+
+        if (user.getRole() != null) {
+            role.setId(user.getRole().getId());
+            role.setName(user.getRole().getName());
+            res.setRole(role);
+        }
         return res;
     }
 
@@ -154,6 +180,13 @@ public class UserService {
             event.setId(user.getEvent().getId());
             event.setName(user.getEvent().getName());
             res.setEvent(event);
+        }
+        ResUpdateUserDTO.RoleUser role = new ResUpdateUserDTO.RoleUser();
+        if (user.getRole() != null) {
+            role.setId(user.getRole().getId());
+            role.setName(user.getRole().getName());
+
+            res.setRole(role);
         }
         res.setId(user.getId());
         res.setName(user.getName());
