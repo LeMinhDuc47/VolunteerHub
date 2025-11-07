@@ -1,6 +1,7 @@
 package vn.uet.volunteerhub.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -43,5 +44,36 @@ public class RoleService {
             requestRole.setPermissions(listPermissions);
         }
         return this.roleRepository.save(requestRole);
+    }
+
+    public Role fetchRoleById(long id) {
+        Optional<Role> roleOptional = this.roleRepository.findById(id);
+        if (roleOptional.isPresent()) {
+            return roleOptional.get();
+        }
+
+        return null;
+    }
+
+    public Role updateRole(Role requestRole, Role currentRole) {
+        // if permission exist
+        if (requestRole.getPermissions() != null) {
+            List<Long> listPermissionId = requestRole.getPermissions()
+                    .stream().map(item -> item.getId())
+                    .collect(Collectors.toList());
+
+            List<Permission> listPermissions = this.permissionRepository.findByIdIn(listPermissionId);
+
+            // set permission
+            currentRole.setPermissions(listPermissions);
+        }
+
+        currentRole.setName(requestRole.getName());
+        currentRole.setDescription(requestRole.getDescription());
+        currentRole.setActive(requestRole.isActive());
+
+        currentRole = this.roleRepository.save(currentRole);
+
+        return currentRole;
     }
 }
