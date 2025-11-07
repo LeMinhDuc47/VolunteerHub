@@ -78,4 +78,8 @@ public class ResumeService {
 
         return dto;
     }
+
+    public void deleteResume(long id) {
+        this.resumeRepository.deleteById(id);
+    }
 }
