@@ -22,12 +22,20 @@ public class ResUserDTO {
     private Instant createdAt;
     private Instant updatedAt;
     private EventUser event;
+    private RoleUser role;
 
     @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class EventUser {
+        private long id;
+        private String name;
+    }
+
+    @Getter
+    @Setter
+    public static class RoleUser {
         private long id;
         private String name;
     }

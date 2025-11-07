@@ -74,25 +74,10 @@ public class UserService {
         meta.setPages(pUser.getTotalPages());
         meta.setTotal(pUser.getTotalElements());
         result.setMeta(meta);
-        // remove sensitive data
-        List<ResUserDTO> listUser = pUser.getContent()
-                .stream().map(item -> new ResUserDTO(
-                        item.getId(),
-                        item.getName(),
-                        item.getEmail(),
-                        item.getAge(),
-                        item.getAddress(),
-                        item.getGender(),
-                        item.getUpdatedAt(),
-                        item.getCreatedAt(),
-                        new ResUserDTO.EventUser(
-                                item.getEvent() != null ? item.getEvent().getId() : 0,
-                                item.getEvent() != null ? item.getEvent().getName() : null)))
-                .collect(Collectors.toList());
         // Refactoring code
-        // List<ResUserDTO> listUser = pUser.getContent()
-        // .stream().map(this::convertToResUserDTO)
-        // .collect(Collectors.toList());
+        List<ResUserDTO> listUser = pUser.getContent()
+                .stream().map(item -> this.convertToResUserDTO(item))
+                .collect(Collectors.toList());
         result.setResult(listUser);
 
         return result;
@@ -157,6 +142,7 @@ public class UserService {
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
         ResUserDTO.EventUser event = new ResUserDTO.EventUser();
+        ResUserDTO.RoleUser role = new ResUserDTO.RoleUser();
         res.setId(user.getId());
         res.setEmail(user.getEmail());
         res.setName(user.getName());
@@ -169,6 +155,11 @@ public class UserService {
             event.setId(user.getEvent().getId());
             event.setName(user.getEvent().getName());
             res.setEvent(event);
+        }
+        if (user.getRole() != null) {
+            role.setId(user.getRole().getId());
+            role.setName(user.getRole().getName());
+            res.setRole(role);
         }
         return res;
     }
