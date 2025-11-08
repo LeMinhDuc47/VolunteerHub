@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Subscriber;
 import vn.uet.volunteerhub.service.SubscriberService;
+import vn.uet.volunteerhub.util.SecurityUtil;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
 import vn.uet.volunteerhub.util.error.IdInvalidException;
 
@@ -49,4 +50,16 @@ public class SubscriberController {
         Subscriber updateSubscriber = this.subscriberService.updateSubscriber(currentSubscriber, requestSubscriber);
         return ResponseEntity.status(HttpStatus.OK).body(updateSubscriber);
     }
+
+    @PostMapping("/subscribers/skills")
+    @ApiMessage("Get subscriber's skill")
+    public ResponseEntity<Subscriber> getSubscribersSkill() {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
+        Subscriber currentSubscriber = this.subscriberService.findSubscriberByEmail(email);
+
+        return ResponseEntity.status(HttpStatus.OK).body(currentSubscriber);
+    }
+
 }
