@@ -124,4 +124,11 @@ public class SubscriberService {
 
         return res;
     }
+    // @Scheduled(cron = "*/10 * * * * *")
+    // public void testCron() {
+    // System.out.println(">>> TEST CRON JOB");
+    // }
 }
+// Cron job guider: https://spring.io/guides/gs/scheduling-tasks
+// Scheduling-cron-expression:
+// https://docs.spring.io/spring-framework/reference/integration/scheduling.html#scheduling-cron-expression
