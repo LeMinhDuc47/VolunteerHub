@@ -4,10 +4,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import com.turkraft.springfilter.converter.FilterSpecification;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import com.turkraft.springfilter.parser.FilterParser;
+import com.turkraft.springfilter.parser.node.FilterNode;
 
 import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.Resume;
@@ -20,10 +26,15 @@ import vn.uet.volunteerhub.domain.response.resume.ResUpdateResumeDTO;
 import vn.uet.volunteerhub.repository.JobRepository;
 import vn.uet.volunteerhub.repository.ResumeRepository;
 import vn.uet.volunteerhub.repository.UserRepository;
+import vn.uet.volunteerhub.util.SecurityUtil;
 
 @Service
 public class ResumeService {
+    @Autowired
+    private FilterParser filterParser;
 
+    @Autowired
+    private FilterSpecificationConverter filterSpecificationConverter;
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
@@ -135,5 +146,37 @@ public class ResumeService {
         result.setResult(listResume);
 
         return result;
+    }
+
+    public ResultPaginationDTO fetchResumesByUser(Pageable pageable) {
+        // query builder
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
+        FilterNode node = filterParser.parse("email='" + email + "'");
+        FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
+        Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
+
+        ResultPaginationDTO result = new ResultPaginationDTO();
+        Meta meta = new Meta();
+
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+
+        meta.setPages(pageResume.getTotalPages());
+        meta.setTotal(pageResume.getTotalElements());
+
+        result.setMeta(meta);
+
+        // convert Resume Object into ResFetchResumeDTO
+        List<ResFetchResumeDTO> listResume = pageResume.getContent()
+                .stream().map(item -> this.convertToResFetchResumeDTO(item))
+                .collect(Collectors.toList());
+
+        result.setResult(listResume);
+
+        return result;
+        // filter: https://github.com/turkraft/springfilter/issues/363
+        // https://github.com/turkraft/springfilter/issues/233#issuecomment-1590045915
     }
 }
