@@ -1,6 +1,8 @@
 package vn.uet.volunteerhub.controller;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,15 +18,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
+import com.turkraft.springfilter.builder.FilterBuilder;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
 
 import io.micrometer.core.ipc.http.HttpSender.Response;
 import jakarta.validation.Valid;
+import vn.uet.volunteerhub.domain.Event;
+import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.Resume;
+import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.domain.response.resume.ResCreateResumeDTO;
 import vn.uet.volunteerhub.domain.response.resume.ResFetchResumeDTO;
 import vn.uet.volunteerhub.domain.response.resume.ResUpdateResumeDTO;
 import vn.uet.volunteerhub.service.ResumeService;
+import vn.uet.volunteerhub.service.UserService;
+import vn.uet.volunteerhub.util.SecurityUtil;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
 import vn.uet.volunteerhub.util.error.IdInvalidException;
 
@@ -33,9 +42,17 @@ import vn.uet.volunteerhub.util.error.IdInvalidException;
 public class ResumeController {
 
     private final ResumeService resumeService;
+    private final UserService userService;
 
-    public ResumeController(ResumeService resumeService) {
+    private final FilterBuilder filterBuilder;
+    private final FilterSpecificationConverter filterSpecificationConverter;
+
+    public ResumeController(ResumeService resumeService, UserService userService, FilterBuilder filterBuilder,
+            FilterSpecificationConverter filterSpecificationConverter) {
         this.resumeService = resumeService;
+        this.userService = userService;
+        this.filterBuilder = filterBuilder;
+        this.filterSpecificationConverter = filterSpecificationConverter;
     }
 
     @PostMapping("/resumes")
@@ -98,7 +115,26 @@ public class ResumeController {
     @GetMapping("/resumes")
     @ApiMessage("Fetch all resume with pagination")
     public ResponseEntity<ResultPaginationDTO> getAllResumes(@Filter Specification<Resume> spec, Pageable pageable) {
-        ResultPaginationDTO listResumes = this.resumeService.fetchAllResumes(spec, pageable);
+        List<Long> arrJobIds = null;
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User currentUser = this.userService.handleGetUserByUsername(email);
+        if (currentUser != null) {
+            Event userEvent = currentUser.getEvent();
+            if (userEvent != null) {
+                List<Job> companyJobs = userEvent.getJobs();
+                if (companyJobs != null && companyJobs.size() > 0) {
+                    arrJobIds = companyJobs.stream().map(x -> x.getId())
+                            .collect(Collectors.toList());
+                }
+            }
+        }
+        Specification<Resume> jobInSpec = filterSpecificationConverter.convert(filterBuilder.field("job")
+                .in(filterBuilder.input(arrJobIds)).get());
+        Specification<Resume> finalSpec = jobInSpec.and(spec);
+
+        ResultPaginationDTO listResumes = this.resumeService.fetchAllResumes(finalSpec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(listResumes);
     }
 
