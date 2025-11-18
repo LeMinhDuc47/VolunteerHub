@@ -1,11 +1,12 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { IEvent, IPost, IComment } from "@/types/backend";
-import { callFetchEventById, callFetchEventPosts, callCreatePost, callCreateComment, callLikePost } from "@/config/api";
+import { callFetchEventById, callFetchEventPosts, callCreatePost, callCreateComment, callLikePost, callFetchResumeByUser } from "@/config/api";
 import styles from 'styles/client.module.scss';
 import parse from 'html-react-parser';
-import { Col, Divider, Row, Skeleton, Tabs, List, Avatar, Button, Form, Input, message, Space, Typography, Empty } from "antd";
+import { Col, Divider, Row, Skeleton, Tabs, List, Avatar, Button, Form, Input, message, Space, Typography, Empty, Alert, Modal } from "antd";
 import { EnvironmentOutlined, CommentOutlined, LikeOutlined, SendOutlined } from "@ant-design/icons";
+import { useAppSelector } from "@/redux/hooks";
 
 
 const ClientEventDetailPage = (props: any) => {
@@ -15,6 +16,12 @@ const ClientEventDetailPage = (props: any) => {
     const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
     const [creatingPost, setCreatingPost] = useState<boolean>(false);
     const [activeTab, setActiveTab] = useState<string>('detail');
+    const [isMember, setIsMember] = useState<boolean>(false);
+    const [loadingMember, setLoadingMember] = useState<boolean>(false);
+    const [showApplyModal, setShowApplyModal] = useState<boolean>(false);
+
+    const navigate = useNavigate();
+    const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
@@ -35,11 +42,20 @@ const ClientEventDetailPage = (props: any) => {
     }, [id]);
 
     useEffect(() => {
-        if (eventDetail?.id && eventDetail.status === 'APPROVED' && activeTab === 'discussion') {
+        if (eventDetail?.id && activeTab === 'discussion') {
             fetchPosts();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventDetail, activeTab]);
+
+    useEffect(() => {
+        if (eventDetail?.id && activeTab === 'discussion' && isAuthenticated) {
+            checkMember();
+        } else if (!isAuthenticated) {
+            setIsMember(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [eventDetail, activeTab, isAuthenticated]);
 
     const fetchPosts = async () => {
         if (!eventDetail?.id) return;
@@ -72,6 +88,27 @@ const ClientEventDetailPage = (props: any) => {
             message.error('Đăng bài thất bại');
         }
         setCreatingPost(false);
+    };
+
+    const checkMember = async () => {
+        if (!eventDetail?.id) return;
+        setLoadingMember(true);
+        try {
+            const res = await callFetchResumeByUser();
+            const list = res?.data?.result || [];
+            const currentEventId = eventDetail.id;
+            const approved = list.some((r: any) => {
+                if (r?.status !== 'APPROVED') return false;
+                // Safely derive event id from nested job.event or eventId object/string
+                const nestedEventId = r?.job?.event?.id
+                    || (typeof r?.eventId === 'object' ? r.eventId?.id : r?.eventId);
+                return nestedEventId && nestedEventId === currentEventId;
+            });
+            setIsMember(approved);
+        } catch (e) {
+            setIsMember(false);
+        }
+        setLoadingMember(false);
     };
 
     const handleAddComment = async (post: IPost, content: string) => {
@@ -107,23 +144,55 @@ const ClientEventDetailPage = (props: any) => {
 
     const renderDiscussionTab = () => {
         if (!eventDetail) return <Skeleton />;
-        if (eventDetail.status !== 'APPROVED') {
-            return <Empty description={<span>Kênh thảo luận chưa mở do sự kiện chưa được duyệt</span>} />;
-        }
         return (
             <div>
-                <Form form={form} layout="vertical" onFinish={handleCreatePost} style={{ marginBottom: 24 }}>
-                    <Form.Item name="content" label="Tạo bài viết" rules={[{ required: true, message: 'Nhập nội dung bài viết' }]}>
-                        <Input.TextArea rows={4} placeholder="Chia sẻ điều gì đó..." />
-                    </Form.Item>
-                    <Button type="primary" htmlType="submit" loading={creatingPost} icon={<SendOutlined />}>Đăng bài</Button>
-                </Form>
+                {!isAuthenticated && (
+                    <div style={{ marginBottom: 16 }}>
+                        <Button type="primary" onClick={() => navigate('/auth/login')}>Đăng nhập để tham gia</Button>
+                    </div>
+                )}
+
+                {isAuthenticated && (loadingMember ? (
+                    <Skeleton active />
+                ) : (
+                    isMember ? (
+                        <Form form={form} layout="vertical" onFinish={handleCreatePost} style={{ marginBottom: 24 }}>
+                            <Form.Item name="content" label="Tạo bài viết" rules={[{ required: true, message: 'Nhập nội dung bài viết' }]}>
+                                <Input.TextArea rows={4} placeholder="Chia sẻ điều gì đó..." />
+                            </Form.Item>
+                            <Button type="primary" htmlType="submit" loading={creatingPost} icon={<SendOutlined />}>Đăng bài</Button>
+                        </Form>
+                    ) : (
+                        <Alert
+                            type="info"
+                            message="Bạn cần là thành viên chính thức (được duyệt) để tham gia thảo luận"
+                            description={
+                                <Space direction="vertical">
+                                    <Typography.Text>Hãy gửi hồ sơ ứng tuyển vào một vị trí thuộc sự kiện này và chờ duyệt.</Typography.Text>
+                                    <Button type="primary" onClick={() => setShowApplyModal(true)}>Đăng ký tham gia</Button>
+                                </Space>
+                            }
+                            showIcon
+                        />
+                    )
+                ))}
                 <List
                     loading={loadingPosts}
                     dataSource={posts}
                     locale={{ emptyText: 'Chưa có bài viết nào' }}
                     renderItem={(item) => <PostItem post={item} onComment={handleAddComment} onLike={handleLikePost} />}
                 />
+                <Modal
+                    open={showApplyModal}
+                    title="Đăng ký tham gia sự kiện"
+                    onCancel={() => setShowApplyModal(false)}
+                    footer={<Button onClick={() => setShowApplyModal(false)}>Đóng</Button>}
+                >
+                    <Typography.Paragraph>
+                        Chức năng đăng ký tham gia: Vui lòng chuyển tới trang công việc và ứng tuyển một vị trí. Sau khi hồ sơ được duyệt (APPROVED), bạn sẽ có thể đăng bài và thảo luận.
+                    </Typography.Paragraph>
+                    <Button type="link" onClick={() => navigate(`/jobs?eventId=${eventDetail?.id}`)}>Xem các công việc của sự kiện</Button>
+                </Modal>
             </div>
         );
     };

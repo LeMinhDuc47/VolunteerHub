@@ -48,7 +48,6 @@ export interface IEvent {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
-    status?: string; // PENDING | APPROVED | REJECTED
 }
 
 export interface ISkill {
