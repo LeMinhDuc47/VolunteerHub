@@ -92,23 +92,25 @@ const ClientEventDetailPage = (props: any) => {
 
     const checkMember = async () => {
         if (!eventDetail?.id) return;
-        setLoadingMember(true);
         try {
             const res = await callFetchResumeByUser();
             const list = res?.data?.result || [];
             const currentEventId = eventDetail.id;
+
             const approved = list.some((r: any) => {
                 if (r?.status !== 'APPROVED') return false;
-                // Safely derive event id from nested job.event or eventId object/string
-                const nestedEventId = r?.job?.event?.id
-                    || (typeof r?.eventId === 'object' ? r.eventId?.id : r?.eventId);
-                return nestedEventId && nestedEventId === currentEventId;
+
+                const resumeEventId = r?.job?.eventId;
+
+                return resumeEventId == currentEventId;
             });
+
             setIsMember(approved);
         } catch (e) {
+            console.log(e);
             setIsMember(false);
         }
-        setLoadingMember(false);
+        // setLoadingMember(false);
     };
 
     const handleAddComment = async (post: IPost, content: string) => {

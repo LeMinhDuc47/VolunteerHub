@@ -79,6 +79,19 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get subscribers with pagination", "/api/v1/subscribers", "GET", "SUBSCRIBERS"));
             arr.add(new Permission("Download a file", "/api/v1/files", "POST", "FILES"));
             arr.add(new Permission("Upload a file", "/api/v1/files", "GET", "FILES"));
+            // 1. POSTS
+            arr.add(new Permission("Get posts by event", "/api/v1/events/{id}/posts", "GET", "POSTS"));
+            arr.add(new Permission("Create a post", "/api/v1/events/{id}/posts", "POST", "POSTS"));
+            arr.add(new Permission("Delete a post", "/api/v1/posts/{id}", "DELETE", "POSTS")); // Nếu cần
+
+            // 2. COMMENTS
+            arr.add(new Permission("Get comments by post", "/api/v1/posts/{id}/comments", "GET", "COMMENTS"));
+            arr.add(new Permission("Create a comment", "/api/v1/posts/{id}/comments", "POST", "COMMENTS"));
+            arr.add(new Permission("Delete a comment", "/api/v1/comments/{id}", "DELETE", "COMMENTS")); // Nếu cần
+
+            // 3. LIKES
+            arr.add(new Permission("Like a post", "/api/v1/posts/{id}/likes", "POST", "LIKES"));
+            arr.add(new Permission("Like a comment", "/api/v1/comments/{id}/likes", "POST", "LIKES"));
             this.permissionRepository.saveAll(arr);
         }
         if (countRoles == 0) {

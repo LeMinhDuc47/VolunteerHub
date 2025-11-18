@@ -41,5 +41,6 @@ public class ResFetchResumeDTO {
     public static class JobResume {
         private long id;
         private String name;
+        private long eventId;
     }
 }

@@ -35,6 +35,18 @@ export const ALL_PERMISSIONS = {
         UPDATE: { method: "PUT", apiPath: '/api/v1/users', module: "USERS" },
         DELETE: { method: "DELETE", apiPath: '/api/v1/users/{id}', module: "USERS" },
     },
+    POSTS: {
+        GET_BY_EVENT: { method: "GET", apiPath: '/api/v1/events/{id}/posts', module: "POSTS" },
+        CREATE: { method: "POST", apiPath: '/api/v1/events/{id}/posts', module: "POSTS" },
+    },
+    COMMENTS: {
+        GET_BY_POST: { method: "GET", apiPath: '/api/v1/posts/{id}/comments', module: "COMMENTS" },
+        CREATE: { method: "POST", apiPath: '/api/v1/posts/{id}/comments', module: "COMMENTS" },
+    },
+    LIKES: {
+        CREATE_POST: { method: "POST", apiPath: '/api/v1/posts/{id}/likes', module: "LIKES" },
+        CREATE_COMMENT: { method: "POST", apiPath: '/api/v1/comments/{id}/likes', module: "LIKES" },
+    },
 }
 
 export const ALL_MODULES = {
@@ -45,5 +57,8 @@ export const ALL_MODULES = {
     RESUMES: 'RESUMES',
     ROLES: 'ROLES',
     USERS: 'USERS',
-    SUBSCRIBERS: 'SUBSCRIBERS'
+    SUBSCRIBERS: 'SUBSCRIBERS',
+    POSTS: 'POSTS',
+    COMMENTS: 'COMMENTS',
+    LIKES: 'LIKES'
 }

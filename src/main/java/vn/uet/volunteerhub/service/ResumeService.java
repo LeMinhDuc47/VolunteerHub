@@ -118,7 +118,7 @@ public class ResumeService {
         dto.setUser(user);
 
         ResFetchResumeDTO.JobResume job = new ResFetchResumeDTO.JobResume(resume.getJob().getId(),
-                resume.getJob().getName());
+                resume.getJob().getName(), resume.getJob().getEvent().getId());
         dto.setJob(job);
 
         return dto;

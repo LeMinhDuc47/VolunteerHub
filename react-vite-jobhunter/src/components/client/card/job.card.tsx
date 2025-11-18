@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import styles from 'styles/client.module.scss';
-import { sfIn } from "spring-filter-query-builder";
+import { sfIn, sfEqual } from "spring-filter-query-builder";
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -50,21 +50,20 @@ const JobCard = (props: IProps) => {
         //check query string
         const queryLocation = searchParams.get("location");
         const querySkills = searchParams.get("skills")
-        if (queryLocation || querySkills) {
+        const queryEvent = searchParams.get("event");
+        if (queryLocation || querySkills || queryEvent) {
             let q = "";
-            if (queryLocation) {
-                q = sfIn("location", queryLocation.split(",")).toString();
-            }
+            const parts = [];
 
-            if (querySkills) {
-                q = queryLocation ?
-                    q + " and " + `${sfIn("skills", querySkills.split(","))}`
-                    : `${sfIn("skills", querySkills.split(","))}`;
-            }
+            if (queryLocation) parts.push(sfIn("location", queryLocation.split(",")).toString());
+            if (querySkills) parts.push(sfIn("skills", querySkills.split(",")).toString());
 
+            // Thêm logic lọc theo Event ID
+            if (queryEvent) parts.push(`event.id:${queryEvent}`);
+
+            q = parts.join(" and ");
             query += `&filter=${encodeURIComponent(q)}`;
         }
-
         const res = await callFetchJob(query);
         if (res && res.data) {
             setDisplayJob(res.data.result);
