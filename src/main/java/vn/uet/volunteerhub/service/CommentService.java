@@ -11,8 +11,9 @@ import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.repository.CommentRepository;
 import vn.uet.volunteerhub.repository.PostRepository;
 import vn.uet.volunteerhub.repository.UserRepository;
+import vn.uet.volunteerhub.repository.ResumeRepository;
 import vn.uet.volunteerhub.util.SecurityUtil;
-import vn.uet.volunteerhub.util.constant.EventStatusEnum;
+import vn.uet.volunteerhub.util.constant.ResumeStateEnum;
 import vn.uet.volunteerhub.util.error.IdInvalidException;
 import vn.uet.volunteerhub.util.error.PermissionException;
 
@@ -22,12 +23,14 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ResumeRepository resumeRepository;
 
     public CommentService(CommentRepository commentRepository, PostRepository postRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository, ResumeRepository resumeRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.resumeRepository = resumeRepository;
     }
 
     public Comment handleCreateComment(long postId, String content) throws IdInvalidException, PermissionException {
@@ -37,14 +40,20 @@ public class CommentService {
         }
         Post post = postOpt.get();
         Event event = post.getEvent();
-        if (event == null || event.getStatus() != EventStatusEnum.APPROVED) {
-            throw new PermissionException("Sự kiện chưa được duyệt. Không thể bình luận.");
+        if (event == null) {
+            throw new IdInvalidException("Sự kiện cho bài viết không tồn tại");
         }
 
         String email = SecurityUtil.getCurrentUserLogin().orElse("");
         User user = this.userRepository.findByEmail(email);
         if (user == null) {
             throw new IdInvalidException("Người dùng hiện tại không tồn tại");
+        }
+
+        boolean isMemberApproved = this.resumeRepository
+                .existsByUserIdAndJobEventIdAndStatus(user.getId(), event.getId(), ResumeStateEnum.APPROVED);
+        if (!isMemberApproved) {
+            throw new PermissionException("Bạn cần là thành viên chính thức của sự kiện để tham gia thảo luận.");
         }
 
         Comment comment = new Comment();
