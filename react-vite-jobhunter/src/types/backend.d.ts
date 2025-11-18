@@ -48,6 +48,7 @@ export interface IEvent {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    status?: string; // PENDING | APPROVED | REJECTED
 }
 
 export interface ISkill {
@@ -177,4 +178,36 @@ export interface ISubscribers {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+}
+
+// Event Channel
+export interface IPost {
+    id?: string;
+    content: string;
+    createdAt?: string;
+    updatedAt?: string;
+    user?: { id?: string; name?: string; email?: string };
+    event?: { id?: string; name?: string };
+    // frontend-only fields
+    likesCount?: number;
+    commentsCount?: number;
+    comments?: IComment[];
+}
+
+export interface IComment {
+    id?: string;
+    content: string;
+    createdAt?: string;
+    updatedAt?: string;
+    user?: { id?: string; name?: string; email?: string };
+    postId?: string;
+    likesCount?: number;
+}
+
+export interface ILike {
+    id?: string;
+    user?: { id?: string; name?: string };
+    postId?: string;
+    commentId?: string;
+    createdAt?: string;
 }

@@ -1,4 +1,4 @@
-import { IBackendRes, IEvent, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers } from '@/types/backend';
+import { IBackendRes, IEvent, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IPost, IComment, ILike } from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -68,6 +68,27 @@ export const callFetchEvent = (query: string) => {
 
 export const callFetchEventById = (id: string) => {
     return axios.get<IBackendRes<IEvent>>(`/api/v1/events/${id}`);
+}
+
+// Event Channel APIs
+export const callFetchEventPosts = (eventId: string) => {
+    return axios.get<IBackendRes<IPost[]>>(`/api/v1/events/${eventId}/posts`);
+}
+
+export const callCreatePost = (eventId: string, content: string) => {
+    return axios.post<IBackendRes<IPost>>(`/api/v1/events/${eventId}/posts`, { content });
+}
+
+export const callCreateComment = (postId: string, content: string) => {
+    return axios.post<IBackendRes<IComment>>(`/api/v1/posts/${postId}/comments`, { content });
+}
+
+export const callLikePost = (postId: string) => {
+    return axios.post<IBackendRes<ILike>>(`/api/v1/posts/${postId}/likes`);
+}
+
+export const callLikeComment = (commentId: string) => {
+    return axios.post<IBackendRes<ILike>>(`/api/v1/comments/${commentId}/likes`);
 }
 
 /**
