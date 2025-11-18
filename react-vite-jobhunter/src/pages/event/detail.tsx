@@ -15,7 +15,14 @@ const ClientEventDetailPage = (props: any) => {
     const [posts, setPosts] = useState<IPost[]>([]);
     const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
     const [creatingPost, setCreatingPost] = useState<boolean>(false);
-    const [activeTab, setActiveTab] = useState<string>('detail');
+    const [activeTab, setActiveTab] = useState<string>(() => {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('tab') || 'detail';
+        } catch {
+            return 'detail';
+        }
+    });
     const [isMember, setIsMember] = useState<boolean>(false);
     const [loadingMember, setLoadingMember] = useState<boolean>(false);
     const [showApplyModal, setShowApplyModal] = useState<boolean>(false);
@@ -63,8 +70,25 @@ const ClientEventDetailPage = (props: any) => {
         try {
             const res = await callFetchEventPosts(eventDetail.id);
             if (res?.data) {
-                // initialize local counts if absent and ensure required fields
-                const mapped = (res.data || []).map(p => ({ ...p, content: p.content || '', likesCount: p.likesCount || 0, commentsCount: p.commentsCount || 0, comments: [] } as IPost));
+                const mapped = (res.data || []).map((p: any) => {
+                    const comments = (p.comments || []).map((c: any) => ({
+                        id: String(c.id),
+                        content: c.content || '',
+                        createdAt: c.createdAt,
+                        user: c.user
+                    } as IComment));
+
+                    const post: IPost = {
+                        id: String(p.id),
+                        content: p.content || '',
+                        createdAt: p.createdAt,
+                        user: p.user,
+                        comments,
+                        likesCount: p.totalLikes || 0,
+                        commentsCount: comments.length
+                    };
+                    return post;
+                });
                 setPosts(mapped);
             }
         } catch (e) {
@@ -140,6 +164,14 @@ const ClientEventDetailPage = (props: any) => {
         } catch (e) {
             message.error('Thả tim thất bại');
         }
+    };
+
+    const onChangeTab = (key: string) => {
+        setActiveTab(key);
+        const sp = new URLSearchParams(location.search);
+        if (id) sp.set('id', id);
+        sp.set('tab', key);
+        navigate({ search: sp.toString() }, { replace: true });
     };
 
     const [form] = Form.useForm();
@@ -244,7 +276,7 @@ const ClientEventDetailPage = (props: any) => {
     return (
         <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
             {isLoading || !eventDetail ? <Skeleton /> : (
-                <Tabs activeKey={activeTab} onChange={setActiveTab} items={[
+                <Tabs activeKey={activeTab} onChange={onChangeTab} items={[
                     {
                         key: 'detail',
                         label: 'Chi tiết',

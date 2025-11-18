@@ -2,12 +2,14 @@ package vn.uet.volunteerhub.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.Event;
 import vn.uet.volunteerhub.domain.Post;
 import vn.uet.volunteerhub.domain.User;
+import vn.uet.volunteerhub.domain.response.post.ResFetchPostDTO;
 import vn.uet.volunteerhub.repository.EventRepository;
 import vn.uet.volunteerhub.repository.PostRepository;
 import vn.uet.volunteerhub.repository.ResumeRepository;
@@ -66,5 +68,49 @@ public class PostService {
         }
         Event event = eventOpt.get();
         return this.postRepository.findByEventOrderByCreatedAtDesc(event);
+    }
+
+    public List<ResFetchPostDTO> getPostsByEvent(long eventId) throws IdInvalidException {
+        Event event = this.eventRepository.findById(eventId)
+                .orElseThrow(() -> new IdInvalidException("Event với id = " + eventId + " không tồn tại"));
+
+        List<Post> posts = this.postRepository.findByEventOrderByCreatedAtDesc(event);
+
+        return posts.stream().map(post -> {
+            ResFetchPostDTO dto = new ResFetchPostDTO();
+            dto.setId(post.getId());
+            dto.setContent(post.getContent());
+            dto.setCreatedAt(post.getCreatedAt());
+            dto.setCreatedBy(post.getCreatedBy());
+            ResFetchPostDTO.UserPost u = new ResFetchPostDTO.UserPost();
+            if (post.getUser() != null) {
+                u.setId(post.getUser().getId());
+                u.setName(post.getUser().getName());
+                u.setEmail(post.getUser().getEmail());
+            }
+            dto.setUser(u);
+
+            if (post.getComments() != null) {
+                List<ResFetchPostDTO.CommentDTO> commentDTOs = post.getComments().stream().map(cmt -> {
+                    ResFetchPostDTO.CommentDTO cDto = new ResFetchPostDTO.CommentDTO();
+                    cDto.setId(cmt.getId());
+                    cDto.setContent(cmt.getContent());
+                    cDto.setCreatedAt(cmt.getCreatedAt());
+
+                    ResFetchPostDTO.UserPost cu = new ResFetchPostDTO.UserPost();
+                    if (cmt.getUser() != null) {
+                        cu.setId(cmt.getUser().getId());
+                        cu.setName(cmt.getUser().getName());
+                    }
+                    cDto.setUser(cu);
+                    return cDto;
+                }).collect(Collectors.toList());
+                dto.setComments(commentDTOs);
+            }
+
+            dto.setTotalLikes(post.getLikes() != null ? post.getLikes().size() : 0);
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

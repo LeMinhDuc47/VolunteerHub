@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.Post;
+import vn.uet.volunteerhub.domain.response.post.ResFetchPostDTO;
 import vn.uet.volunteerhub.service.PostService;
 import vn.uet.volunteerhub.util.annotation.ApiMessage;
 import vn.uet.volunteerhub.util.error.IdInvalidException;
@@ -38,9 +39,9 @@ public class PostController {
 
     @GetMapping("/events/{eventId}/posts")
     @ApiMessage("fetch posts in event")
-    public ResponseEntity<List<Post>> getPosts(@PathVariable("eventId") long eventId)
-            throws IdInvalidException, PermissionException {
-        List<Post> posts = this.postService.fetchPostsByEvent(eventId);
+    public ResponseEntity<List<ResFetchPostDTO>> getPosts(@PathVariable("eventId") long eventId)
+            throws IdInvalidException {
+        List<ResFetchPostDTO> posts = this.postService.getPostsByEvent(eventId);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 }
