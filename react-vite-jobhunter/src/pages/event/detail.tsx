@@ -225,7 +225,7 @@ const ClientEventDetailPage = (props: any) => {
                     <Typography.Paragraph>
                         Chức năng đăng ký tham gia: Vui lòng chuyển tới trang công việc và ứng tuyển một vị trí. Sau khi hồ sơ được duyệt (APPROVED), bạn sẽ có thể đăng bài và thảo luận.
                     </Typography.Paragraph>
-                    <Button type="link" onClick={() => navigate(`/jobs?eventId=${eventDetail?.id}`)}>Xem các công việc của sự kiện</Button>
+                    <Button type="link" onClick={() => navigate(`/job?eventId=${eventDetail?.id}`)}>Xem các công việc của sự kiện</Button>
                 </Modal>
             </div>
         );
