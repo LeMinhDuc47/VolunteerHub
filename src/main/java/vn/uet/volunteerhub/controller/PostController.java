@@ -1,7 +1,10 @@
 package vn.uet.volunteerhub.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,5 +34,13 @@ public class PostController {
             throws IdInvalidException, PermissionException {
         Post created = this.postService.handleCreatePost(eventId, req.getContent());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping("/events/{eventId}/posts")
+    @ApiMessage("fetch posts in event")
+    public ResponseEntity<List<Post>> getPosts(@PathVariable("eventId") long eventId)
+            throws IdInvalidException, PermissionException {
+        List<Post> posts = this.postService.fetchPostsByEvent(eventId);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 }

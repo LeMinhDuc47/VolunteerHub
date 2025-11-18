@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import vn.uet.volunteerhub.domain.Event;
 import vn.uet.volunteerhub.domain.Post;
 import vn.uet.volunteerhub.domain.User;
@@ -49,5 +50,17 @@ public class PostService {
         post.setEvent(event);
         post.setUser(user);
         return this.postRepository.save(post);
+    }
+
+    public List<Post> fetchPostsByEvent(long eventId) throws IdInvalidException, PermissionException {
+        Optional<Event> eventOpt = this.eventRepository.findById(eventId);
+        if (eventOpt.isEmpty()) {
+            throw new IdInvalidException("Event với id = " + eventId + " không tồn tại");
+        }
+        Event event = eventOpt.get();
+        if (event.getStatus() != EventStatusEnum.APPROVED) {
+            throw new PermissionException("Sự kiện chưa được duyệt. Không thể lấy danh sách bài viết.");
+        }
+        return this.postRepository.findByEventOrderByCreatedAtDesc(event);
     }
 }
