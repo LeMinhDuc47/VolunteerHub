@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,6 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.uet.volunteerhub.util.SecurityUtil;
+import vn.uet.volunteerhub.util.constant.EventStatusEnum;
 
 @Entity
 @Table(name = "events")
@@ -46,6 +49,9 @@ public class Event {
     private String createdBy;
 
     private String updatedBy;
+
+    @Enumerated(EnumType.STRING)
+    private EventStatusEnum status;
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     @JsonIgnore // Front-end: Not return response list users when Fetch All Events
     private List<User> users;
@@ -60,6 +66,9 @@ public class Event {
                 : "";
         this.createdBy = userLogin;
         this.createdAt = Instant.now();
+        if (this.status == null) {
+            this.status = EventStatusEnum.PENDING;
+        }
     }
 
     @PreUpdate
