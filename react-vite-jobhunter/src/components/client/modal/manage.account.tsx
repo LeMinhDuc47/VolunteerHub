@@ -1,12 +1,12 @@
-import { Button, Col, Form, Modal, Row, Select, Table, Tabs, message, notification } from "antd";
+import { Button, Col, Form, Modal, Row, Select, Table, Tabs, message, notification, Popconfirm, Tag } from "antd";
 import { isMobile } from "react-device-detect";
 import type { TabsProps } from 'antd';
 import { IResume, ISubscribers } from "@/types/backend";
 import { useState, useEffect } from 'react';
-import { callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber } from "@/config/api";
+import { callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber, callDeleteResume } from "@/config/api";
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { MonitorOutlined } from "@ant-design/icons";
+import { MonitorOutlined, DeleteOutlined } from "@ant-design/icons";
 import { SKILLS_LIST } from "@/config/utils";
 import { useAppSelector } from "@/redux/hooks";
 
@@ -19,66 +19,111 @@ const UserResume = (props: any) => {
     const [listCV, setListCV] = useState<IResume[]>([]);
     const [isFetching, setIsFetching] = useState<boolean>(false);
 
-    useEffect(() => {
-        const init = async () => {
-            setIsFetching(true);
-            const res = await callFetchResumeByUser();
-            if (res && res.data) {
-                setListCV(res.data.result as IResume[])
-            }
-            setIsFetching(false);
+    const fetchResumes = async () => {
+        setIsFetching(true);
+        const res = await callFetchResumeByUser();
+        if (res && res.data) {
+            setListCV(res.data.result as IResume[]);
         }
-        init();
-    }, [])
+        setIsFetching(false);
+    };
+
+    useEffect(() => {
+        fetchResumes();
+    }, []);
+
+    const handleDeleteResume = async (id: string) => {
+        if (!id) return;
+        try {
+            const res = await callDeleteResume(id);
+            const statusCode = +res?.statusCode;
+            const isSuccess = statusCode === 200 || statusCode === 204;
+            if (isSuccess) {
+                message.success('Hủy đăng ký thành công');
+                await fetchResumes();
+            } else {
+                notification.error({
+                    message: 'Có lỗi xảy ra',
+                    description: (res?.error || res?.message) ?? 'Không thể hủy đăng ký'
+                });
+            }
+        } catch (e: any) {
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: e?.message || 'Không thể hủy đăng ký'
+            });
+        }
+    };
+
+    const renderStatus = (status: string) => {
+        let color: string = 'default';
+        switch (status) {
+            case 'Pending':
+                color = 'orange';
+                break;
+            case 'Approved':
+                color = 'green';
+                break;
+            case 'Rejected':
+                color = 'red';
+                break;
+        }
+        return <Tag color={color}>{status}</Tag>;
+    };
 
     const columns: ColumnsType<IResume> = [
         {
             title: 'STT',
             key: 'index',
             width: 50,
-            align: "center",
-            render: (text, record, index) => {
-                return (
-                    <>
-                        {(index + 1)}
-                    </>)
-            }
+            align: 'center',
+            render: (text, record, index) => <>{index + 1}</>
         },
         {
             title: 'Sự Kiện',
-            dataIndex: "eventName",
-
+            dataIndex: 'eventName'
         },
         {
             title: 'Job title',
-            dataIndex: ["job", "name"],
-
+            dataIndex: ['job', 'name']
         },
         {
             title: 'Trạng thái',
-            dataIndex: "status",
+            dataIndex: 'status',
+            render: (value: any, record: IResume) => renderStatus(record.status as string)
         },
         {
             title: 'Ngày rải CV',
-            dataIndex: "createdAt",
-            render(value, record, index) {
-                return (
-                    <>{dayjs(record.createdAt).format('DD-MM-YYYY HH:mm:ss')}</>
-                )
-            },
+            dataIndex: 'createdAt',
+            render: (value: any, record: IResume) => <>{dayjs(record.createdAt).format('DD-MM-YYYY HH:mm:ss')}</>
         },
         {
             title: '',
-            dataIndex: "",
-            render(value, record, index) {
-                return (
-                    <a
-                        href={`${import.meta.env.VITE_BACKEND_URL}/storage/resume/${record?.url}`}
-                        target="_blank"
-                    >Chi tiết</a>
-                )
-            },
+            dataIndex: '',
+            render: (value: any, record: IResume) => (
+                <a
+                    href={`${import.meta.env.VITE_BACKEND_URL}/storage/resume/${record?.url}`}
+                    target="_blank"
+                >Chi tiết</a>
+            )
         },
+        {
+            title: 'Thao tác',
+            key: 'actions',
+            width: 100,
+            align: 'center',
+            render: (value: any, record: IResume) => (
+                <Popconfirm
+                    title="Xác nhận"
+                    description="Bạn có chắc chắn muốn hủy tham gia hoạt động này không?"
+                    okText="Đồng ý"
+                    cancelText="Hủy"
+                    onConfirm={() => handleDeleteResume(record.id + '')}
+                >
+                    <Button danger type="text" icon={<DeleteOutlined />}></Button>
+                </Popconfirm>
+            )
+        }
     ];
 
     return (
@@ -88,10 +133,11 @@ const UserResume = (props: any) => {
                 dataSource={listCV}
                 loading={isFetching}
                 pagination={false}
+                rowKey={(record) => record.id + ''}
             />
         </div>
-    )
-}
+    );
+};
 
 const UserUpdateInfo = (props: any) => {
     return (

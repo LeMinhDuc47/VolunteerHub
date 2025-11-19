@@ -102,6 +102,26 @@ public class DatabaseInitializer implements CommandLineRunner {
             adminRole.setActive(true);
             adminRole.setPermissions(allPermissions);
             this.roleRepository.save(adminRole);
+
+            // Ensure delete resume permission exists
+            Permission deleteResumePermission = allPermissions.stream()
+                    .filter(p -> "/api/v1/resumes/{id}".equals(p.getApiPath()) && "DELETE".equals(p.getMethod()))
+                    .findFirst()
+                    .orElse(null);
+            if (deleteResumePermission == null) {
+                deleteResumePermission = new Permission("Delete a resume", "/api/v1/resumes/{id}", "DELETE", "RESUMES");
+                this.permissionRepository.save(deleteResumePermission);
+            }
+
+            // Create USER role with delete resume permission (and optionally other basic permissions later)
+            Role userRole = new Role();
+            userRole.setName("USER");
+            userRole.setDescription("Role mặc định cho người dùng thường");
+            userRole.setActive(true);
+            List<Permission> userPermissions = new ArrayList<>();
+            userPermissions.add(deleteResumePermission);
+            userRole.setPermissions(userPermissions);
+            this.roleRepository.save(userRole);
         }
         if (countUsers == 0) {
             User adminUser = new User();
