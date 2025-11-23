@@ -30,6 +30,7 @@ import ClientJobDetailPage from './pages/job/detail';
 import ClientEventPage from './pages/event';
 import ClientEventDetailPage from './pages/event/detail';
 import JobTabs from './pages/admin/job/job.tabs';
+import LandingPage from './pages/home/home';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,7 +41,6 @@ const LayoutClient = () => {
     if (rootRef && rootRef.current) {
       rootRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-
   }, [location]);
 
   return (
@@ -58,11 +58,11 @@ export default function App() {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(state => state.account.isLoading);
 
-
   useEffect(() => {
     if (
       window.location.pathname === '/login'
       || window.location.pathname === '/register'
+      || window.location.pathname === '/'
     )
       return;
     dispatch(fetchAccount())
@@ -71,6 +71,12 @@ export default function App() {
   const router = createBrowserRouter([
     {
       path: "/",
+      element: <LandingPage />,
+      errorElement: <NotFound />,
+    },
+
+    {
+      path: "/home",
       element: (<LayoutApp><LayoutClient /></LayoutApp>),
       errorElement: <NotFound />,
       children: [
@@ -107,7 +113,6 @@ export default function App() {
               <UserPage />
             </ProtectedRoute>
         },
-
         {
           path: "job",
           children: [
@@ -121,7 +126,6 @@ export default function App() {
             }
           ]
         },
-
         {
           path: "resume",
           element:
@@ -145,7 +149,6 @@ export default function App() {
         }
       ],
     },
-
 
     {
       path: "/login",

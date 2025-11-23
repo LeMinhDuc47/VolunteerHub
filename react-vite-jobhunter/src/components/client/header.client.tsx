@@ -31,18 +31,18 @@ const Header = (props: any) => {
 
     const items: MenuProps['items'] = [
         {
-            label: <Link to={'/'}>Trang Chủ</Link>,
-            key: '/',
+            label: <Link to={'/home'}>Trang Chủ</Link>,
+            key: '/home',
             icon: <TwitterOutlined />,
         },
         {
-            label: <Link to={'/job'}>Hoạt động Tình nguyện</Link>,
-            key: '/job',
+            label: <Link to={'/home/job'}>Hoạt động Tình nguyện</Link>,
+            key: '/home/job',
             icon: <CodeOutlined />,
         },
         {
-            label: <Link to={'/event'}>Top Sự Kiện</Link>,
-            key: '/event',
+            label: <Link to={'/home/event'}>Top Sự Kiện</Link>,
+            key: '/home/event',
             icon: <RiseOutlined />,
         }
     ];
@@ -58,7 +58,8 @@ const Header = (props: any) => {
         if (res && res && +res.statusCode === 200) {
             dispatch(setLogoutAction({}));
             message.success('Đăng xuất thành công');
-            navigate('/')
+            // Reload hoàn toàn về landing page
+            window.location.href = '/';
         }
     }
 
@@ -98,7 +99,7 @@ const Header = (props: any) => {
                     {!isMobile ?
                         <div style={{ display: "flex", gap: 30 }}>
                             <div className={styles['brand']} >
-                                <FaReact onClick={() => navigate('/')} title='Hỏi Dân IT' />
+                                <FaReact onClick={() => navigate('/home')} title='Hỏi Dân IT' />
                             </div>
                             <div className={styles['top-menu']}>
                                 <ConfigProvider

@@ -18,10 +18,9 @@ const LoginPage = () => {
     const callback = params?.get("callback");
 
     useEffect(() => {
-        //đã login => redirect to '/'
+        // Đã login => redirect to '/home'
         if (isAuthenticated) {
-            // navigate('/');
-            window.location.href = '/';
+            window.location.href = '/home';
         }
     }, [])
 
@@ -35,7 +34,8 @@ const LoginPage = () => {
             localStorage.setItem('access_token', res.data.access_token);
             dispatch(setUserLoginInfo(res.data.user))
             message.success('Đăng nhập tài khoản thành công!');
-            window.location.href = callback ? callback : '/';
+            // Redirect đến /home sau khi đăng nhập, hoặc callback nếu có
+            window.location.href = callback ? callback : '/home';
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",
@@ -59,12 +59,11 @@ const LoginPage = () => {
                         </div>
                         <Form
                             name="basic"
-                            // style={{ maxWidth: 600, margin: '0 auto' }}
                             onFinish={onFinish}
                             autoComplete="off"
                         >
                             <Form.Item
-                                labelCol={{ span: 24 }} //whole column
+                                labelCol={{ span: 24 }}
                                 label="Email"
                                 name="username"
                                 rules={[{ required: true, message: 'Email không được để trống!' }]}
@@ -73,7 +72,7 @@ const LoginPage = () => {
                             </Form.Item>
 
                             <Form.Item
-                                labelCol={{ span: 24 }} //whole column
+                                labelCol={{ span: 24 }}
                                 label="Mật khẩu"
                                 name="password"
                                 rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
@@ -81,9 +80,7 @@ const LoginPage = () => {
                                 <Input.Password />
                             </Form.Item>
 
-                            <Form.Item
-                            // wrapperCol={{ offset: 6, span: 16 }}
-                            >
+                            <Form.Item>
                                 <Button type="primary" htmlType="submit" loading={isSubmit}>
                                     Đăng nhập
                                 </Button>
