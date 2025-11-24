@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAppSelector } from '@/redux/hooks';
 import Navigation from '@/components/share/navigation';
 import Footer from '@/components/share/footer';
@@ -57,7 +57,7 @@ const HomePage = () => {
                         </div>
                     </div>
                     <div className="hero-buttons">
-                        <button className="btn-primary">Join Now</button>
+                        <Link to="/login" className="btn-primary">Join Now</Link>
                         <button className="btn-secondary">Donate Now</button>
                     </div>
                 </div>

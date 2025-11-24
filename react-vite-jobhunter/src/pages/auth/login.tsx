@@ -4,7 +4,7 @@ import { callLogin } from 'config/api';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserLoginInfo } from '@/redux/slice/accountSlide';
-import styles from 'styles/auth.module.scss';
+import '@/styles/login_style.css';
 import { useAppSelector } from '@/redux/hooks';
 
 const LoginPage = () => {
@@ -33,12 +33,12 @@ const LoginPage = () => {
         if (res?.data) {
             localStorage.setItem('access_token', res.data.access_token);
             dispatch(setUserLoginInfo(res.data.user))
-            message.success('Đăng nhập tài khoản thành công!');
+            message.success('Sign In Successful!');
             // Redirect đến /home sau khi đăng nhập, hoặc callback nếu có
             window.location.href = callback ? callback : '/home';
         } else {
             notification.error({
-                message: "Có lỗi xảy ra",
+                message: "Error!",
                 description:
                     res.message && Array.isArray(res.message) ? res.message[0] : res.message,
                 duration: 5
@@ -46,55 +46,61 @@ const LoginPage = () => {
         }
     };
 
-
     return (
-        <div className={styles["login-page"]}>
-            <main className={styles.main}>
-                <div className={styles.container}>
-                    <section className={styles.wrapper}>
-                        <div className={styles.heading}>
-                            <h2 className={`${styles.text} ${styles["text-large"]}`}>Đăng Nhập</h2>
-                            <Divider />
-
-                        </div>
-                        <Form
-                            name="basic"
-                            onFinish={onFinish}
-                            autoComplete="off"
+        <div className="login-page">
+            <div className="login-background"></div>
+            <div className="login-container">
+                <div className="login-card">
+                    <div className="login-header">
+                        <h2>Sign In</h2>
+                        <Divider />
+                    </div>
+                    
+                    <Form
+                        name="basic"
+                        onFinish={onFinish}
+                        autoComplete="off"
+                        layout="vertical"
+                        className="login-form"
+                    >
+                        <Form.Item
+                            label="Email"
+                            name="username"
+                            rules={[{ required: true, message: 'Email cannot be left blank!' }]}
                         >
-                            <Form.Item
-                                labelCol={{ span: 24 }}
-                                label="Email"
-                                name="username"
-                                rules={[{ required: true, message: 'Email không được để trống!' }]}
-                            >
-                                <Input />
-                            </Form.Item>
+                            <Input size="large" placeholder="Enter your email" />
+                        </Form.Item>
 
-                            <Form.Item
-                                labelCol={{ span: 24 }}
-                                label="Mật khẩu"
-                                name="password"
-                                rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
-                            >
-                                <Input.Password />
-                            </Form.Item>
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: 'Password cannot be left blank!' }]}
+                        >
+                            <Input.Password size="large" placeholder="Enter your password" />
+                        </Form.Item>
 
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit" loading={isSubmit}>
-                                    Đăng nhập
-                                </Button>
-                            </Form.Item>
-                            <Divider>Or</Divider>
-                            <p className="text text-normal">Chưa có tài khoản ?
-                                <span>
-                                    <Link to='/register' > Đăng Ký </Link>
-                                </span>
-                            </p>
-                        </Form>
-                    </section>
+                        <Form.Item>
+                            <Button 
+                                type="primary" 
+                                htmlType="submit" 
+                                loading={isSubmit}
+                                size="large"
+                                block
+                                className="login-button"
+                            >
+                                Sign In
+                            </Button>
+                        </Form.Item>
+                        
+                        <Divider>Or</Divider>
+                        
+                        <p className="login-footer-text">
+                            Don't have an account?{' '}
+                            <Link to='/register' className="register-link">Register</Link>
+                        </p>
+                    </Form>
                 </div>
-            </main>
+            </div>
         </div>
     )
 }

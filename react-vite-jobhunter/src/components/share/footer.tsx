@@ -29,7 +29,7 @@ const Footer = () => {
 
                 {/* 2. Contact Us*/}
                 <div className="footer-column footer-contact">
-                    <h3 className="footer-title">Contact Us</h3>
+                    <h1 className="footer-title">Contact Us</h1>
                     
                     <div className="contact-item">
                         <span className="contact-label">Email</span>
