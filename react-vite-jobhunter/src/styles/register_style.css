@@ -1,9 +1,9 @@
-.login-page,
-.login-page * {
+.register-page,
+.register-page * {
     font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.login-page {
+.register-page {
     position: relative;
     min-height: 100vh;
     display: flex;
@@ -11,7 +11,7 @@
     justify-content: center;
 }
 
-.login-background {
+.register-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -24,7 +24,7 @@
     z-index: 0;
 }
 
-.login-background::after {
+.register-background::after {
     content: '';
     position: absolute;
     top: 0;
@@ -34,40 +34,40 @@
     background-color: rgba(50, 50, 50, 0.7);
 }
 
-.login-container {
+.register-container {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 520px;
+    max-width: 800px;
     padding: 20px;
 }
 
-.login-card {
+.register-card {
     background: #ffffff;
     border-radius: 12px;
-    padding: 50px 45px;
+    padding: 40px 50px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-.login-header {
+.register-header {
     text-align: center;
     margin-bottom: 30px;
 }
 
-.login-header h2 {
+.register-header h2 {
     font-size: 28px;
     font-weight: 700;
     color: #1a1a2e;
     margin: 0 0 20px 0;
 }
 
-.login-form .ant-form-item-label > label {
+.register-form .ant-form-item-label > label {
     font-size: 15px;
     font-weight: 600;
     color: #333;
 }
 
-.login-button {
+.register-button {
     height: 44px;
     background-color: #0d47a1;
     border: none;
@@ -77,46 +77,69 @@
     margin-top: 10px;
 }
 
-.login-button:hover {
+.register-button:hover {
     background-color: #083d8a !important;
 }
 
-.login-footer-text {
+.register-footer-text {
     text-align: center;
     color: #666;
     font-size: 15px;
     margin: 0;
 }
 
-.register-link {
+.login-link {
     color: #0d47a1;
     font-weight: 600;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.register-link:hover {
+.login-link:hover {
     color: #1a73e8;
     text-decoration: underline;
 }
 
-.login-form .ant-divider {
+.register-form .ant-divider {
     margin: 20px 0;
     font-size: 14px;
     color: #999;
 }
 
+.register-card::-webkit-scrollbar {
+    width: 8px;
+}
+
+.register-card::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.register-card::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.register-card::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 @media (max-width: 768px) {
-    .login-card {
+    .register-card {
         padding: 30px 25px;
     }
 
-    .login-header h2 {
+    .register-header h2 {
         font-size: 24px;
     }
 
-    .login-container {
+    .register-container {
         max-width: 100%;
         padding: 15px;
+    }
+    
+    .register-form .ant-col {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
