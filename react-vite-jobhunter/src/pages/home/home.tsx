@@ -4,6 +4,12 @@ import { useAppSelector } from '@/redux/hooks';
 import Navigation from '@/components/share/navigation';
 import '@/styles/home_style.css';
 import backgroundImg from '@/assets/background.jpeg';
+import g1 from '@/assets/g1.jpg';
+import g2 from '@/assets/g2.jpg';
+import g3 from '@/assets/g3.jpg';
+import g4 from '@/assets/g4.jpg';
+import g5 from '@/assets/g5.jpg';
+import g6 from '@/assets/g6.jpg';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -34,15 +40,17 @@ const HomePage = () => {
                     <p className="hero-subtitle">
                         "The best way to find yourself is to lose yourself in the service of others"
                     </p>
-                    <p className="hero-author">- Mahatma Gandhi</p>
+                    <p className="hero-author">- Mahatma Gandhi -</p>
                     <div className="hero-stats">
                         <div className="stat-item">
-                            <div className="stat-icon">👥</div>
                             <div className="stat-number">500+</div>
                             <div className="stat-label">Volunteers</div>
                         </div>
                         <div className="stat-item">
-                            <div className="stat-icon">❤️</div>
+                            <div className="stat-number">20+</div>
+                            <div className="stat-label">Sponsors</div>
+                        </div>
+                        <div className="stat-item">
                             <div className="stat-number">90+</div>
                             <div className="stat-label">Events</div>
                         </div>
@@ -103,39 +111,39 @@ const HomePage = () => {
                     <p className="gallery-subtitle">Moments that matter - capturing our journey together</p>
                     <div className="gallery-grid">
                         <div className="gallery-item">
-                            <img src="g1.jpg" alt="Volunteer Activity 1" />
+                            <img src={g1} alt="Volunteer Activity 1" />
                             <div className="gallery-overlay">
-                                <p>Community Outreach</p>
+                                <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src="g2.jpg" alt="Volunteer Activity 2" />
+                            <img src={g2} alt="Volunteer Activity 2" />
                             <div className="gallery-overlay">
-                                <p>Educational Support</p>
+                                <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src="g3.jpg" alt="Volunteer Activity 3" />
+                            <img src={g3} alt="Volunteer Activity 3" />
                             <div className="gallery-overlay">
-                                <p>Environmental Care</p>
+                                <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src="g4.jpg" alt="Volunteer Activity 4" />
+                            <img src={g4} alt="Volunteer Activity 4" />
                             <div className="gallery-overlay">
-                                <p>Healthcare Initiative</p>
+                                <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src="g5.jpg" alt="Volunteer Activity 5" />
+                            <img src={g5} alt="Volunteer Activity 5" />
                             <div className="gallery-overlay">
-                                <p>Youth Development</p>
+                                <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src="g6.jpg" alt="Volunteer Activity 6" />
+                            <img src={g6} alt="Volunteer Activity 6" />
                             <div className="gallery-overlay">
-                                <p>Community Events</p>
+                                <p></p>
                             </div>
                         </div>
                     </div>
@@ -143,7 +151,7 @@ const HomePage = () => {
             </section>
 
             {/* Footer */}
-            <footer className="footer">
+            <footer id="footer" className="footer">
                 <div className="footer-content">
                     <p>&copy; 2024 VolunteerHub. All rights reserved.</p>
                     <p>Making a difference, together.</p>

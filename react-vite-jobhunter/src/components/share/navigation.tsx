@@ -21,6 +21,8 @@ const Navigation = () => {
                     if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
                         setActiveSection(section);
                         break;
+                    } else {
+                        setActiveSection('');
                     }
                 }
             }
@@ -34,7 +36,11 @@ const Navigation = () => {
         const element = document.getElementById(sectionId);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
-            setActiveSection(sectionId);
+            if (['home', 'about', 'gallery'].includes(sectionId)) {
+                setActiveSection(sectionId);
+            } else {
+                setActiveSection('');
+            }
         }
     };
 
@@ -67,10 +73,16 @@ const Navigation = () => {
                     >
                         Gallery
                     </button>
+                    <button 
+                        className="nav-link" 
+                        onClick={() => scrollToSection('footer')}
+                    >
+                        Contact
+                    </button>
                 </div>
 
                 <div className="nav-actions">
-                    <Link to="/login" className="nav-signin">Sign In</Link>
+                    <Link to="/login" className="nav-signin">Sign in</Link>
                     <Link to="/register" className="nav-button">Get Involved</Link>
                 </div>
             </div>
