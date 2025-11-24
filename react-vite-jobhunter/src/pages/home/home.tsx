@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@/redux/hooks';
 import Navigation from '@/components/share/navigation';
+import Footer from '@/components/share/footer';
 import '@/styles/home_style.css';
 import backgroundImg from '@/assets/background.jpeg';
 import g1 from '@/assets/g1.jpg';
@@ -151,12 +152,7 @@ const HomePage = () => {
             </section>
 
             {/* Footer */}
-            <footer id="footer" className="footer">
-                <div className="footer-content">
-                    <p>&copy; 2024 VolunteerHub. All rights reserved.</p>
-                    <p>Making a difference, together.</p>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };
