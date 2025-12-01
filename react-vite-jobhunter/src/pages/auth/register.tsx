@@ -95,9 +95,9 @@ const RegisterPage = () => {
                                     rules={[{ required: true, message: 'Gender cannot be left blank!' }]}
                                 >
                                     <Select size="large" placeholder="Choose gender" allowClear>
-                                        <Option value="MALE">Nam</Option>
-                                        <Option value="FEMALE">Nữ</Option>
-                                        <Option value="OTHER">Khác</Option>
+                                        <Option value="MALE">Male</Option>
+                                        <Option value="FEMALE">Female</Option>
+                                        <Option value="OTHER">Other</Option>
                                     </Select>
                                 </Form.Item>
                             </Col>

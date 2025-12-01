@@ -78,7 +78,7 @@ public class DatabaseInitializer implements CommandLineRunner {
             arr.add(new Permission("Get a subscriber by id", "/api/v1/subscribers/{id}", "GET", "SUBSCRIBERS"));
             arr.add(new Permission("Get subscribers with pagination", "/api/v1/subscribers", "GET", "SUBSCRIBERS"));
             arr.add(new Permission("Download a file", "/api/v1/files", "POST", "FILES"));
-            arr.add(new Permission("Upload a file", "/api/v1/files", "GET", "FILES"));
+            arr.add(new Permission("Upload a file", "/api/v1/files", "POST", "FILES"));
             // 1. POSTS
             arr.add(new Permission("Get posts by event", "/api/v1/events/{id}/posts", "GET", "POSTS"));
             arr.add(new Permission("Create a post", "/api/v1/events/{id}/posts", "POST", "POSTS"));

@@ -58,7 +58,7 @@ const HomePage = () => {
                     </div>
                     <div className="hero-buttons">
                         <Link to="/login" className="btn-primary">Join Now</Link>
-                        <button className="btn-secondary">Donate Now</button>
+                        <button className="btn-secondary">Donate Us</button>
                     </div>
                 </div>
             </section>

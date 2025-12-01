@@ -1,0 +1,207 @@
+:root {
+    --color-navy: #000080;
+    --color-white: #ffffff;
+    --color-gray: #ccc;
+    --header-height: 60px;
+}
+
+.custom-header {
+    background-color: var(--color-navy);
+    color: var(--color-white);
+    height: var(--header-height);
+    line-height: var(--header-height);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--color-white);
+    flex-shrink: 0; 
+}
+
+.header-nav {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.nav-link {
+    color: var(--color-white); 
+    text-decoration: none;
+    padding: 10px 15px;
+    position: relative;
+    transition: all 0.3s ease; 
+    border-radius: 4px; 
+    line-height: 40px;
+    height: 100%;
+}
+
+.nav-link.active {
+    background-color: var(--color-white); 
+    color: var(--color-navy); 
+    font-weight: bold; 
+}
+
+.nav-link:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.1); 
+    cursor: pointer;
+}
+
+.header-extra {
+    flex-shrink: 0;
+}
+
+.login-link {
+    color: var(--color-white);
+    text-decoration: none;
+    padding: 10px 15px;
+    border: 1px solid var(--color-white);
+    border-radius: 4px;
+}
+
+.user-info-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.user-info {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.welcome-text {
+    font-weight: normal;
+    font-size: 1rem;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: var(--color-white);
+    color: var(--color-navy);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.dropdown-trigger-area {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.custom-dropdown-menu {
+    position: absolute;
+    top: 60px; 
+    right: 0;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray);
+    border-radius: 4px;
+    min-width: 180px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none; 
+    line-height: normal; 
+}
+
+.user-info-wrapper:hover .custom-dropdown-menu,
+.user-info-wrapper:focus-within .custom-dropdown-menu {
+    display: block; 
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #333; 
+    line-height: 1.5;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-item a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+
+.header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.mobile-brand {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.mobile-menu-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.mobile-menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mobile-menu-item {
+    padding: 10px 0;
+    font-size: 1rem;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+}
+
+.mobile-menu-item:last-child {
+    border-bottom: none;
+}
+
+.mobile-menu-item.active {
+    font-weight: bold;
+    color: var(--color-navy); 
+}
+
+.mobile-menu-item a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+
+.mobile-menu-item a.active {
+    color: var(--color-navy);
+}
