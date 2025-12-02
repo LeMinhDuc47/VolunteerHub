@@ -1,166 +1,209 @@
 import { useState, useEffect } from 'react';
-import { CodeOutlined, ContactsOutlined, FireOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined, TwitterOutlined } from '@ant-design/icons';
-import { Avatar, Drawer, Dropdown, MenuProps, Space, message } from 'antd';
-import { Menu, ConfigProvider } from 'antd';
-import styles from '@/styles/client.module.scss';
-import { isMobile } from 'react-device-detect';
-import { FaReact } from 'react-icons/fa';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { callLogout } from '@/config/api';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import ManageAccount from './modal/manage.account';
+import { isMobile } from 'react-device-detect';
+import '@/styles/client/header_style.css';
+import logo from '@/assets/logo.png';
 
 const Header = (props: any) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const location = useLocation();
 
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
     const user = useAppSelector(state => state.account.user);
+    
     const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
-
-    const [current, setCurrent] = useState('home');
-    const location = useLocation();
-
+    const [current, setCurrent] = useState('/home');
     const [openMangeAccount, setOpenManageAccount] = useState<boolean>(false);
+    const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
     useEffect(() => {
         setCurrent(location.pathname);
-    }, [location])
-
-    const items: MenuProps['items'] = [
-        {
-            label: <Link to={'/home'}>Trang Chủ</Link>,
-            key: '/home',
-            icon: <TwitterOutlined />,
-        },
-        {
-            label: <Link to={'/home/job'}>Hoạt động Tình nguyện</Link>,
-            key: '/home/job',
-            icon: <CodeOutlined />,
-        },
-        {
-            label: <Link to={'/home/event'}>Top Sự Kiện</Link>,
-            key: '/home/event',
-            icon: <RiseOutlined />,
-        }
-    ];
-
-
-
-    const onClick: MenuProps['onClick'] = (e) => {
-        setCurrent(e.key);
-    };
+    }, [location]);
 
     const handleLogout = async () => {
         const res = await callLogout();
-        if (res && res && +res.statusCode === 200) {
+        if (res && +res.statusCode === 200) {
             dispatch(setLogoutAction({}));
-            message.success('Đăng xuất thành công');
-            // Reload hoàn toàn về landing page
             window.location.href = '/';
         }
-    }
+    };
 
-    const itemsDropdown = [
-        {
-            label: <label
-                style={{ cursor: 'pointer' }}
-                onClick={() => setOpenManageAccount(true)}
-            >Quản lý tài khoản</label>,
-            key: 'manage-account',
-            icon: <ContactsOutlined />
-        },
-        ...(user.role?.permissions?.length ? [{
-            label: <Link
-                to={"/admin"}
-            >Trang Quản Trị</Link>,
-            key: 'admin',
-            icon: <FireOutlined />
-        },] : []),
-
-        {
-            label: <label
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleLogout()}
-            >Đăng xuất</label>,
-            key: 'logout',
-            icon: <LogoutOutlined />
-        },
+    const menuItems = [
+        { key: '/home', label: 'Trang chủ', path: '/home' },
+        { key: '/home/job', label: 'Hoạt động tình nguyện', path: '/home/job' },
+        { key: '/home/event', label: 'Sự kiện hàng đầu', path: '/home/event' }
     ];
-
-    const itemsMobiles = [...items, ...itemsDropdown];
 
     return (
         <>
-            <div className={styles["header-section"]}>
-                <div className={styles["container"]}>
-                    {!isMobile ?
-                        <div style={{ display: "flex", gap: 30 }}>
-                            <div className={styles['brand']} >
-                                <FaReact onClick={() => navigate('/home')} title='Hỏi Dân IT' />
+            <div className="header-section">
+                <div className="header-container">
+                    {!isMobile ? (
+                        <>
+                            <div className="header-logo" onClick={() => navigate('/home')}>
+                                <img src={logo} alt="Logo" />
                             </div>
-                            <div className={styles['top-menu']}>
-                                <ConfigProvider
-                                    theme={{
-                                        token: {
-                                            colorPrimary: '#fff',
-                                            colorBgContainer: '#222831',
-                                            colorText: '#a7a7a7',
-                                        },
-                                    }}
-                                >
 
-                                    <Menu
-                                        // onClick={onClick}
-                                        selectedKeys={[current]}
-                                        mode="horizontal"
-                                        items={items}
-                                    />
-                                </ConfigProvider>
-                                <div className={styles['extra']}>
-                                    {isAuthenticated === false ?
-                                        <Link to={'/login'}>Đăng Nhập</Link>
-                                        :
-                                        <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
-                                            <Space style={{ cursor: "pointer" }}>
-                                                <span>Welcome {user?.name}</span>
-                                                <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
-                                            </Space>
-                                        </Dropdown>
-                                    }
-
-                                </div>
-
+                            <div className="header-menu">
+                                {menuItems.map(item => (
+                                    <Link
+                                        key={item.key}
+                                        to={item.path}
+                                        className={`header-menu-item ${current === item.key ? 'active' : ''}`}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                ))}
                             </div>
+
+                            <div className="header-actions">
+                                {isAuthenticated === false ? (
+                                    <Link to="/login" className="header-login">Đăng nhập</Link>
+                                ) : (
+                                    <div className="header-user-section">
+                                        <div 
+                                            className="header-user-info"
+                                            onClick={() => setShowDropdown(!showDropdown)}
+                                        >
+                                            <span className="header-welcome">Welcome {user?.name}</span>
+                                            <div className="header-avatar">
+                                                {user?.name?.substring(0, 2)?.toUpperCase()}
+                                            </div>
+                                        </div>
+                                        
+                                        {showDropdown && (
+                                            <div className="header-dropdown">
+                                                <div 
+                                                    className="header-dropdown-item"
+                                                    onClick={() => {
+                                                        setOpenManageAccount(true);
+                                                        setShowDropdown(false);
+                                                    }}
+                                                >
+                                                    <span className="dropdown-icon"></span>
+                                                    <span>Quản lý tài khoản</span>
+                                                </div>
+                                                
+                                                {(user.role?.permissions?.length ?? 0) > 0 && (
+                                                    <Link 
+                                                        to="/admin"
+                                                        className="header-dropdown-item"
+                                                        onClick={() => setShowDropdown(false)}
+                                                    >
+                                                        <span className="dropdown-icon"></span>
+                                                        <span>Trang Quản Trị</span>
+                                                    </Link>
+                                                )}
+                                                
+                                                <div 
+                                                    className="header-dropdown-item"
+                                                    onClick={() => {
+                                                        handleLogout();
+                                                        setShowDropdown(false);
+                                                    }}
+                                                >
+                                                    <span className="dropdown-icon"></span>
+                                                    <span>Đăng xuất</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="header-mobile">
+                            <div className="header-logo" onClick={() => navigate('/home')}>
+                                <img src={logo} alt="Logo" />
+                            </div>
+                            <button 
+                                className="header-mobile-menu-btn"
+                                onClick={() => setOpenMobileMenu(true)}
+                            >
+                                ☰
+                            </button>
                         </div>
-                        :
-                        <div className={styles['header-mobile']}>
-                            <span>Your APP</span>
-                            <MenuFoldOutlined onClick={() => setOpenMobileMenu(true)} />
-                        </div>
-                    }
+                    )}
                 </div>
             </div>
-            <Drawer title="Chức năng"
-                placement="right"
-                onClose={() => setOpenMobileMenu(false)}
-                open={openMobileMenu}
-            >
-                <Menu
-                    onClick={onClick}
-                    selectedKeys={[current]}
-                    mode="vertical"
-                    items={itemsMobiles}
-                />
-            </Drawer>
+
+            {/* Mobile Menu Drawer */}
+            {openMobileMenu && (
+                <div className="header-drawer-overlay" onClick={() => setOpenMobileMenu(false)}>
+                    <div className="header-drawer" onClick={(e) => e.stopPropagation()}>
+                        <div className="header-drawer-header">
+                            <h3>Chức năng</h3>
+                            <button 
+                                className="header-drawer-close"
+                                onClick={() => setOpenMobileMenu(false)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        
+                        <div className="header-drawer-content">
+                            {menuItems.map(item => (
+                                <Link
+                                    key={item.key}
+                                    to={item.path}
+                                    className={`header-drawer-item ${current === item.key ? 'active' : ''}`}
+                                    onClick={() => setOpenMobileMenu(false)}
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+                            
+                            {isAuthenticated && (
+                                <>
+                                    <div className="header-drawer-divider"></div>
+                                    
+                                    <div 
+                                        className="header-drawer-item"
+                                        onClick={() => {
+                                            setOpenManageAccount(true);
+                                            setOpenMobileMenu(false);
+                                        }}
+                                    >
+                                        Quản lý tài khoản
+                                    </div>
+                                    
+                                    {(user.role?.permissions?.length ?? 0) > 0 && (
+                                        <Link 
+                                            to="/admin"
+                                            className="header-drawer-item"
+                                            onClick={() => setOpenMobileMenu(false)}
+                                        >
+                                            Trang Quản Trị
+                                        </Link>
+                                    )}
+                                    
+                                    <div 
+                                        className="header-drawer-item"
+                                        onClick={() => {
+                                            handleLogout();
+                                            setOpenMobileMenu(false);
+                                        }}
+                                    >
+                                        Đăng xuất
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <ManageAccount
                 open={openMangeAccount}
                 onClose={setOpenManageAccount}
             />
         </>
-    )
+    );
 };
 
 export default Header;

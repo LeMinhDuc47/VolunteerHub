@@ -7,7 +7,7 @@ import EventCard from '@/components/client/card/event.card';
 const HomePage = () => {
     return (
         <div className={`${styles["container"]} ${styles["home-section"]}`}>
-            <div className="search-content" style={{ marginTop: 20 }}>
+            <div className="search-content" style={{ marginTop: 40 }}>
                 <SearchClient />
             </div>
             <Divider />
