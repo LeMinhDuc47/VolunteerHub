@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react'; 
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppSelector } from '@/redux/hooks';
 import '@/styles/navigation_style.css';
@@ -11,6 +11,9 @@ const Navigation = () => {
 
     const [isMobileMode, setIsMobileMode] = useState<boolean>(window.innerWidth <= 1024);
     const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
+
+    const isScrollingByClick = useRef(false);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const handleResize = () => {
@@ -25,8 +28,10 @@ const Navigation = () => {
 
     useEffect(() => {
         const handleScroll = () => {
+            if (isScrollingByClick.current) return;
+
             const sections = ['home', 'about', 'gallery'];
-            const scrollPosition = window.scrollY + 100;
+            const scrollPosition = window.scrollY + 150; 
 
             for (const section of sections) {
                 const element = document.getElementById(section);
@@ -35,9 +40,7 @@ const Navigation = () => {
                     if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
                         setActiveSection(section);
                         break;
-                    } else {
-                        setActiveSection('');
-                    }
+                    } 
                 }
             }
         };
@@ -47,12 +50,22 @@ const Navigation = () => {
     }, []);
 
     const scrollToSection = (sectionId: string) => {
+        setActiveSection(sectionId);
+        
+        isScrollingByClick.current = true;
+
+        if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
+        }
+
         const element = document.getElementById(sectionId);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
-            if (['home', 'about', 'gallery'].includes(sectionId)) {
-                setActiveSection(sectionId);
-            }
+            
+            scrollTimeoutRef.current = setTimeout(() => {
+                isScrollingByClick.current = false;
+            }, 1000);
+
             setOpenMobileMenu(false);
         }
     };
@@ -113,61 +126,21 @@ const Navigation = () => {
                 </div>
             </nav>
 
-            {openMobileMenu && (
+             {openMobileMenu && (
                 <div className="nav-drawer-overlay" onClick={() => setOpenMobileMenu(false)}>
                     <div className="nav-drawer" onClick={(e) => e.stopPropagation()}>
                         <div className="nav-drawer-header">
                             <h3>Menu</h3>
-                            <button 
-                                className="nav-drawer-close"
-                                onClick={() => setOpenMobileMenu(false)}
-                            >
-                                ✕
-                            </button>
+                            <button className="nav-drawer-close" onClick={() => setOpenMobileMenu(false)}>✕</button>
                         </div>
-                        
                         <div className="nav-drawer-content">
-                            <button 
-                                className={`nav-drawer-item ${activeSection === 'home' ? 'active' : ''}`}
-                                onClick={() => scrollToSection('home')}
-                            >
-                                Trang chủ
-                            </button>
-                            <button 
-                                className={`nav-drawer-item ${activeSection === 'about' ? 'active' : ''}`}
-                                onClick={() => scrollToSection('about')}
-                            >
-                                Giới thiệu
-                            </button>
-                            <button 
-                                className={`nav-drawer-item ${activeSection === 'gallery' ? 'active' : ''}`}
-                                onClick={() => scrollToSection('gallery')}
-                            >
-                                Thư viện ảnh
-                            </button>
-                            <button 
-                                className="nav-drawer-item" 
-                                onClick={() => scrollToSection('footer')}
-                            >
-                                Liên hệ
-                            </button>
-
+                            <button className={`nav-drawer-item ${activeSection === 'home' ? 'active' : ''}`} onClick={() => scrollToSection('home')}>Trang chủ</button>
+                            <button className={`nav-drawer-item ${activeSection === 'about' ? 'active' : ''}`} onClick={() => scrollToSection('about')}>Giới thiệu</button>
+                            <button className={`nav-drawer-item ${activeSection === 'gallery' ? 'active' : ''}`} onClick={() => scrollToSection('gallery')}>Thư viện ảnh</button>
+                            <button className="nav-drawer-item" onClick={() => scrollToSection('footer')}>Liên hệ</button>
                             <div className="nav-drawer-divider"></div>
-
-                            <Link 
-                                to="/login" 
-                                className="nav-drawer-item"
-                                onClick={() => setOpenMobileMenu(false)}
-                            >
-                                Đăng nhập
-                            </Link>
-                            <Link 
-                                to="/register" 
-                                className="nav-drawer-item highlight"
-                                onClick={() => setOpenMobileMenu(false)}
-                            >
-                                Tham gia ngay
-                            </Link>
+                            <Link to="/login" className="nav-drawer-item" onClick={() => setOpenMobileMenu(false)}>Đăng nhập</Link>
+                            <Link to="/register" className="nav-drawer-item highlight" onClick={() => setOpenMobileMenu(false)}>Tham gia ngay</Link>
                         </div>
                     </div>
                 </div>
