@@ -34,7 +34,7 @@ const RegisterPage = () => {
             <div className="register-container">
                 <div className="register-card">
                     <div className="register-header">
-                        <h2>Create an account</h2>
+                        <h2>Tạo một tài khoản</h2>
                         <Divider />
                     </div>
                     
@@ -48,20 +48,20 @@ const RegisterPage = () => {
                         <Row gutter={16}>
                             <Col span={12}>
                                 <Form.Item
-                                    label="Name"
+                                    label="Họ tên"
                                     name="name"
-                                    rules={[{ required: true, message: 'Name cannot be left blank!' }]}
+                                    rules={[{ required: true, message: 'Họ tên không được bỏ trống!' }]}
                                 >
-                                    <Input size="large" placeholder="Enter your name" />
+                                    <Input size="large" placeholder="Nhập họ tên của bạn" />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
                                 <Form.Item
                                     label="Email"
                                     name="email"
-                                    rules={[{ required: true, message: 'Email cannot be left blank!' }]}
+                                    rules={[{ required: true, message: 'Email không được bỏ trống!' }]}
                                 >
-                                    <Input size="large" type='email' placeholder="Enter your email" />
+                                    <Input size="large" type='email' placeholder="Nhập email của bạn" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -69,20 +69,20 @@ const RegisterPage = () => {
                         <Row gutter={16}>
                             <Col span={12}>
                                 <Form.Item
-                                    label="Password"
+                                    label="Mật khẩu"
                                     name="password"
-                                    rules={[{ required: true, message: 'Password cannot be left blank!' }]}
+                                    rules={[{ required: true, message: 'Mật khẩu không được bỏ trống!' }]}
                                 >
-                                    <Input.Password size="large" placeholder="Enter your password" />
+                                    <Input.Password size="large" placeholder="Nhập mật khẩu của bạn" />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
                                 <Form.Item
-                                    label="Age"
+                                    label="Tuổi"
                                     name="age"
-                                    rules={[{ required: true, message: 'Age cannot be left blank!' }]}
+                                    rules={[{ required: true, message: 'Tuổi không được bỏ trống!' }]}
                                 >
-                                    <Input size="large" type='number' placeholder="Enter your age" />
+                                    <Input size="large" type='number' placeholder="Nhập tuổi của bạn" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -91,23 +91,23 @@ const RegisterPage = () => {
                             <Col span={12}>
                                 <Form.Item
                                     name="gender"
-                                    label="Gender"
-                                    rules={[{ required: true, message: 'Gender cannot be left blank!' }]}
+                                    label="Giới tính"
+                                    rules={[{ required: true, message: 'Giới tính không được bỏ trống!' }]}
                                 >
-                                    <Select size="large" placeholder="Choose gender" allowClear>
-                                        <Option value="MALE">Male</Option>
-                                        <Option value="FEMALE">Female</Option>
-                                        <Option value="OTHER">Other</Option>
+                                    <Select size="large" placeholder="Chọn giới tính" allowClear>
+                                        <Option value="MALE">Nam</Option>
+                                        <Option value="FEMALE">Nữ</Option>
+                                        <Option value="OTHER">Khác</Option>
                                     </Select>
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
                                 <Form.Item
-                                    label="Address"
+                                    label="Địa chỉ"
                                     name="address"
-                                    rules={[{ required: true, message: 'Address cannot be left blank!' }]}
+                                    rules={[{ required: true, message: 'Địa chỉ không được bỏ trống!' }]}
                                 >
-                                    <Input size="large" placeholder="Enter your address" />
+                                    <Input size="large" placeholder="Nhập địa chỉ của bạn" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -125,11 +125,11 @@ const RegisterPage = () => {
                             </Button>
                         </Form.Item>
                         
-                        <Divider>Or</Divider>
+                        <Divider>Hoặc</Divider>
                         
                         <p className="register-footer-text">
-                            Already have an account?{' '}
-                            <Link to='/login' className="login-link">Sign In</Link>
+                            Đã có tài khoản?{' '}
+                            <Link to='/login' className="login-link">Đăng nhập</Link>
                         </p>
                     </Form>
                 </div>

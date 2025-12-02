@@ -13,10 +13,9 @@ const Footer = () => {
                     </div>
 
                     <p className="about-text">
-                        We are a passionate community of students dedicated to 
-                        creating positive change through volunteer work, community 
-                        service, and social initiatives. Join us in making the world a 
-                        better place.
+                       Chúng tôi là một cộng đồng đầy nhiệt huyết, luôn nỗ lực tạo ra những thay đổi tích cực 
+                       thông qua các hoạt động tình nguyện, phục vụ cộng đồng và những sáng kiến vì xã hội. Hãy 
+                       cùng chúng tôi chung tay làm cho thế giới trở nên tốt đẹp hơn.
                     </p>
 
                     <div className="social-links">
@@ -29,7 +28,7 @@ const Footer = () => {
 
                 {/* 2. Contact Us*/}
                 <div className="footer-column footer-contact">
-                    <h1 className="footer-title">Contact Us</h1>
+                    <h1 className="footer-title">Liên hệ</h1>
                     
                     <div className="contact-item">
                         <span className="contact-label">Email</span>
@@ -37,12 +36,12 @@ const Footer = () => {
                     </div>
                     
                     <div className="contact-item">
-                        <span className="contact-label">Phone</span>
+                        <span className="contact-label">Điện thoại</span>
                         <a href="tel:+925190856789" className="contact-detail">+84 312 141 205</a>
                     </div>
                     
                     <div className="contact-item contact-address">
-                        <span className="contact-label">Address</span>
+                        <span className="contact-label">Địa chỉ</span>
                         <p className="contact-detail">
                             144 Xuân Thủy, Hà Nội
                         </p>

@@ -59,31 +59,31 @@ const Navigation = () => {
                         className={`nav-link ${activeSection === 'home' ? 'active' : ''}`}
                         onClick={() => scrollToSection('home')}
                     >
-                        Home
+                        Trang chủ
                     </button>
                     <button 
                         className={`nav-link ${activeSection === 'about' ? 'active' : ''}`}
                         onClick={() => scrollToSection('about')}
                     >
-                        About Us
+                        Giới thiệu
                     </button>
                     <button 
                         className={`nav-link ${activeSection === 'gallery' ? 'active' : ''}`}
                         onClick={() => scrollToSection('gallery')}
                     >
-                        Gallery
+                        Thư viện ảnh
                     </button>
                     <button 
                         className="nav-link" 
                         onClick={() => scrollToSection('footer')}
                     >
-                        Contact
+                        Liên hệ
                     </button>
                 </div>
 
                 <div className="nav-actions">
-                    <Link to="/login" className="nav-signin">Sign in</Link>
-                    <Link to="/register" className="nav-button">Get Involved</Link>
+                    <Link to="/login" className="nav-signin">Đăng nhập</Link>
+                    <Link to="/register" className="nav-button">Tham gia</Link>
                 </div>
             </div>
         </nav>

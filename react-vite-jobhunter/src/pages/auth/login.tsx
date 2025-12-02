@@ -52,7 +52,7 @@ const LoginPage = () => {
             <div className="login-container">
                 <div className="login-card">
                     <div className="login-header">
-                        <h2>Sign In</h2>
+                        <h2>Đăng nhập</h2>
                         <Divider />
                     </div>
                     
@@ -66,17 +66,17 @@ const LoginPage = () => {
                         <Form.Item
                             label="Email"
                             name="username"
-                            rules={[{ required: true, message: 'Email cannot be left blank!' }]}
+                            rules={[{ required: true, message: 'Email không được bỏ trống!' }]}
                         >
-                            <Input size="large" placeholder="Enter your email" />
+                            <Input size="large" placeholder="Nhập email của bạn" />
                         </Form.Item>
 
                         <Form.Item
-                            label="Password"
+                            label="Mật khẩu"
                             name="password"
-                            rules={[{ required: true, message: 'Password cannot be left blank!' }]}
+                            rules={[{ required: true, message: 'Mật khẩu không được bỏ trống!' }]}
                         >
-                            <Input.Password size="large" placeholder="Enter your password" />
+                            <Input.Password size="large" placeholder="Nhập mật khẩu của bạn" />
                         </Form.Item>
 
                         <Form.Item>
@@ -88,15 +88,15 @@ const LoginPage = () => {
                                 block
                                 className="login-button"
                             >
-                                Sign In
+                                Đăng nhập
                             </Button>
                         </Form.Item>
                         
-                        <Divider>Or</Divider>
+                        <Divider>Hoặc</Divider>
                         
                         <p className="login-footer-text">
-                            Don't have an account?{' '}
-                            <Link to='/register' className="register-link">Register</Link>
+                            Chưa có tài khoản?{' '}
+                            <Link to='/register' className="register-link">Đăng ký</Link>
                         </p>
                     </Form>
                 </div>

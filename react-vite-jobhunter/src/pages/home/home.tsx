@@ -19,9 +19,13 @@ const HomePage = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         if (isAuthenticated) {
-            navigate('/home');
+            navigate('/home', { replace: true });
         }
     }, [isAuthenticated, navigate]);
+
+    if (isAuthenticated) {
+        return null;
+    }
 
     return (
         <div className="home-page">
@@ -45,20 +49,20 @@ const HomePage = () => {
                     <div className="hero-stats">
                         <div className="stat-item">
                             <div className="stat-number">500+</div>
-                            <div className="stat-label">Volunteers</div>
+                            <div className="stat-label">Tình nguyện viên</div>
                         </div>
                         <div className="stat-item">
                             <div className="stat-number">20+</div>
-                            <div className="stat-label">Sponsors</div>
+                            <div className="stat-label">Nhà tài trợ</div>
                         </div>
                         <div className="stat-item">
                             <div className="stat-number">90+</div>
-                            <div className="stat-label">Events</div>
+                            <div className="stat-label">Sự kiện</div>
                         </div>
                     </div>
                     <div className="hero-buttons">
-                        <Link to="/login" className="btn-primary">Join Now</Link>
-                        <button className="btn-secondary">Donate Us</button>
+                        <Link to="/login" className="btn-primary">Tham gia ngay</Link>
+                        <button className="btn-secondary">Ủng hộ chúng tôi</button>
                     </div>
                 </div>
             </section>
@@ -66,40 +70,41 @@ const HomePage = () => {
             {/* About Section */}
             <section id="about" className="about-section">
                 <div className="about-container">
-                    <h2 className="section-title">About Us</h2>
+                    <h2 className="section-title">Về chúng tôi</h2>
                     <div className="about-content">
                         <p className="about-text">
-                            Welcome to VolunteerHub, where compassion meets action. We are a dedicated 
-                            community of volunteers committed to making a positive impact in our society. 
-                            Our platform connects passionate individuals with meaningful volunteer opportunities 
-                            that align with their interests and skills.
+                            Chào mừng đến với VolunteerHub, nơi lòng nhân ái gặp gỡ hành động. Chúng tôi là 
+                            một cộng đồng tình nguyện viên tận tâm, cam kết tạo ra những tác động tích cực 
+                            trong xã hội. Nền tảng của chúng tôi kết nối những cá nhân đầy nhiệt huyết với 
+                            các cơ hội tình nguyện ý nghĩa phù hợp với sở thích và kỹ năng của họ.
                         </p>
                         <p className="about-text">
-                            Since our establishment, we've brought together hundreds of volunteers who have 
-                            contributed thousands of hours to various causes. From environmental conservation 
-                            to educational support, from healthcare assistance to community development, 
-                            our volunteers are the heart and soul of positive change.
+                            Kể từ khi thành lập, chúng tôi đã tập hợp hàng trăm tình nguyện viên đóng góp 
+                            hàng nghìn giờ cho nhiều mục đích khác nhau. Từ bảo tồn môi trường đến hỗ trợ 
+                            giáo dục, từ hỗ trợ y tế đến phát triển cộng đồng, các tình nguyện viên của 
+                            chúng tôi là trái tim và linh hồn của sự thay đổi tích cực.
                         </p>
                         <p className="about-text">
-                            Join us in our mission to create a better world, one volunteer action at a time. 
-                            Together, we can make a difference that lasts.
+                            Hãy tham gia cùng chúng tôi trong sứ mệnh tạo ra một thế giới tốt đẹp hơn, 
+                            từng hành động tình nguyện một. Cùng nhau, chúng ta có thể tạo nên sự khác biệt 
+                            bền vững.
                         </p>
                     </div>
                     <div className="about-features">
                         <div className="feature-card">
                             <div className="feature-icon">🎯</div>
-                            <h3>Our Mission</h3>
-                            <p>Connecting volunteers with opportunities to make meaningful impact</p>
+                            <h3>Sứ mệnh</h3>
+                            <p>Kết nối tình nguyện viên với cơ hội tạo tác động có ý nghĩa đến cộng đồng</p>
                         </div>
                         <div className="feature-card">
                             <div className="feature-icon">👁️</div>
-                            <h3>Our Vision</h3>
-                            <p>A world where everyone contributes to building stronger communities</p>
+                            <h3>Tầm nhìn</h3>
+                            <p>Một thế giới nơi mọi người đóng góp vào việc xây dựng cộng đồng vững mạnh hơn</p>
                         </div>
                         <div className="feature-card">
                             <div className="feature-icon">💎</div>
-                            <h3>Our Values</h3>
-                            <p>Compassion, integrity, collaboration, and sustainable impact</p>
+                            <h3>Giá trị cốt lõi</h3>
+                            <p>Lòng trcompassion, chính trực, hợp tác và tác động bền vững</p>
                         </div>
                     </div>
                 </div>
@@ -108,41 +113,41 @@ const HomePage = () => {
             {/* Gallery Section */}
             <section id="gallery" className="gallery-section">
                 <div className="gallery-container">
-                    <h2 className="section-title">Gallery</h2>
-                    <p className="gallery-subtitle">Moments that matter - capturing our journey together</p>
+                    <h2 className="section-title">Thư viện ảnh</h2>
+                    <p className="gallery-subtitle">Những khoảnh khắc ý nghĩa - ghi lại hành trình của chúng ta</p>
                     <div className="gallery-grid">
                         <div className="gallery-item">
-                            <img src={g1} alt="Volunteer Activity 1" />
+                            <img src={g1} alt="Hoạt động tình nguyện 1" />
                             <div className="gallery-overlay">
                                 <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src={g2} alt="Volunteer Activity 2" />
+                            <img src={g2} alt="Hoạt động tình nguyện 2" />
                             <div className="gallery-overlay">
                                 <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src={g3} alt="Volunteer Activity 3" />
+                            <img src={g3} alt="Hoạt động tình nguyện 3" />
                             <div className="gallery-overlay">
                                 <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src={g4} alt="Volunteer Activity 4" />
+                            <img src={g4} alt="Hoạt động tình nguyện 4" />
                             <div className="gallery-overlay">
                                 <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src={g5} alt="Volunteer Activity 5" />
+                            <img src={g5} alt="Hoạt động tình nguyện 5" />
                             <div className="gallery-overlay">
                                 <p></p>
                             </div>
                         </div>
                         <div className="gallery-item">
-                            <img src={g6} alt="Volunteer Activity 6" />
+                            <img src={g6} alt="Hoạt động tình nguyện 6" />
                             <div className="gallery-overlay">
                                 <p></p>
                             </div>

@@ -29,14 +29,14 @@ const Header = (props: any) => {
         const res = await callLogout();
         if (res && +res.statusCode === 200) {
             dispatch(setLogoutAction({}));
-            window.location.href = '/';
+            window.location.replace('/');
         }
     };
 
     const menuItems = [
         { key: '/home', label: 'Trang chủ', path: '/home' },
         { key: '/home/job', label: 'Hoạt động tình nguyện', path: '/home/job' },
-        { key: '/home/event', label: 'Sự kiện hàng đầu', path: '/home/event' }
+        { key: '/home/event', label: 'Sự kiện nổi bật', path: '/home/event' }
     ];
 
     return (
@@ -63,7 +63,7 @@ const Header = (props: any) => {
 
                             <div className="header-actions">
                                 {isAuthenticated === false ? (
-                                    <Link to="/login" className="header-login">Đăng nhập</Link>
+                                    <Link to="/login" className="header-login">Đăng Nhập</Link>
                                 ) : (
                                     <div className="header-user-section">
                                         <div 
@@ -169,7 +169,7 @@ const Header = (props: any) => {
                                             setOpenMobileMenu(false);
                                         }}
                                     >
-                                        Quản lý tài khoản
+                                        👤 Quản lý tài khoản
                                     </div>
                                     
                                     {(user.role?.permissions?.length ?? 0) > 0 && (
