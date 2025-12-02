@@ -1,18 +1,16 @@
 import { callFetchJob } from '@/config/api';
 import { convertSlug, getLocationName } from '@/config/utils';
 import { IJob } from '@/types/backend';
-import { EnvironmentOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { EnvironmentOutlined, ThunderboltOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { Card, Col, Empty, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
-import { isMobile } from 'react-device-detect';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import styles from 'styles/client.module.scss';
-import { sfIn, sfEqual } from "spring-filter-query-builder";
-
+import { sfIn } from "spring-filter-query-builder";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-dayjs.extend(relativeTime);
+import '@/styles/client/job_card_style.css'; 
 
+dayjs.extend(relativeTime);
 
 interface IProps {
     showPagination?: boolean;
@@ -33,6 +31,14 @@ const JobCard = (props: IProps) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const location = useLocation();
 
+    const [, setTick] = useState(0);
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTick(t => t + 1);
+        }, 60000);
+        return () => clearInterval(timer);
+    }, []);
+
     useEffect(() => {
         fetchJob();
     }, [current, pageSize, filter, sortQuery, location]);
@@ -47,7 +53,6 @@ const JobCard = (props: IProps) => {
             query += `&${sortQuery}`;
         }
 
-        //check query string
         const queryLocation = searchParams.get("location");
         const querySkills = searchParams.get("skills")
         const queryEvent = searchParams.get("event");
@@ -58,7 +63,6 @@ const JobCard = (props: IProps) => {
             if (queryLocation) parts.push(sfIn("location", queryLocation.split(",")).toString());
             if (querySkills) parts.push(sfIn("skills", querySkills.split(",")).toString());
 
-            // Thêm logic lọc theo Event ID
             if (queryEvent) parts.push(`event.id:${queryEvent}`);
 
             q = parts.join(" and ");
@@ -71,8 +75,6 @@ const JobCard = (props: IProps) => {
         }
         setIsLoading(false);
     }
-
-
 
     const handleOnchangePage = (pagination: { current: number, pageSize: number }) => {
         if (pagination && pagination.current !== current) {
@@ -90,15 +92,15 @@ const JobCard = (props: IProps) => {
     }
 
     return (
-        <div className={`${styles["card-job-section"]}`}>
-            <div className={`${styles["job-content"]}`}>
+        <div className="job-card-section">
+            <div className="job-card-container">
                 <Spin spinning={isLoading} tip="Loading...">
-                    <Row gutter={[20, 20]}>
+                    <Row gutter={[24, 24]}>
                         <Col span={24}>
-                            <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <span className={styles["title"]}>Hoạt Động Mới Nhất</span>
+                            <div className="job-card-header">
+                                <span className="job-card-title">Hoạt động mới nhất</span>
                                 {!showPagination &&
-                                    <Link to="job">Xem tất cả</Link>
+                                    <Link to="job" className="job-view-all">Xem tất cả &rarr;</Link>
                                 }
                             </div>
                         </Col>
@@ -106,39 +108,69 @@ const JobCard = (props: IProps) => {
                         {displayJob?.map(item => {
                             return (
                                 <Col span={24} md={12} key={item.id}>
-                                    <Card size="small" title={null} hoverable
+                                    <Card 
+                                        className="custom-job-card"
+                                        hoverable
+                                        bordered={false}
                                         onClick={() => handleViewDetailJob(item)}
                                     >
-                                        <div className={styles["card-job-content"]}>
-                                            <div className={styles["card-job-left"]}>
+                                        <div className="job-card-inner">
+                                            <div className="job-card-left">
                                                 <img
-                                                    alt="example"
+                                                    alt={item.name}
                                                     src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${item?.event?.logo}`}
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = "https://placehold.co/100x100?text=Logo";
+                                                    }}
                                                 />
                                             </div>
-                                            <div className={styles["card-job-right"]}>
-                                                <div className={styles["job-title"]}>{item.name}</div>
-                                                <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(item.location)}</div>
-                                                <div><ThunderboltOutlined style={{ color: 'orange' }} />&nbsp;{(item.stipend + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</div>
-                                                <div className={styles["job-updatedAt"]}>{item.updatedAt ? dayjs(item.updatedAt).locale('en').fromNow() : dayjs(item.createdAt).locale('en').fromNow()}</div>
+                                            
+                                            <div className="job-card-right">
+                                                <div>
+                                                    <div className="job-title" title={item.name}>{item.name}</div>
+                                                    
+                                                    <div className="job-meta-row">
+                                                        <EnvironmentOutlined className="job-meta-icon" style={{ color: '#58aaab' }} />
+                                                        <span className="location-text">{getLocationName(item.location)}</span>
+                                                    </div>
+                                                    
+                                                    <div className="job-meta-row">
+                                                        <span className="salary-label" style={{ fontWeight: 600, color: '#555' }}>
+                                                            Trợ cấp:
+                                                        </span>
+                                                        &nbsp;
+                                                        <span className="salary-text" style={{ color: '#e69500', fontWeight: 600 }}>
+                                                            {(item.stipend + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+                                                <div className="time-text">
+                                                    <ClockCircleOutlined style={{ marginRight: 5 }} />
+                                                    {item.updatedAt 
+                                                        ? dayjs(item.updatedAt).locale('en').fromNow() 
+                                                        : dayjs(item.createdAt).locale('en').fromNow()
+                                                    }
+
+                                                </div>
                                             </div>
                                         </div>
-
                                     </Card>
                                 </Col>
                             )
                         })}
 
-
                         {(!displayJob || displayJob && displayJob.length === 0)
                             && !isLoading &&
-                            <div className={styles["empty"]}>
-                                <Empty description="Không có dữ liệu" />
+                            <div className="job-empty">
+                                <Empty description="Không có hoạt động nào" />
                             </div>
                         }
                     </Row>
+                    
                     {showPagination && <>
-                        <div style={{ marginTop: 30 }}></div>
+                        <div style={{ marginTop: 40 }}></div>
                         <Row style={{ display: "flex", justifyContent: "center" }}>
                             <Pagination
                                 current={current}
