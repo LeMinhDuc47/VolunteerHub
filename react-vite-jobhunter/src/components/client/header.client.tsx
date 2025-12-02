@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { callLogout } from '@/config/api';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import ManageAccount from './modal/manage.account';
-import { isMobile } from 'react-device-detect';
 import '@/styles/client/header_style.css';
 import logo from '@/assets/logo.png';
 
@@ -21,9 +20,22 @@ const Header = (props: any) => {
     const [openMangeAccount, setOpenManageAccount] = useState<boolean>(false);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
+    const [isMobileMode, setIsMobileMode] = useState<boolean>(window.innerWidth <= 768);
+
     useEffect(() => {
         setCurrent(location.pathname);
     }, [location]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobileMode(window.innerWidth <= 1024);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleLogout = async () => {
         const res = await callLogout();
@@ -43,7 +55,7 @@ const Header = (props: any) => {
         <>
             <div className="header-section">
                 <div className="header-container">
-                    {!isMobile ? (
+                    {!isMobileMode ? (
                         <>
                             <div className="header-logo" onClick={() => navigate('/home')}>
                                 <img src={logo} alt="Logo" />
@@ -132,9 +144,8 @@ const Header = (props: any) => {
                 </div>
             </div>
 
-            {/* Mobile Menu Drawer */}
             {openMobileMenu && (
-                <div className="header-drawer-overlay" onClick={() => setOpenMobileMenu(false)}>
+                 <div className="header-drawer-overlay" onClick={() => setOpenMobileMenu(false)}>
                     <div className="header-drawer" onClick={(e) => e.stopPropagation()}>
                         <div className="header-drawer-header">
                             <h3>Chức năng</h3>
@@ -169,7 +180,7 @@ const Header = (props: any) => {
                                             setOpenMobileMenu(false);
                                         }}
                                     >
-                                        👤 Quản lý tài khoản
+                                        Quản lý tài khoản
                                     </div>
                                     
                                     {(user.role?.permissions?.length ?? 0) > 0 && (
@@ -178,7 +189,7 @@ const Header = (props: any) => {
                                             className="header-drawer-item"
                                             onClick={() => setOpenMobileMenu(false)}
                                         >
-                                            Trang Quản Trị
+                                        Trang Quản Trị
                                         </Link>
                                     )}
                                     
@@ -192,6 +203,15 @@ const Header = (props: any) => {
                                         Đăng xuất
                                     </div>
                                 </>
+                            )}
+                            {!isAuthenticated && (
+                                <Link
+                                    to="/login"
+                                    className="header-drawer-item"
+                                    onClick={() => setOpenMobileMenu(false)}
+                                >
+                                Đăng Nhập
+                                </Link>
                             )}
                         </div>
                     </div>

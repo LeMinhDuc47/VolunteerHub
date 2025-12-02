@@ -11,6 +11,18 @@
     height: 80px; 
 }
 
+.header-drawer,
+.header-drawer h3,
+.header-drawer a,
+.header-drawer button {
+    font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.header-mobile-menu-btn,
+.header-drawer-close {
+    font-family: inherit; 
+}
+
 body .layout-app {
     padding-top: 79px;
 }
@@ -309,5 +321,25 @@ body .layout-app {
 
     .header-logo img {
         height: 35px;
+    }
+}
+
+@media (max-width: 1366px) {
+    .header-container {
+        padding: 12px 20px; 
+    }
+
+    .header-menu {
+        gap: 30px; 
+    }
+}
+
+.header-drawer {
+    z-index: 2001; 
+}
+
+@media (max-width: 1024px) {
+    .header-welcome {
+        display: none;
     }
 }
