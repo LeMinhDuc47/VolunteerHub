@@ -5,12 +5,26 @@
 }
 
 .search-client-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 24px;
+    font-size: 22px; 
+    font-weight: 650; 
+    color: #2c3e50; 
     letter-spacing: -0.5px;
     font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    position: relative;
+    margin-bottom: 30px; 
+    padding-bottom: 0;
+    display: inline-block; 
+}
+
+.search-client-title::after {
+    content: '';
+    position: absolute;
+    bottom: -12px; 
+    left: 0;
+    width: 60px; 
+    height: 4px; 
+    background-color: #1a73e8;
+    border-radius: 2px;
 }
 
 .search-client-form {

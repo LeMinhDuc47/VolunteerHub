@@ -1,11 +1,10 @@
 import { callFetchEvent } from '@/config/api';
 import { convertSlug } from '@/config/utils';
 import { IEvent } from '@/types/backend';
-import { Card, Col, Divider, Empty, Pagination, Row, Spin } from 'antd';
+import { Card, Col, Empty, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
-import { isMobile } from 'react-device-detect';
 import { Link, useNavigate } from 'react-router-dom';
-import styles from 'styles/client.module.scss';
+import '@/styles/client/event_card_style.css';
 
 interface IProps {
     showPagination?: boolean;
@@ -46,7 +45,6 @@ const EventCard = (props: IProps) => {
         setIsLoading(false)
     }
 
-
     const handleOnchangePage = (pagination: { current: number, pageSize: number }) => {
         if (pagination && pagination.current !== current) {
             setCurrent(pagination.current)
@@ -65,38 +63,48 @@ const EventCard = (props: IProps) => {
     }
 
     return (
-        <div className={`${styles["event-section"]}`}>
-            <div className={styles["event-content"]}>
+        <div className="event-card-section">
+            <div className="event-card-container">
                 <Spin spinning={isLoading} tip="Loading...">
-                    <Row gutter={[20, 20]}>
+                    <Row gutter={[24, 24]}> 
                         <Col span={24}>
-                            <div className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}>
-                                <span className={styles["title"]}>Sự kiện Hàng Đầu</span>
+                            <div className="event-card-header">
+                                <span className="event-card-title">Sự kiện nổi bật</span>
                                 {!showPagination &&
-                                    <Link to="event">Xem tất cả</Link>
+                                    <Link to="event" className="event-view-all">Xem tất cả &rarr;</Link>
                                 }
                             </div>
                         </Col>
 
                         {displayEvent?.map(item => {
                             return (
-                                <Col span={24} md={6} key={item.id}>
+                                <Col span={24} sm={12} md={6} key={item.id}>
                                     <Card
                                         onClick={() => handleViewDetailJob(item)}
-                                        style={{ height: 350 }}
+                                        className="custom-event-card"
                                         hoverable
+                                        bordered={false} 
                                         cover={
-                                            <div className={styles["card-customize"]} >
+                                            <div className="event-card-image-wrapper">
                                                 <img
-                                                    style={{ maxWidth: "200px" }}
-                                                    alt="example"
+                                                    alt={item.name}
                                                     src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${item?.logo}`}
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = "https://placehold.co/600x400?text=No+Image"; 
+                                                    }}
                                                 />
+                                                <div className="event-card-overlay">
+                                                    <span className="btn-view-detail">Xem chi tiết</span>
+                                                </div>
                                             </div>
                                         }
                                     >
-                                        <Divider />
-                                        <h3 style={{ textAlign: "center" }}>{item.name}</h3>
+                                        <div className="event-card-body">
+                                            <h3 className="event-name" title={item.name}>{item.name}</h3>
+                                            <div className="event-meta">
+                                                <span className="event-status">Đang diễn ra</span>
+                                            </div>
+                                        </div>
                                     </Card>
                                 </Col>
                             )
@@ -104,13 +112,14 @@ const EventCard = (props: IProps) => {
 
                         {(!displayEvent || displayEvent && displayEvent.length === 0)
                             && !isLoading &&
-                            <div className={styles["empty"]}>
-                                <Empty description="Không có dữ liệu" />
+                            <div className="event-empty">
+                                <Empty description="Hiện chưa có sự kiện nào" />
                             </div>
                         }
                     </Row>
+                    
                     {showPagination && <>
-                        <div style={{ marginTop: 30 }}></div>
+                        <div style={{ marginTop: 40 }}></div>
                         <Row style={{ display: "flex", justifyContent: "center" }}>
                             <Pagination
                                 current={current}
