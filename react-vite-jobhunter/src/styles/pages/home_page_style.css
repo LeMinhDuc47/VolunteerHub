@@ -1,0 +1,73 @@
+.home-page-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 40px;
+    font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.home-search-section {
+    margin-top: 40px;
+    margin-bottom: 50px;
+}
+
+.home-section-divider {
+    margin: 50px 0;
+    border-top: 1px solid #e8e8e8;
+}
+
+.home-events-section {
+    margin-bottom: 50px;
+}
+
+.home-jobs-section {
+    margin-bottom: 50px;
+}
+
+.home-section-spacing {
+    margin: 60px 0;
+}
+
+@media (max-width: 1400px) {
+    .home-page-container {
+        max-width: 100%;
+        padding: 0 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-page-container {
+        padding: 0 20px;
+    }
+
+    .home-search-section {
+        margin-top: 30px;
+        margin-bottom: 40px;
+    }
+
+    .home-section-divider {
+        margin: 40px 0;
+    }
+
+    .home-section-spacing {
+        margin: 40px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-page-container {
+        padding: 0 16px;
+    }
+
+    .home-search-section {
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+
+    .home-section-divider {
+        margin: 30px 0;
+    }
+
+    .home-section-spacing {
+        margin: 30px 0;
+    }
+}

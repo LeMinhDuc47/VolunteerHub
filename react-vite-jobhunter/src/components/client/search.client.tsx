@@ -1,10 +1,11 @@
-import { Button, Col, Form, Row, Select, notification } from 'antd';
+import { Button, Form, Select, notification } from 'antd';
 import { EnvironmentOutlined, MonitorOutlined } from '@ant-design/icons';
 import { LOCATION_LIST } from '@/config/utils';
 import { ProForm } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 import { callFetchAllSkill } from '@/config/api';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import '@/styles/client/search_style.css';
 
 const SearchClient = () => {
     const navigate = useNavigate();
@@ -73,60 +74,69 @@ const SearchClient = () => {
     }
 
     return (
-        <ProForm
-            form={form}
-            onFinish={onFinish}
-            submitter={
-                {
+        <div className="search-client-wrapper">
+            <h2 className="search-client-title">Kết nối Tình nguyện viên - Lan tỏa Yêu thương</h2>
+            
+            <ProForm
+                form={form}
+                onFinish={onFinish}
+                submitter={{
                     render: () => <></>
-                }
-            }
-        >
-            <Row gutter={[20, 20]}>
-                <Col span={24}><h2>Kết nối Tình nguyện viên - Lan tỏa Yêu thương</h2></Col>
-                <Col span={24} md={16}>
-                    <ProForm.Item
-                        name="skills"
-                    >
-                        <Select
-                            mode="multiple"
-                            allowClear
-                            suffixIcon={null}
-                            style={{ width: '100%' }}
-                            placeholder={
-                                <>
-                                    <MonitorOutlined /> Tìm theo kỹ năng...
-                                </>
-                            }
-                            optionLabelProp="label"
-                            options={optionsSkills}
-                        />
-                    </ProForm.Item>
-                </Col>
-                <Col span={12} md={4}>
-                    <ProForm.Item
-                        name="location"
-                    >
-                        <Select
-                            mode="multiple"
-                            allowClear
-                            suffixIcon={null}
-                            style={{ width: '100%' }}
-                            placeholder={
-                                <>
-                                    <EnvironmentOutlined /> Địa điểm...
-                                </>
-                            }
-                            optionLabelProp="label"
-                            options={optionsLocations}
-                        />
-                    </ProForm.Item>
-                </Col>
-                <Col span={12} md={4}>
-                    <Button type='primary' onClick={() => form.submit()}>Search</Button>
-                </Col>
-            </Row>
-        </ProForm>
+                }}
+                className="search-client-form"
+            >
+                <div className="search-client-row">
+                    <div className="search-input-wrapper">
+                        <ProForm.Item name="skills">
+                            <Select
+                                mode="multiple"
+                                allowClear
+                                suffixIcon={null}
+                                style={{ width: '100%' }}
+                                placeholder={
+                                    <>
+                                        <MonitorOutlined className="search-placeholder-icon" />
+                                        <span>Tìm theo kỹ năng...</span>
+                                    </>
+                                }
+                                optionLabelProp="label"
+                                options={optionsSkills}
+                            />
+                        </ProForm.Item>
+                    </div>
+
+                    <div className="search-location-wrapper">
+                        <ProForm.Item name="location">
+                            <Select
+                                mode="multiple"
+                                allowClear
+                                suffixIcon={null}
+                                style={{ width: '100%' }}
+                                placeholder={
+                                    <>
+                                        <EnvironmentOutlined className="search-placeholder-icon" />
+                                        <span>Địa điểm...</span>
+                                    </>
+                                }
+                                optionLabelProp="label"
+                                options={optionsLocations}
+                            />
+                        </ProForm.Item>
+                    </div>
+
+                    <div className="search-button-wrapper">
+                        <Button 
+                            type='primary' 
+                            onClick={() => form.submit()}
+                            className="search-client-button"
+                        >
+                            Tìm kiếm
+                        </Button>
+                    </div>
+                </div>
+            </ProForm>
+        </div>
     )
 }
+
 export default SearchClient;
