@@ -1,6 +1,6 @@
 import { CheckSquareOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { FooterToolbar, ModalForm, ProCard, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Col, ConfigProvider, Form, Modal, Row, Upload, message, notification } from "antd";
+import { FooterToolbar, ModalForm, ProCard, ProFormText, ProFormTextArea, ProFormDatePicker } from "@ant-design/pro-components";
+import { Col, ConfigProvider, Form, Modal, Upload, message, notification, Row } from "antd";
 import 'styles/reset.scss';
 import { isMobile } from 'react-device-detect';
 import ReactQuill from 'react-quill';
@@ -10,6 +10,7 @@ import { callCreateEvent, callUpdateEvent, callUploadSingleFile } from "@/config
 import { IEvent } from "@/types/backend";
 import { v4 as uuidv4 } from 'uuid';
 import enUS from 'antd/lib/locale/en_US';
+import dayjs from 'dayjs';
 
 interface IProps {
     openModal: boolean;
@@ -22,6 +23,8 @@ interface IProps {
 interface IEventForm {
     name: string;
     address: string;
+    startDate?: any;
+    endDate?: any;
 }
 
 interface IEventLogo {
@@ -47,9 +50,14 @@ const ModalEvent = (props: IProps) => {
     useEffect(() => {
         if (dataInit?.id && dataInit?.description) {
             setValue(dataInit.description);
+            const startDateValue = dataInit.startDate ? dayjs(dataInit.startDate) : undefined;
+            const endDateValue = dataInit.endDate ? dayjs(dataInit.endDate) : undefined;
+            
             form.setFieldsValue({
                 name: dataInit.name,
                 address: dataInit.address,
+                startDate: startDateValue,
+                endDate: endDateValue,
             })
             setDataLogo([{
                 name: dataInit.logo,
@@ -57,42 +65,68 @@ const ModalEvent = (props: IProps) => {
             }])
 
         }
-    }, [dataInit])
+    }, [dataInit, form])
 
-    const submitEvent = async (valuesForm: IEventForm) => {
-        const { name, address } = valuesForm;
+    const submitEvent = async (values: any) => {
+        const { name, address, startDate, endDate } = values;
 
         if (dataLogo.length === 0) {
             message.error('Vui lòng upload ảnh Logo')
             return;
         }
 
-        if (dataInit?.id) {
-            //update
-            const res = await callUpdateEvent(dataInit.id, name, address, value, dataLogo[0].name);
-            if (res.data) {
-                message.success("Cập nhật event thành công");
-                handleReset();
-                reloadTable();
+        if (!startDate) {
+            message.error('Vui lòng chọn ngày bắt đầu');
+            return;
+        }
+
+        if (!endDate) {
+            message.error('Vui lòng chọn ngày kết thúc');
+            return;
+        }
+
+        if (dayjs(endDate).isBefore(dayjs(startDate))) {
+            message.error('Ngày kết thúc không được trước ngày bắt đầu');
+            return;
+        }
+
+        try {
+            const startDateStr = dayjs(startDate).toISOString();
+            const endDateStr = dayjs(endDate).toISOString();
+
+            if (dataInit?.id) {
+                //update
+                const res = await callUpdateEvent(dataInit.id, name, address, value, dataLogo[0].name, startDateStr, endDateStr);
+                if (res.data) {
+                    message.success("Cập nhật event thành công");
+                    handleReset();
+                    reloadTable();
+                } else {
+                    notification.error({
+                        message: 'Có lỗi xảy ra',
+                        description: res.message
+                    });
+                }
             } else {
-                notification.error({
-                    message: 'Có lỗi xảy ra',
-                    description: res.message
-                });
+                //create
+                const res = await callCreateEvent(name, address, value, dataLogo[0].name, startDateStr, endDateStr);
+                if (res.data) {
+                    message.success("Thêm mới event thành công");
+                    handleReset();
+                    reloadTable();
+                } else {
+                    notification.error({
+                        message: 'Có lỗi xảy ra',
+                        description: res.message
+                    });
+                }
             }
-        } else {
-            //create
-            const res = await callCreateEvent(name, address, value, dataLogo[0].name);
-            if (res.data) {
-                message.success("Thêm mới event thành công");
-                handleReset();
-                reloadTable();
-            } else {
-                notification.error({
-                    message: 'Có lỗi xảy ra',
-                    description: res.message
-                });
-            }
+        } catch (error: any) {
+            console.error('Error:', error);
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: error.message
+            });
         }
     }
 
@@ -209,6 +243,7 @@ const ModalEvent = (props: IProps) => {
                             }
                         }}
                     >
+                        <ConfigProvider locale={enUS}>
                         <Row gutter={16}>
                             <Col span={24}>
                                 <ProFormText
@@ -279,6 +314,32 @@ const ModalEvent = (props: IProps) => {
                                 />
                             </Col>
 
+                            <Col span={12}>
+                                <ProFormDatePicker
+                                    label="Ngày bắt đầu"
+                                    name="startDate"
+                                    rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu' }]}
+                                    normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
+                                    fieldProps={{
+                                        format: 'DD/MM/YYYY',
+                                    }}
+                                    placeholder="dd/mm/yyyy"
+                                />
+                            </Col>
+
+                            <Col span={12}>
+                                <ProFormDatePicker
+                                    label="Ngày kết thúc"
+                                    name="endDate"
+                                    rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc' }]}
+                                    normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
+                                    fieldProps={{
+                                        format: 'DD/MM/YYYY',
+                                    }}
+                                    placeholder="dd/mm/yyyy"
+                                />
+                            </Col>
+
                             <ProCard
                                 title="Miêu tả"
                                 // subTitle="mô tả sự  kiện"
@@ -297,6 +358,7 @@ const ModalEvent = (props: IProps) => {
                                 </Col>
                             </ProCard>
                         </Row>
+                        </ConfigProvider>
                     </ModalForm>
                     <Modal
                         open={previewOpen}

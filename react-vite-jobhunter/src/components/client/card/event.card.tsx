@@ -5,19 +5,22 @@ import { Card, Col, Empty, Pagination, Row, Spin } from 'antd';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '@/styles/client/event_card_style.css';
+import dayjs from 'dayjs';
+import { CalendarOutlined } from '@ant-design/icons';
 
 interface IProps {
     showPagination?: boolean;
+    pageSize?: number;
 }
 
 const EventCard = (props: IProps) => {
-    const { showPagination = false } = props;
+    const { showPagination = false, pageSize: customPageSize = 4 } = props;
 
     const [displayEvent, setDisplayEvent] = useState<IEvent[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(4);
+    const [pageSize, setPageSize] = useState(showPagination ? 8 : customPageSize);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
     const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
@@ -61,6 +64,22 @@ const EventCard = (props: IProps) => {
         }
     }
 
+    const getEventStatus = (endDate?: string) => {
+        if (!endDate) return "Đang diễn ra";
+        const now = dayjs();
+        const end = dayjs(endDate);
+        return end.isBefore(now) ? "Đã kết thúc" : "Đang diễn ra";
+    }
+
+    const getStatusClass = (endDate?: string) => {
+        return getEventStatus(endDate) === "Đã kết thúc" ? "event-status-ended" : "event-status";
+    }
+
+    const getDisplayDate = (date?: string) => {
+        if (date) return dayjs(date).format('DD/MM/YYYY');
+        return 'N/A';
+    }
+
     return (
         <div className="event-card-section">
             <div className="event-card-container">
@@ -77,7 +96,7 @@ const EventCard = (props: IProps) => {
 
                         {displayEvent?.map(item => {
                             return (
-                                <Col span={24} sm={12} md={6} key={item.id}>
+                                <Col span={24} sm={12} md={6} lg={6} key={item.id}>
                                     <Card
                                         onClick={() => handleViewDetailJob(item)}
                                         className="custom-event-card"
@@ -101,7 +120,19 @@ const EventCard = (props: IProps) => {
                                         <div className="event-card-body">
                                             <h3 className="event-name" title={item.name}>{item.name}</h3>
                                             <div className="event-meta">
-                                                <span className="event-status">Đang diễn ra</span>
+                                                <span className={getStatusClass(item.endDate)}>{getEventStatus(item.endDate)}</span>
+                                                <div className="event-dates">
+                                                    <div className="event-date-item">
+                                                        <CalendarOutlined className="date-icon" />
+                                                        <span className="date-label">Bắt đầu:</span>
+                                                        <span className="date-value">{getDisplayDate(item.startDate)}</span>
+                                                    </div>
+                                                    <div className="event-date-item">
+                                                        <CalendarOutlined className="date-icon" />
+                                                        <span className="date-label">Kết thúc:</span>
+                                                        <span className="date-value">{getDisplayDate(item.endDate)}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </Card>

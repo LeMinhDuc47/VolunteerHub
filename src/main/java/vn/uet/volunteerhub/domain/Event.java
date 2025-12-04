@@ -38,6 +38,12 @@ public class Event {
 
     private String logo;
 
+    @Column(name = "start_date")
+    private Instant startDate;
+
+    @Column(name = "end_date")
+    private Instant endDate;
+
     private Instant createdAt;
 
     // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")

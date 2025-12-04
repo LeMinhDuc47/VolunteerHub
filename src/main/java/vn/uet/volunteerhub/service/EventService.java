@@ -54,6 +54,8 @@ public class EventService {
             updatedCompany.setDescription(requestEvent.getDescription());
             updatedCompany.setAddress(requestEvent.getAddress());
             updatedCompany.setLogo(requestEvent.getLogo());
+            updatedCompany.setStartDate(requestEvent.getStartDate());
+            updatedCompany.setEndDate(requestEvent.getEndDate());
 
             return this.eventRepository.save(updatedCompany);
         }

@@ -43,6 +43,8 @@ export interface IEvent {
     address?: string;
     logo: string;
     description?: string;
+    startDate?: string;
+    endDate?: string;
     createdBy?: string;
     isDeleted?: boolean;
     deletedAt?: boolean | null;

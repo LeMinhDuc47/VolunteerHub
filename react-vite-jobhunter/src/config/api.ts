@@ -50,12 +50,12 @@ export const callUploadSingleFile = (file: any, folderType: string) => {
  * 
 Module Event
  */
-export const callCreateEvent = (name: string, address: string, description: string, logo: string) => {
-    return axios.post<IBackendRes<IEvent>>('/api/v1/events', { name, address, description, logo })
+export const callCreateEvent = (name: string, address: string, description: string, logo: string, startDate?: string, endDate?: string) => {
+    return axios.post<IBackendRes<IEvent>>('/api/v1/events', { name, address, description, logo, startDate, endDate })
 }
 
-export const callUpdateEvent = (id: string, name: string, address: string, description: string, logo: string) => {
-    return axios.put<IBackendRes<IEvent>>(`/api/v1/events`, { id, name, address, description, logo })
+export const callUpdateEvent = (id: string, name: string, address: string, description: string, logo: string, startDate?: string, endDate?: string) => {
+    return axios.put<IBackendRes<IEvent>>(`/api/v1/events`, { id, name, address, description, logo, startDate, endDate })
 }
 
 export const callDeleteEvent = (id: string) => {
