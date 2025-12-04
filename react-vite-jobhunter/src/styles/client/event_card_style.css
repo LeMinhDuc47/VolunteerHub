@@ -1,7 +1,11 @@
+.event-card-section,
+.event-card-section * {
+    font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+}
+
 .event-card-section {
     width: 100%;
     padding: 20px 0;
-    font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
 }
 
 .event-card-container {
@@ -16,6 +20,21 @@
     margin-bottom: 24px;
     padding-bottom: 10px;
     border-bottom: 2px solid #f0f0f0;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.event-sort-select {
+    min-width: 160px;
+}
+
+.event-sort-select .ant-select-selector {
+    border-radius: 6px !important;
+    border-color: #d9d9d9 !important;
+}
+
+.event-sort-select:hover .ant-select-selector {
+    border-color: #1a73e8 !important;
 }
 
 .event-card-title {
@@ -184,13 +203,22 @@
     font-weight: 600;
 }
 
-.event-status {
-    font-size: 14px;
-    background-color: #e3f2fd;
+.event-status-upcoming {
+    font-size: 13px;
+    background-color: #dbeffd;
     color: #1976d2;
     padding: 4px 10px;
     border-radius: 4px;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.event-status-active {
+    font-size: 13px;
+    background-color: #d8ffe4; 
+    color: #04b941;           
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
 }
 
 .event-status-ended {
@@ -207,6 +235,23 @@
     display: flex;
     justify-content: center;
     padding: 40px 0;
+}
+
+.custom-tabs .ant-tabs-nav::before {
+    border-bottom: none !important;
+}
+.custom-tabs .ant-tabs-tab {
+    font-weight: 500;
+    font-size: 15px;
+    padding: 8px 16px !important;
+}
+.custom-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #1a73e8 !important;
+    font-weight: 700;
+}
+.custom-tabs .ant-tabs-ink-bar {
+    background: #1a73e8 !important;
+    height: 3px !important;
 }
 
 @media (max-width: 768px) {
