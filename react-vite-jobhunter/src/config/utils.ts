@@ -18,13 +18,46 @@ export const SKILLS_LIST =
         { label: "Fullstack", value: "FULLSTACK" }
     ];
 
-export const LOCATION_LIST =
-    [
-        { label: "Hà Nội", value: "HANOI" },
-        { label: "Hồ Chí Minh", value: "HOCHIMINH" },
-        { label: "Đà Nẵng", value: "DANANG" },
-        { label: "Others", value: "OTHER" },
-    ];
+export const LOCATION_LIST = [
+  { label: "Hà Nội", value: "HANOI" },
+  { label: "Hồ Chí Minh", value: "HOCHIMINH" },
+  { label: "Đà Nẵng", value: "DANANG" },
+  { label: "Hải Phòng", value: "HAIPHONG" },
+  { label: "Cần Thơ", value: "CANTHO" },
+  { label: "Huế", value: "HUE" },
+
+  { label: "Thanh Hóa", value: "THANHHOA" },
+  { label: "Nghệ An", value: "NGHEAN" },
+  { label: "Đồng Nai", value: "DONGNAI" },
+  { label: "An Giang", value: "ANGIANG" },
+  { label: "Đồng Tháp", value: "DONGTHAP" },
+  { label: "Đắk Lắk", value: "DAKLAK" },
+  { label: "Gia Lai", value: "GIALAI" },
+  { label: "Lâm Đồng", value: "LAMDONG" },
+  { label: "Khánh Hòa", value: "KHANHHOA" },
+  { label: "Quảng Ninh", value: "QUANGNINH" },
+  { label: "Hà Tĩnh", value: "HATINH" },
+  { label: "Quảng Ngãi", value: "QUANGNGAI" },
+  { label: "Quảng Trị", value: "QUANGTRI" },
+  { label: "Ninh Bình", value: "NINHBINH" },
+  { label: "Hưng Yên", value: "HUNGYEN" },
+  { label: "Bắc Ninh", value: "BACNINH" },
+  { label: "Thái Nguyên", value: "THAINGUYEN" },
+  { label: "Phú Thọ", value: "PHUTHO" },
+  { label: "Vĩnh Long", value: "VINHLONG" },
+  { label: "Cà Mau", value: "CAMAU" },
+  { label: "Sơn La", value: "SONLA" },
+  { label: "Lào Cai", value: "LAOCAI" },
+  { label: "Tây Ninh", value: "TAYNINH" },
+  { label: "Tuyên Quang", value: "TUYENQUANG" },
+  { label: "Cao Bằng", value: "CAOBANG" },
+  { label: "Lạng Sơn", value: "LANGSON" },
+  { label: "Điện Biên", value: "DIENBIEN" },
+  { label: "Lai Châu", value: "LAICHAU" },
+
+  { label: "Others", value: "OTHER" },
+];
+
 
 export const nonAccentVietnamese = (str: string) => {
     str = str.replace(/A|Á|À|Ã|Ạ|Â|Ấ|Ầ|Ẫ|Ậ|Ă|Ắ|Ằ|Ẵ|Ặ/g, "A");

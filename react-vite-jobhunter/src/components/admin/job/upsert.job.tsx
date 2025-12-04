@@ -231,7 +231,7 @@ const ViewUpsertJob = (props: any) => {
                                     name="skills"
                                     label="Kỹ năng yêu cầu"
                                     options={skills}
-                                    placeholder="Please select a skill"
+                                    placeholder="Hãy nhập kĩ năng yêu cầu"
                                     rules={[{ required: true, message: 'Vui lòng chọn kỹ năng!' }]}
                                     allowClear
                                     mode="multiple"
@@ -246,7 +246,7 @@ const ViewUpsertJob = (props: any) => {
                                     name="location"
                                     label="Địa điểm"
                                     options={LOCATION_LIST.filter(item => item.value !== 'ALL')}
-                                    placeholder="Please select a location"
+                                    placeholder="Hãy nhập địa điểm"
                                     rules={[{ required: true, message: 'Vui lòng chọn địa điểm!' }]}
                                 />
                             </Col>
@@ -283,7 +283,7 @@ const ViewUpsertJob = (props: any) => {
                                         SENIOR: 'SENIOR',
                                         NOT_REQUIRED: 'NOT REQUIRED',
                                     }}
-                                    placeholder="Please select a level"
+                                    placeholder="Hãy chọn trình độ yêu cầu"
                                     rules={[{ required: true, message: 'Vui lòng chọn level!' }]}
                                 />
                             </Col>
