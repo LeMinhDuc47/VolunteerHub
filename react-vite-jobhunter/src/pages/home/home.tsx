@@ -62,7 +62,7 @@ const HomePage = () => {
                     </div>
                     <div className="hero-buttons">
                         <Link to="/login" className="btn-primary">Tham gia ngay</Link>
-                        <button className="btn-secondary">Ủng hộ chúng tôi</button>
+                        <Link to="/home/donate-us" className="btn-secondary">Ủng hộ chúng tôi</Link>
                     </div>
                 </div>
             </section>

@@ -31,6 +31,7 @@ import ClientEventPage from './pages/event';
 import ClientEventDetailPage from './pages/event/detail';
 import JobTabs from './pages/admin/job/job.tabs';
 import LandingPage from './pages/home/home';
+import DonateUsPage from 'pages/home/donate_us';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,16 +44,26 @@ const LayoutClient = () => {
     }
   }, [location]);
 
+  const hideChrome = location.pathname === '/home/donate-us';
+
   return (
-    <div className='layout-app' ref={rootRef}>
-      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <div className={styles['content-app']}>
+    <div className="layout-app" ref={rootRef}>
+      {!hideChrome && (
+        <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      )}
+
+      <div
+        className={styles['content-app']}
+        style={hideChrome ? { paddingTop: 0, paddingBottom: 0 } : {}}
+      >
         <Outlet context={[searchTerm, setSearchTerm]} />
       </div>
-      <Footer />
+
+      {!hideChrome && <Footer />}
     </div>
-  )
-}
+  );
+};
+
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -84,7 +95,8 @@ export default function App() {
         { path: "job", element: <ClientJobPage /> },
         { path: "job/:id", element: <ClientJobDetailPage /> },
         { path: "event", element: <ClientEventPage /> },
-        { path: "event/:id", element: <ClientEventDetailPage /> }
+        { path: "event/:id", element: <ClientEventDetailPage /> },
+        { path: "donate-us", element: <DonateUsPage /> }, 
       ],
     },
 
