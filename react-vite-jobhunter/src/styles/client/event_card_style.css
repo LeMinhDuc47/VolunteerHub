@@ -128,7 +128,7 @@
 }
 
 .event-name {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     color: #333;
     margin: 0 0 12px 0;
@@ -148,35 +148,35 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
 }
 
 .event-dates {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    min-width: 200px;
+    gap: 4px;
+    min-width: auto;
 }
 
 .event-date-item {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 11px;
+    font-size: 13px;
     color: #666;
     white-space: nowrap;
 }
 
 .date-icon {
     color: #1976d2;
-    font-size: 11px;
+    font-size: 12px;
     flex-shrink: 0;
 }
 
 .date-label {
     font-weight: 500;
     color: #555;
-    min-width: 50px;
+    min-width: 45px;
 }
 
 .date-value {
@@ -185,7 +185,7 @@
 }
 
 .event-status {
-    font-size: 13px;
+    font-size: 14px;
     background-color: #e3f2fd;
     color: #1976d2;
     padding: 4px 10px;
