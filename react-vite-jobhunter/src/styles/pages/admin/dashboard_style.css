@@ -1,0 +1,264 @@
+:root {
+  --primary-color: #1890ff;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #ff4d4f;
+  --info-color: #13c2c2;
+  --light-bg: #f5f7fa;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dashboard-container {
+  padding: 32px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+.dashboard-card {
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  background-color: #fff;
+  border: 1px solid #f0f0f0;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--info-color) 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover {
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-8px);
+}
+
+.dashboard-card:hover::before {
+  transform: scaleX(1);
+}
+
+.dashboard-card.card-user::before {
+  background: linear-gradient(90deg, #1890ff 0%, #1890ff 100%);
+}
+
+.dashboard-card.card-event::before {
+  background: linear-gradient(90deg, #52c41a 0%, #95de64 100%);
+}
+
+.dashboard-card.card-job::before {
+  background: linear-gradient(90deg, #faad14 0%, #ffc53d 100%);
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.card-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.card-icon.user-icon {
+  background: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+}
+
+.card-icon.event-icon {
+  background: rgba(82, 196, 26, 0.1);
+  color: #52c41a;
+}
+
+.card-icon.job-icon {
+  background: rgba(250, 173, 20, 0.1);
+  color: #faad14;
+}
+
+.dashboard-card:hover .card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #595959;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.card-stat {
+  margin: 0;
+}
+
+.card-stat .ant-statistic-content {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+.card-user .ant-statistic-content {
+  color: #1890ff;
+}
+
+.card-event .ant-statistic-content {
+  color: #52c41a;
+}
+
+.card-job .ant-statistic-content {
+  color: #faad14;
+}
+
+.ant-statistic-title {
+  display: none;
+}
+
+.ant-card {
+  border-radius: 12px;
+}
+
+.ant-card-head {
+  display: none;
+}
+
+.ant-card-body {
+  padding: 32px 24px;
+}
+
+.ant-spin-container {
+  background: transparent;
+}
+
+.ant-spin {
+  color: #1890ff;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-container {
+    padding: 24px;
+  }
+
+  .card-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 36px;
+  }
+
+  .card-stat .ant-statistic-content {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  .card-content {
+    gap: 16px;
+  }
+
+  .card-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+
+  .card-stat .ant-statistic-content {
+    font-size: 28px;
+  }
+
+  .ant-card-body {
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  .card-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+  }
+
+  .card-title {
+    font-size: 13px;
+  }
+
+  .card-stat .ant-statistic-content {
+    font-size: 24px;
+  }
+
+  .ant-card-body {
+    padding: 20px 12px;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-card {
+  animation: slideInUp 0.5s ease-out;
+}
+
+.dashboard-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.dashboard-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+/* Smooth CountUp */
+.ant-statistic-content-value {
+  font-variant-numeric: tabular-nums;
+}
