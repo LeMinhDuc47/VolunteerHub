@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { IJob } from "@/types/backend";
 import { callFetchJobById } from "@/config/api";
@@ -19,15 +19,17 @@ const ClientJobDetailPage = (props: any) => {
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+    const { id } = useParams<{ id: string }>();
     let location = useLocation();
     let params = new URLSearchParams(location.search);
-    const id = params?.get("id"); // job id
+    const queryId = params?.get("id");
 
     useEffect(() => {
         const init = async () => {
-            if (id) {
+            const jobId = id || queryId;
+            if (jobId) {
                 setIsLoading(true)
-                const res = await callFetchJobById(id);
+                const res = await callFetchJobById(jobId);
                 if (res?.data) {
                     setJobDetail(res.data)
                 }
@@ -35,7 +37,7 @@ const ClientJobDetailPage = (props: any) => {
             }
         }
         init();
-    }, [id]);
+    }, [id, queryId]);
 
     return (
         <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>

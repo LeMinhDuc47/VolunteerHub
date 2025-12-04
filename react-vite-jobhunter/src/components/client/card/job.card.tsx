@@ -87,8 +87,9 @@ const JobCard = (props: IProps) => {
     }
 
     const handleViewDetailJob = (item: IJob) => {
-        const slug = convertSlug(item.name);
-        navigate(`/job/${slug}?id=${item.id}`)
+        if (item.id) {
+            navigate(`/home/job/${item.id}?id=${item.id}`)
+        }
     }
 
     return (
