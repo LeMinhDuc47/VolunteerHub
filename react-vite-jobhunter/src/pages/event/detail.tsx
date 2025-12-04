@@ -36,7 +36,6 @@ const ClientEventDetailPage = (props: any) => {
         return dayjs(date).format('DD/MM/YYYY');
     };
 
-
     let location = useLocation();
     let params = new URLSearchParams(location.search);
     const queryId = params?.get("id");
@@ -102,6 +101,8 @@ const ClientEventDetailPage = (props: any) => {
         }
         setLoadingPosts(false);
     };
+
+    const [form] = Form.useForm();
 
     const handleCreatePost = async (values: { content: string }) => {
         if (!eventDetail?.id) return;
@@ -177,10 +178,9 @@ const ClientEventDetailPage = (props: any) => {
         navigate({ search: sp.toString() }, { replace: true });
     };
 
-    const [form] = Form.useForm();
-
     const renderDiscussionTab = () => {
         if (!eventDetail) return <Skeleton />;
+
         return (
             <div className="discussion-container">
                 {!isAuthenticated && (
@@ -235,21 +235,25 @@ const ClientEventDetailPage = (props: any) => {
                         </div>
                     )
                 ))}
-                
+
                 <List
                     loading={loadingPosts}
                     dataSource={posts}
                     locale={{ emptyText: <Empty description="Chưa có bài viết nào. Hãy là người đầu tiên!" /> }}
                     renderItem={(item) => <PostItem post={item} onComment={handleAddComment} onLike={handleLikePost} />}
                 />
-                
+
                 <Modal
                     open={showApplyModal}
                     title="Đăng ký tham gia sự kiện"
                     onCancel={() => setShowApplyModal(false)}
                     footer={[
                         <Button key="back" onClick={() => setShowApplyModal(false)}>Đóng</Button>,
-                        <Button key="submit" type="primary" onClick={() => navigate(`/job?eventId=${eventDetail?.id}`)}>
+                        <Button
+                            key="submit"
+                            type="primary"
+                            onClick={() => navigate(`/home/job?event=${eventDetail?.id}`)}
+                        >
                             Xem công việc
                         </Button>
                     ]}
@@ -330,97 +334,104 @@ const ClientEventDetailPage = (props: any) => {
         );
     };
 
-    return (
+     return (
         <div className="event-detail-container">
             <div className="event-wrapper">
                 {isLoading || !eventDetail ? <Skeleton active paragraph={{ rows: 10 }} /> : (
-                    <Tabs 
+                    <Tabs
                         defaultActiveKey="detail"
-                        activeKey={activeTab} 
-                        onChange={onChangeTab} 
+                        activeKey={activeTab}
+                        onChange={onChangeTab}
                         items={[
-                        {
-                            key: 'detail',
-                            label: 'Chi tiết sự kiện',
-                            children: (
-                                <Row gutter={[32, 32]}>
-                                    <Col span={24} md={16} order={1}>
-                                        <div className="event-main-content">
-                                            <div className="event-header-title">{eventDetail.name}</div>
+                            {
+                                key: 'detail',
+                                label: 'Chi tiết sự kiện',
+                                children: (
+                                    <Row gutter={[32, 32]}>
+                                        <Col span={24} md={16} order={1}>
+                                            <div className="event-main-content">
+                                                <div className="event-header-title">{eventDetail.name}</div>
 
-                                            <div className="event-meta-row">
-                                                <div className="event-location">
-                                                    <EnvironmentOutlined style={{ color: '#58aaab' }} />
-                                                    <span>{eventDetail.address}</span>
+                                                <div className="event-meta-row">
+                                                    <div className="event-location">
+                                                        <EnvironmentOutlined style={{ color: '#58aaab' }} />
+                                                        <span>{eventDetail.address}</span>
+                                                    </div>
+
+                                                    <div className="event-date-info event-date-inline">
+                                                        <div className="event-date-item">
+                                                            <CalendarOutlined className="date-icon" />
+                                                            <span className="date-label">Bắt đầu:</span>
+                                                            <span className="date-value">{formatDateTime(eventDetail.startDate)}</span>
+                                                        </div>
+                                                        <div className="event-date-item">
+                                                            <CalendarOutlined className="date-icon" />
+                                                            <span className="date-label">Kết thúc:</span>
+                                                            <span className="date-value">{formatDateTime(eventDetail.endDate)}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <div className="event-date-info event-date-inline">
-                                                    <div className="event-date-item">
-                                                        <CalendarOutlined className="date-icon" />
-                                                        <span className="date-label">Bắt đầu:</span>
-                                                        <span className="date-value">{formatDateTime(eventDetail.startDate)}</span>
-                                                    </div>
-                                                    <div className="event-date-item">
-                                                        <CalendarOutlined className="date-icon" />
-                                                        <span className="date-label">Kết thúc:</span>
-                                                        <span className="date-value">{formatDateTime(eventDetail.endDate)}</span>
-                                                    </div>
+                                                <Divider style={{ margin: '16px 0' }} />
+                                                <div className="event-description">
+                                                    {parse(eventDetail.description ?? "")}
                                                 </div>
                                             </div>
+                                        </Col>
 
-                                            <Divider style={{ margin: '16px 0' }} />
-                                            <div className="event-description">
-                                                {parse(eventDetail.description ?? "")}
+                                        <Col span={24} md={8} order={2}>
+                                            <div className="event-sidebar-card">
+                                                <div className="event-sidebar-image-wrapper">
+                                                    <img
+                                                        className="event-sidebar-image"
+                                                        alt={eventDetail.name}
+                                                        src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${eventDetail.logo}`}
+                                                        onError={(e) => {
+                                                            (e.target as HTMLImageElement).src = "https://placehold.co/400x300?text=Event+Image";
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div className="event-sidebar-name">{eventDetail.name}</div>
+                                                <Button
+                                                    type="primary"
+                                                    block
+                                                    size="large"
+                                                    onClick={() => navigate(`/home/job?event=${eventDetail?.id}`)}
+                                                >
+                                                    Xem các vị trí ứng tuyển
+                                                </Button>
                                             </div>
-                                        </div>
-
-                                    </Col>
-                                    <Col span={24} md={8} order={2}>
-                                        <div className="event-sidebar-card">
-                                            <div className="event-sidebar-image-wrapper">
-                                                <img 
-                                                    className="event-sidebar-image"
-                                                    alt={eventDetail.name} 
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${eventDetail.logo}`}
-                                                    onError={(e) => {
-                                                        (e.target as HTMLImageElement).src = "https://placehold.co/400x300?text=Event+Image";
-                                                    }}
-                                                />
+                                        </Col>
+                                    </Row>
+                                )
+                            },
+                            {
+                                key: 'discussion',
+                                label: 'Thảo luận & Hỏi đáp',
+                                children: (
+                                    <Row gutter={[32, 32]}>
+                                        <Col span={24} md={16}>
+                                            {renderDiscussionTab()}
+                                        </Col>
+                                        <Col span={24} md={8}>
+                                            <div className="event-sidebar-card" style={{ textAlign: 'left' }}>
+                                                <Typography.Title level={5}>Quy tắc thảo luận</Typography.Title>
+                                                <ul style={{ paddingLeft: 20, color: '#666' }}>
+                                                    <li>Lịch sự, tôn trọng lẫn nhau.</li>
+                                                    <li>Không spam hoặc quảng cáo.</li>
+                                                    <li>Chỉ bàn luận về sự kiện này.</li>
+                                                </ul>
                                             </div>
-                                            <div className="event-sidebar-name">{eventDetail.name}</div>
-                                            <Button type="primary" block size="large" onClick={() => navigate(`/job?eventId=${eventDetail?.id}`)}>
-                                                Xem các vị trí ứng tuyển
-                                            </Button>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            )
-                        },
-                        {
-                            key: 'discussion',
-                            label: 'Thảo luận & Hỏi đáp',
-                            children: (
-                                <Row gutter={[32, 32]}>
-                                    <Col span={24} md={16}>
-                                         {renderDiscussionTab()}
-                                    </Col>
-                                    <Col span={24} md={8}>
-                                        <div className="event-sidebar-card" style={{ textAlign: 'left' }}>
-                                            <Typography.Title level={5}>Quy tắc thảo luận</Typography.Title>
-                                            <ul style={{ paddingLeft: 20, color: '#666' }}>
-                                                <li>Lịch sự, tôn trọng lẫn nhau.</li>
-                                                <li>Không spam hoặc quảng cáo.</li>
-                                                <li>Chỉ bàn luận về sự kiện này.</li>
-                                            </ul>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            )
-                        }
-                    ]} />
+                                        </Col>
+                                    </Row>
+                                )
+                            }
+                        ]}
+                    />
                 )}
             </div>
         </div>
     );
-}
+};
+
 export default ClientEventDetailPage;
