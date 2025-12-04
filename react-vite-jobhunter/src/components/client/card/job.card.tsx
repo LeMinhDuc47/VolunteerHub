@@ -132,7 +132,9 @@ const JobCard = (props: IProps) => {
                                                     
                                                     <div className="job-meta-row">
                                                         <EnvironmentOutlined className="job-meta-icon" style={{ color: '#58aaab' }} />
-                                                        <span className="location-text">{getLocationName(item.location)}</span>
+                                                        <span className="location-text">
+                                                            {getLocationName(item.location)}
+                                                        </span>
                                                     </div>
                                                     
                                                     <div className="job-meta-row">

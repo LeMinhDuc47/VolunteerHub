@@ -68,9 +68,10 @@ export const convertSlug = (str: string) => {
 }
 
 export const getLocationName = (value: string) => {
+    if (!value) return 'Chưa xác định';
     const locationFilter = LOCATION_LIST.filter(item => item.value === value);
     if (locationFilter.length) return locationFilter[0].label;
-    return 'unknown'
+    return value;
 }
 
 export function colorMethod(method: "POST" | "PUT" | "GET" | "DELETE" | string) {
