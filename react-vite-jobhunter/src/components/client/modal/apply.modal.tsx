@@ -8,6 +8,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { callCreateResume, callUploadSingleFile } from "@/config/api";
 import { useState } from 'react';
+import "@/styles/client/modal_apply_style.css";
 
 interface IProps {
     isModalOpen: boolean;
