@@ -70,7 +70,7 @@ const SearchClient = () => {
             });
             return;
         }
-        navigate(`/job?${query}`);
+         navigate(`/home/job?${query}`);
     }
 
     return (
