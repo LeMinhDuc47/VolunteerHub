@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { IEvent, IPost, IComment } from "@/types/backend";
 import { callFetchEventById, callFetchEventPosts, callCreatePost, callCreateComment, callLikePost, callFetchResumeByUser } from "@/config/api";
@@ -28,17 +28,19 @@ const ClientEventDetailPage = (props: any) => {
     const [showApplyModal, setShowApplyModal] = useState<boolean>(false);
 
     const navigate = useNavigate();
+    const { id } = useParams<{ id: string }>();
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
-    const id = params?.get("id"); // job id
+    const queryId = params?.get("id"); // fallback query parameter
 
     useEffect(() => {
         const init = async () => {
-            if (id) {
+            const eventId = id || queryId;
+            if (eventId) {
                 setIsLoading(true);
-                const res = await callFetchEventById(id);
+                const res = await callFetchEventById(eventId);
                 if (res?.data) {
                     setEventDetail(res.data);
                 }
@@ -46,7 +48,7 @@ const ClientEventDetailPage = (props: any) => {
             }
         };
         init();
-    }, [id]);
+    }, [id, queryId]);
 
     useEffect(() => {
         if (eventDetail?.id && activeTab === 'discussion') {

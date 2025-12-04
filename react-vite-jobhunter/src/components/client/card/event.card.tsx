@@ -56,9 +56,8 @@ const EventCard = (props: IProps) => {
     }
 
     const handleViewDetailJob = (item: IEvent) => {
-        if (item.name) {
-            const slug = convertSlug(item.name);
-            navigate(`/event/${slug}?id=${item.id}`)
+        if (item.id) {
+            navigate(`/home/event/${item.id}?id=${item.id}`)
         }
     }
 
