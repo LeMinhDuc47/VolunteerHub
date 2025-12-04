@@ -52,7 +52,8 @@ const JobPage = () => {
                 return (
                     <>
                         {(index + 1) + (meta.page - 1) * (meta.pageSize)}
-                    </>)
+                    </>
+                )
             },
             hideInSearch: true,
         },
@@ -90,6 +91,7 @@ const JobPage = () => {
                         JUNIOR: 'JUNIOR',
                         MIDDLE: 'MIDDLE',
                         SENIOR: 'SENIOR',
+                        NOT_REQUIRED: 'NOT REQUIRED',
                     }}
                     placeholder="Chọn level"
                 />
@@ -99,11 +101,11 @@ const JobPage = () => {
             title: 'Trạng thái',
             dataIndex: 'active',
             render(dom, entity, index, action, schema) {
-                return <>
+                return (
                     <Tag color={entity.active ? "lime" : "red"} >
                         {entity.active ? "ACTIVE" : "INACTIVE"}
                     </Tag>
-                </>
+                )
             },
             hideInSearch: true,
         },
@@ -133,13 +135,12 @@ const JobPage = () => {
             hideInSearch: true,
         },
         {
-
             title: 'Actions',
             hideInSearch: true,
             width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
-                    < Access
+                    <Access
                         permission={ALL_PERMISSIONS.JOBS.UPDATE}
                         hideChildren
                     >
@@ -148,12 +149,11 @@ const JobPage = () => {
                                 fontSize: 20,
                                 color: '#ffa500',
                             }}
-                            type=""
                             onClick={() => {
                                 navigate(`/admin/job/upsert?id=${entity.id}`)
                             }}
                         />
-                    </Access >
+                    </Access>
                     <Access
                         permission={ALL_PERMISSIONS.JOBS.DELETE}
                         hideChildren
@@ -176,16 +176,15 @@ const JobPage = () => {
                             </span>
                         </Popconfirm>
                     </Access>
-                </Space >
+                </Space>
             ),
-
         },
     ];
 
     const buildQuery = (params: any, sort: any, filter: any) => {
 
         const clone = { ...params };
-        let parts = [];
+        let parts: string[] = [];
         if (clone.name) parts.push(`name ~ '${clone.name}'`);
         if (clone.stipend) parts.push(`stipend ~ '${clone.stipend}'`);
         if (clone?.level?.length) {
@@ -212,12 +211,12 @@ const JobPage = () => {
             for (const field of fields) {
                 if (sort[field]) {
                     sortBy = `sort=${field},${sort[field] === 'ascend' ? 'asc' : 'desc'}`;
-                    break;  // Remove this if you want to handle multiple sort parameters
+                    break;  // handle one sort field
                 }
             }
         }
 
-        //mặc định sort theo updatedAt
+        // mặc định sort theo updatedAt
         if (Object.keys(sortBy).length === 0) {
             temp = `${temp}&sort=updatedAt,desc`;
         } else {
@@ -244,15 +243,15 @@ const JobPage = () => {
                         dispatch(fetchJob({ query }))
                     }}
                     scroll={{ x: true }}
-                    pagination={
-                        {
-                            current: meta.page,
-                            pageSize: meta.pageSize,
-                            showSizeChanger: true,
-                            total: meta.total,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                    pagination={{
+                        current: meta.page,
+                        pageSize: meta.pageSize,
+                        showSizeChanger: true,
+                        total: meta.total,
+                        showTotal: (total, range) => {
+                            return (<div> {range[0]}-{range[1]} trên {total} rows</div>)
                         }
-                    }
+                    }}
                     rowSelection={false}
                     toolBarRender={(_action, _rows): any => {
                         return (
@@ -267,7 +266,7 @@ const JobPage = () => {
                     }}
                 />
             </Access>
-        </div >
+        </div>
     )
 }
 

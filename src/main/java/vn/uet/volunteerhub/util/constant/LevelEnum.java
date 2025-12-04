@@ -1,5 +1,5 @@
 package vn.uet.volunteerhub.util.constant;
 
 public enum LevelEnum {
-    BEGINNER, INTERMEDIATE, ADVANCED;
+    INTERN, FRESHER, JUNIOR, MIDDLE, SENIOR, NOT_REQUIRED;
 }
