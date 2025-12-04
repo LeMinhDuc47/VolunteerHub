@@ -1,16 +1,19 @@
 .event-card-section,
 .event-card-section * {
     font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+    box-sizing: border-box;
 }
 
 .event-card-section {
     width: 100%;
     padding: 20px 40px;
+    overflow-x: hidden;
 }
 
 .event-card-container {
     max-width: 1600px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .event-card-header {
@@ -285,6 +288,14 @@
     .event-name {
         font-size: 18px;
     }
+    
+    .event-date-item {
+        font-size: 12px;
+    }
+    
+    .date-value {
+        font-size: 11px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -301,7 +312,9 @@
     }
     
     .event-sort-select {
-        min-width: 140px;
+        min-width: 120px;
+        width: 100%;
+        max-width: 150px;
     }
     
     .event-view-all {
@@ -317,10 +330,27 @@
     }
     
     .event-date-item {
-        font-size: 12px;
+        font-size: 11px;
+        gap: 3px;
     }
     
     .date-label {
-        min-width: 40px;
+        min-width: 38px;
+        font-size: 11px;
+    }
+    
+    .date-value {
+        font-size: 10px;
+    }
+    
+    .date-icon {
+        font-size: 11px;
+    }
+    
+    .event-status-upcoming,
+    .event-status-active,
+    .event-status-ended {
+        font-size: 11px;
+        padding: 3px 8px;
     }
 }
