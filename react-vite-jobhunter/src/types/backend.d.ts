@@ -102,8 +102,8 @@ export interface IJob {
     quantity: number;
     level: string;
     description: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     active: boolean;
 
     createdBy?: string;

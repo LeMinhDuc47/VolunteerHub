@@ -129,8 +129,8 @@ const ViewUpsertJob = (props: any) => {
                 quantity: values.quantity,
                 level: values.level,
                 description: value,
-                startDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.startDate) ? dayjs(values.startDate, 'DD/MM/YYYY').toDate() : values.startDate,
-                endDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.endDate) ? dayjs(values.endDate, 'DD/MM/YYYY').toDate() : values.endDate,
+                startDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.startDate) ? dayjs(values.startDate, 'DD/MM/YYYY').toISOString() : values.startDate,
+                endDate: /[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/.test(values.endDate) ? dayjs(values.endDate, 'DD/MM/YYYY').toISOString() : values.endDate,
                 active: values.active,
 
             }
@@ -162,8 +162,8 @@ const ViewUpsertJob = (props: any) => {
                 quantity: values.quantity,
                 level: values.level,
                 description: value,
-                startDate: dayjs(values.startDate, 'DD/MM/YYYY').toDate(),
-                endDate: dayjs(values.endDate, 'DD/MM/YYYY').toDate(),
+                startDate: dayjs(values.startDate, 'DD/MM/YYYY').toISOString(),
+                endDate: dayjs(values.endDate, 'DD/MM/YYYY').toISOString(),
                 active: values.active
             }
 

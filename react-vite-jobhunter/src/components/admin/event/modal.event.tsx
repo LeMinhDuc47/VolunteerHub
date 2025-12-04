@@ -322,6 +322,20 @@ const ModalEvent = (props: IProps) => {
                                     normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{
                                         format: 'DD/MM/YYYY',
+                                        onMouseDown: (e) => {
+                                            const target = e.target as HTMLElement;
+                                            if (target.tagName !== 'INPUT') {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }
+                                        },
+                                        onClick: (e) => {
+                                            const target = e.target as HTMLElement;
+                                            if (target.tagName !== 'INPUT') {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }
+                                        },
                                     }}
                                     placeholder="dd/mm/yyyy"
                                 />
@@ -335,6 +349,20 @@ const ModalEvent = (props: IProps) => {
                                     normalize={(value) => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{
                                         format: 'DD/MM/YYYY',
+                                        onMouseDown: (e) => {
+                                            const target = e.target as HTMLElement;
+                                            if (target.tagName !== 'INPUT') {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }
+                                        },
+                                        onClick: (e) => {
+                                            const target = e.target as HTMLElement;
+                                            if (target.tagName !== 'INPUT') {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }
+                                        },
                                     }}
                                     placeholder="dd/mm/yyyy"
                                 />
