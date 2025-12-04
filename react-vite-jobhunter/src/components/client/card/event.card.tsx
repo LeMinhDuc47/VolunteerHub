@@ -137,7 +137,7 @@ const EventCard = (props: IProps) => {
     }
 
     const getDisplayDate = (date?: string) => {
-        if (date) return dayjs(date).format('DD/MM/YYYY HH:mm');
+        if (date) return dayjs(date).format('DD/MM/YYYY');
         return 'N/A';
     }
 
@@ -200,8 +200,6 @@ const EventCard = (props: IProps) => {
                                         <div className="event-card-body">
                                             <h3 className="event-name" title={item.name}>{item.name}</h3>
                                             <div className="event-meta">
-                                                <span className={statusData.class}>{statusData.label}</span>
-                                                
                                                 <div className="event-dates">
                                                     <div className="event-date-item">
                                                         <CalendarOutlined className="date-icon" />
@@ -214,6 +212,8 @@ const EventCard = (props: IProps) => {
                                                         <span className="date-value">{getDisplayDate(item.endDate)}</span>
                                                     </div>
                                                 </div>
+
+                                                <span className={statusData.class}>{statusData.label}</span>
                                             </div>
                                         </div>
                                     </Card>

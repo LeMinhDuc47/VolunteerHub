@@ -2,12 +2,12 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { IEvent, IPost, IComment } from "@/types/backend";
 import { callFetchEventById, callFetchEventPosts, callCreatePost, callCreateComment, callLikePost, callFetchResumeByUser } from "@/config/api";
-import styles from 'styles/client.module.scss';
+import "@/styles/pages/event_detail_style.css"; 
 import parse from 'html-react-parser';
-import { Col, Divider, Row, Skeleton, Tabs, List, Avatar, Button, Form, Input, message, Space, Typography, Empty, Alert, Modal } from "antd";
-import { EnvironmentOutlined, CommentOutlined, LikeOutlined, SendOutlined } from "@ant-design/icons";
+import { Col, Divider, Row, Skeleton, Tabs, List, Avatar, Button, Form, Input, message, Space, Typography, Alert, Modal, Empty } from "antd";
+import { EnvironmentOutlined, CommentOutlined, LikeOutlined, SendOutlined, CalendarOutlined } from "@ant-design/icons";
 import { useAppSelector } from "@/redux/hooks";
-
+import dayjs from "dayjs";
 
 const ClientEventDetailPage = (props: any) => {
     const [eventDetail, setEventDetail] = useState<IEvent | null>(null);
@@ -31,9 +31,15 @@ const ClientEventDetailPage = (props: any) => {
     const { id } = useParams<{ id: string }>();
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
 
+    const formatDateTime = (date?: string) => {
+        if (!date) return 'N/A';
+        return dayjs(date).format('DD/MM/YYYY');
+    };
+
+
     let location = useLocation();
     let params = new URLSearchParams(location.search);
-    const queryId = params?.get("id"); // fallback query parameter
+    const queryId = params?.get("id");
 
     useEffect(() => {
         const init = async () => {
@@ -54,7 +60,6 @@ const ClientEventDetailPage = (props: any) => {
         if (eventDetail?.id && activeTab === 'discussion') {
             fetchPosts();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventDetail, activeTab]);
 
     useEffect(() => {
@@ -63,7 +68,6 @@ const ClientEventDetailPage = (props: any) => {
         } else if (!isAuthenticated) {
             setIsMember(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventDetail, activeTab, isAuthenticated]);
 
     const fetchPosts = async () => {
@@ -125,9 +129,7 @@ const ClientEventDetailPage = (props: any) => {
 
             const approved = list.some((r: any) => {
                 if (r?.status !== 'APPROVED') return false;
-
                 const resumeEventId = r?.job?.eventId;
-
                 return resumeEventId == currentEventId;
             });
 
@@ -136,7 +138,6 @@ const ClientEventDetailPage = (props: any) => {
             console.log(e);
             setIsMember(false);
         }
-        // setLoadingMember(false);
     };
 
     const handleAddComment = async (post: IPost, content: string) => {
@@ -181,10 +182,20 @@ const ClientEventDetailPage = (props: any) => {
     const renderDiscussionTab = () => {
         if (!eventDetail) return <Skeleton />;
         return (
-            <div>
+            <div className="discussion-container">
                 {!isAuthenticated && (
-                    <div style={{ marginBottom: 16 }}>
-                        <Button type="primary" onClick={() => navigate('/auth/login')}>Đăng nhập để tham gia</Button>
+                    <div style={{ marginBottom: 24, padding: 20, background: '#fff', borderRadius: 8 }}>
+                        <Alert
+                            message="Yêu cầu đăng nhập"
+                            description="Vui lòng đăng nhập để xem và tham gia thảo luận cùng mọi người."
+                            type="warning"
+                            showIcon
+                            action={
+                                <Button type="primary" onClick={() => navigate('/auth/login')}>
+                                    Đăng nhập ngay
+                                </Button>
+                            }
+                        />
                     </div>
                 )}
 
@@ -192,42 +203,61 @@ const ClientEventDetailPage = (props: any) => {
                     <Skeleton active />
                 ) : (
                     isMember ? (
-                        <Form form={form} layout="vertical" onFinish={handleCreatePost} style={{ marginBottom: 24 }}>
-                            <Form.Item name="content" label="Tạo bài viết" rules={[{ required: true, message: 'Nhập nội dung bài viết' }]}>
-                                <Input.TextArea rows={4} placeholder="Chia sẻ điều gì đó..." />
-                            </Form.Item>
-                            <Button type="primary" htmlType="submit" loading={creatingPost} icon={<SendOutlined />}>Đăng bài</Button>
-                        </Form>
+                        <div style={{ background: '#fff', padding: 20, borderRadius: 12, marginBottom: 24, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                            <Form form={form} layout="vertical" onFinish={handleCreatePost}>
+                                <Form.Item name="content" rules={[{ required: true, message: 'Nhập nội dung bài viết' }]} style={{ marginBottom: 12 }}>
+                                    <Input.TextArea
+                                        rows={3}
+                                        placeholder={`Chào ${eventDetail.name}, bạn đang nghĩ gì?`}
+                                        style={{ borderRadius: 8, resize: 'none', border: 'none', background: '#f5f5f5', padding: 12 }}
+                                    />
+                                </Form.Item>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <Button type="primary" htmlType="submit" loading={creatingPost} icon={<SendOutlined />} style={{ borderRadius: 6 }}>
+                                        Đăng bài
+                                    </Button>
+                                </div>
+                            </Form>
+                        </div>
                     ) : (
-                        <Alert
-                            type="info"
-                            message="Bạn cần là thành viên chính thức (được duyệt) để tham gia thảo luận"
-                            description={
-                                <Space direction="vertical">
-                                    <Typography.Text>Hãy gửi hồ sơ ứng tuyển vào một vị trí thuộc sự kiện này và chờ duyệt.</Typography.Text>
-                                    <Button type="primary" onClick={() => setShowApplyModal(true)}>Đăng ký tham gia</Button>
-                                </Space>
-                            }
-                            showIcon
-                        />
+                        <div style={{ marginBottom: 24 }}>
+                            <Alert
+                                type="info"
+                                message="Khu vực dành cho thành viên"
+                                description={
+                                    <Space direction="vertical" size="small">
+                                        <Typography.Text>Bạn cần ứng tuyển và được duyệt tham gia sự kiện này để có thể đăng bài.</Typography.Text>
+                                        <Button type="primary" size="small" ghost onClick={() => setShowApplyModal(true)}>Đăng ký tham gia ngay</Button>
+                                    </Space>
+                                }
+                                showIcon
+                            />
+                        </div>
                     )
                 ))}
+                
                 <List
                     loading={loadingPosts}
                     dataSource={posts}
-                    locale={{ emptyText: 'Chưa có bài viết nào' }}
+                    locale={{ emptyText: <Empty description="Chưa có bài viết nào. Hãy là người đầu tiên!" /> }}
                     renderItem={(item) => <PostItem post={item} onComment={handleAddComment} onLike={handleLikePost} />}
                 />
+                
                 <Modal
                     open={showApplyModal}
                     title="Đăng ký tham gia sự kiện"
                     onCancel={() => setShowApplyModal(false)}
-                    footer={<Button onClick={() => setShowApplyModal(false)}>Đóng</Button>}
+                    footer={[
+                        <Button key="back" onClick={() => setShowApplyModal(false)}>Đóng</Button>,
+                        <Button key="submit" type="primary" onClick={() => navigate(`/job?eventId=${eventDetail?.id}`)}>
+                            Xem công việc
+                        </Button>
+                    ]}
                 >
                     <Typography.Paragraph>
-                        Chức năng đăng ký tham gia: Vui lòng chuyển tới trang công việc và ứng tuyển một vị trí. Sau khi hồ sơ được duyệt (APPROVED), bạn sẽ có thể đăng bài và thảo luận.
+                        Để đảm bảo chất lượng thảo luận, chỉ những tình nguyện viên đã được duyệt hồ sơ (Status: APPROVED) mới có thể đăng bài.
+                        <br />Vui lòng tìm một công việc phù hợp trong sự kiện và ứng tuyển.
                     </Typography.Paragraph>
-                    <Button type="link" onClick={() => navigate(`/job?eventId=${eventDetail?.id}`)}>Xem các công việc của sự kiện</Button>
                 </Modal>
             </div>
         );
@@ -236,80 +266,160 @@ const ClientEventDetailPage = (props: any) => {
     const PostItem = ({ post, onComment, onLike }: { post: IPost; onComment: (p: IPost, c: string) => void; onLike: (p: IPost) => void }) => {
         const [showCommentBox, setShowCommentBox] = useState(false);
         const [commentContent, setCommentContent] = useState('');
-        const created = post.createdAt ? new Date(post.createdAt).toLocaleString() : '';
+        const created = post.createdAt ? new Date(post.createdAt).toLocaleString('vi-VN') : '';
+        
         return (
-            <List.Item style={{ padding: 16, background: '#fff', marginBottom: 12, borderRadius: 8 }}>
-                <Space direction="vertical" style={{ width: '100%' }}>
-                    <Space>
-                        <Avatar>{post.user?.name?.charAt(0) || '?'}</Avatar>
-                        <div>
-                            <Typography.Text strong>{post.user?.name || 'Ẩn danh'}</Typography.Text>
-                            <br />
-                            <Typography.Text type="secondary" style={{ fontSize: 12 }}>{created}</Typography.Text>
-                        </div>
-                    </Space>
-                    <Typography.Paragraph style={{ marginTop: 8, whiteSpace: 'pre-wrap' }}>{post.content}</Typography.Paragraph>
-                    <Space>
-                        <Button icon={<LikeOutlined />} onClick={() => onLike(post)}>{post.likesCount || 0}</Button>
-                        <Button icon={<CommentOutlined />} onClick={() => setShowCommentBox(s => !s)}>{post.commentsCount || 0}</Button>
-                    </Space>
-                    {showCommentBox && (
-                        <Space direction="vertical" style={{ width: '100%' }}>
-                            <Input.TextArea rows={2} value={commentContent} placeholder="Viết bình luận..." onChange={e => setCommentContent(e.target.value)} />
-                            <Button type="primary" disabled={!commentContent.trim()} onClick={() => { onComment(post, commentContent); setCommentContent(''); }}>Gửi</Button>
-                            <div>
-                                {(post.comments || []).map(c => (
-                                    <Space key={c.id} align="start" style={{ display: 'flex', marginTop: 8 }}>
-                                        <Avatar size="small">{c.user?.name?.charAt(0) || 'U'}</Avatar>
-                                        <div style={{ background: '#f5f5f5', padding: '6px 10px', borderRadius: 6, flex: 1 }}>
-                                            <Typography.Text strong style={{ fontSize: 12 }}>{c.user?.name || 'Ẩn danh'}</Typography.Text>
-                                            <div style={{ fontSize: 12 }}>{c.content}</div>
-                                        </div>
-                                    </Space>
-                                ))}
-                            </div>
-                        </Space>
-                    )}
+            <div className="post-item">
+                <Space align="start" style={{ width: '100%', marginBottom: 12 }}>
+                    <Avatar size="large" style={{ backgroundColor: '#58aaab' }}>{post.user?.name?.charAt(0)?.toUpperCase() || 'U'}</Avatar>
+                    <div>
+                        <Typography.Text strong style={{ fontSize: 16 }}>{post.user?.name || 'Thành viên ẩn danh'}</Typography.Text>
+                        <div style={{ fontSize: 12, color: '#888' }}>{created}</div>
+                    </div>
                 </Space>
-            </List.Item>
+                
+                <Typography.Paragraph style={{ fontSize: 15, whiteSpace: 'pre-wrap', color: '#333' }}>
+                    {post.content}
+                </Typography.Paragraph>
+                
+                <div className="post-actions">
+                    <Space size="middle">
+                        <Button 
+                            type="text" 
+                            icon={<LikeOutlined style={{ color: post.likesCount ? '#1890ff' : 'inherit' }} />} 
+                            onClick={() => onLike(post)}
+                        >
+                            {post.likesCount ? `${post.likesCount} Thích` : 'Thích'}
+                        </Button>
+                        <Button type="text" icon={<CommentOutlined />} onClick={() => setShowCommentBox(s => !s)}>
+                            {post.commentsCount ? `${post.commentsCount} Bình luận` : 'Bình luận'}
+                        </Button>
+                    </Space>
+                </div>
+
+                {showCommentBox && (
+                    <div className="comment-box-area">
+                         {/* List Comments */}
+                         <div style={{ marginBottom: 16 }}>
+                            {(post.comments || []).map(c => (
+                                <div key={c.id} className="comment-item">
+                                    <Avatar size="small" style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}>{c.user?.name?.charAt(0)?.toUpperCase()}</Avatar>
+                                    <div className="comment-bubble">
+                                        <span className="comment-author">{c.user?.name || 'Ẩn danh'}</span>
+                                        <span className="comment-text">{c.content}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Input */}
+                        <Space.Compact style={{ width: '100%' }}>
+                            <Input 
+                                placeholder="Viết bình luận..." 
+                                value={commentContent} 
+                                onChange={e => setCommentContent(e.target.value)} 
+                                onPressEnter={() => { if(commentContent.trim()) { onComment(post, commentContent); setCommentContent(''); }}}
+                            />
+                            <Button type="primary" disabled={!commentContent.trim()} onClick={() => { onComment(post, commentContent); setCommentContent(''); }}>
+                                <SendOutlined />
+                            </Button>
+                        </Space.Compact>
+                    </div>
+                )}
+            </div>
         );
     };
 
     return (
-        <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
-            {isLoading || !eventDetail ? <Skeleton /> : (
-                <Tabs activeKey={activeTab} onChange={onChangeTab} items={[
-                    {
-                        key: 'detail',
-                        label: 'Chi tiết',
-                        children: (
-                            <Row gutter={[20, 20]}>
-                                <Col span={24} md={16}>
-                                    <div className={styles["header"]}>{eventDetail.name}</div>
-                                    <div className={styles["location"]}>
-                                        <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{eventDetail.address}
-                                    </div>
-                                    <Divider />
-                                    {parse(eventDetail.description ?? "")}
-                                </Col>
-                                <Col span={24} md={8}>
-                                    <div className={styles["event"]}>
-                                        <div>
-                                            <img width={200} alt="example" src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${eventDetail.logo}`} />
+        <div className="event-detail-container">
+            <div className="event-wrapper">
+                {isLoading || !eventDetail ? <Skeleton active paragraph={{ rows: 10 }} /> : (
+                    <Tabs 
+                        defaultActiveKey="detail"
+                        activeKey={activeTab} 
+                        onChange={onChangeTab} 
+                        items={[
+                        {
+                            key: 'detail',
+                            label: 'Chi tiết sự kiện',
+                            children: (
+                                <Row gutter={[32, 32]}>
+                                    <Col span={24} md={16} order={1}>
+                                        <div className="event-main-content">
+                                            <div className="event-header-title">{eventDetail.name}</div>
+
+                                            <div className="event-meta-row">
+                                                <div className="event-location">
+                                                    <EnvironmentOutlined style={{ color: '#58aaab' }} />
+                                                    <span>{eventDetail.address}</span>
+                                                </div>
+
+                                                <div className="event-date-info event-date-inline">
+                                                    <div className="event-date-item">
+                                                        <CalendarOutlined className="date-icon" />
+                                                        <span className="date-label">Bắt đầu:</span>
+                                                        <span className="date-value">{formatDateTime(eventDetail.startDate)}</span>
+                                                    </div>
+                                                    <div className="event-date-item">
+                                                        <CalendarOutlined className="date-icon" />
+                                                        <span className="date-label">Kết thúc:</span>
+                                                        <span className="date-value">{formatDateTime(eventDetail.endDate)}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <Divider style={{ margin: '16px 0' }} />
+                                            <div className="event-description">
+                                                {parse(eventDetail.description ?? "")}
+                                            </div>
                                         </div>
-                                        <div>{eventDetail.name}</div>
-                                    </div>
-                                </Col>
-                            </Row>
-                        )
-                    },
-                    {
-                        key: 'discussion',
-                        label: 'Thảo luận',
-                        children: renderDiscussionTab()
-                    }
-                ]} />
-            )}
+
+                                    </Col>
+                                    <Col span={24} md={8} order={2}>
+                                        <div className="event-sidebar-card">
+                                            <div className="event-sidebar-image-wrapper">
+                                                <img 
+                                                    className="event-sidebar-image"
+                                                    alt={eventDetail.name} 
+                                                    src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${eventDetail.logo}`}
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = "https://placehold.co/400x300?text=Event+Image";
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="event-sidebar-name">{eventDetail.name}</div>
+                                            <Button type="primary" block size="large" onClick={() => navigate(`/job?eventId=${eventDetail?.id}`)}>
+                                                Xem các vị trí ứng tuyển
+                                            </Button>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            )
+                        },
+                        {
+                            key: 'discussion',
+                            label: 'Thảo luận & Hỏi đáp',
+                            children: (
+                                <Row gutter={[32, 32]}>
+                                    <Col span={24} md={16}>
+                                         {renderDiscussionTab()}
+                                    </Col>
+                                    <Col span={24} md={8}>
+                                        <div className="event-sidebar-card" style={{ textAlign: 'left' }}>
+                                            <Typography.Title level={5}>Quy tắc thảo luận</Typography.Title>
+                                            <ul style={{ paddingLeft: 20, color: '#666' }}>
+                                                <li>Lịch sự, tôn trọng lẫn nhau.</li>
+                                                <li>Không spam hoặc quảng cáo.</li>
+                                                <li>Chỉ bàn luận về sự kiện này.</li>
+                                            </ul>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            )
+                        }
+                    ]} />
+                )}
+            </div>
         </div>
     );
 }
