@@ -1,8 +1,8 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { IJob } from "@/types/backend";
 import { callFetchJobById } from "@/config/api";
-import styles from 'styles/client.module.scss';
+import "@/styles/pages/job_detail_style.css";
 import parse from 'html-react-parser';
 import { Col, Divider, Row, Skeleton, Tag } from "antd";
 import { DollarOutlined, EnvironmentOutlined, HistoryOutlined } from "@ant-design/icons";
@@ -10,13 +10,12 @@ import { getLocationName } from "@/config/utils";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ApplyModal from "@/components/client/modal/apply.modal";
-dayjs.extend(relativeTime)
 
+dayjs.extend(relativeTime);
 
 const ClientJobDetailPage = (props: any) => {
     const [jobDetail, setJobDetail] = useState<IJob | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const { id } = useParams<{ id: string }>();
@@ -28,83 +27,107 @@ const ClientJobDetailPage = (props: any) => {
         const init = async () => {
             const jobId = id || queryId;
             if (jobId) {
-                setIsLoading(true)
+                setIsLoading(true);
                 const res = await callFetchJobById(jobId);
                 if (res?.data) {
-                    setJobDetail(res.data)
+                    setJobDetail(res.data);
                 }
-                setIsLoading(false)
+                setIsLoading(false);
             }
-        }
+        };
         init();
     }, [id, queryId]);
 
     return (
-        <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
-            {isLoading ?
-                <Skeleton />
-                :
-                <Row gutter={[20, 20]}>
-                    {jobDetail && jobDetail.id &&
-                        <>
-                            <Col span={24} md={16}>
-                                <div className={styles["header"]}>
-                                    {jobDetail.name}
-                                </div>
-                                <div>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        className={styles["btn-apply"]}
-                                    >Apply Now</button>
-                                </div>
-                                <Divider />
-                                <div className={styles["skills"]}>
-                                    {jobDetail?.skills?.map((item, index) => {
-                                        return (
-                                            <Tag key={`${index}-key`} color="gold" >
-                                                {item.name}
-                                            </Tag>
-                                        )
-                                    })}
-                                </div>
-                                <div className={styles["stipend"]}>
-                                    <DollarOutlined />
-                                    <span>&nbsp;{(jobDetail.stipend + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</span>
-                                </div>
-                                <div className={styles["location"]}>
-                                    <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(jobDetail.location)}
-                                </div>
-                                <div>
-                                    <HistoryOutlined /> {jobDetail.updatedAt ? dayjs(jobDetail.updatedAt).locale("en").fromNow() : dayjs(jobDetail.createdAt).locale("en").fromNow()}
-                                </div>
-                                <Divider />
-                                {parse(jobDetail.description)}
-                            </Col>
+        <div className="job-detail-container">
+            <div className="job-wrapper">
+                {isLoading ? (
+                    <Skeleton active />
+                ) : (
+                    <Row gutter={[24, 24]}>
+                        {jobDetail && jobDetail.id && (
+                            <>
+                                <Col span={24} md={16}>
+                                    <div className="job-main-card">
+                                        <div className="header-title">
+                                            {jobDetail.name}
+                                        </div>
 
-                            <Col span={24} md={8}>
-                                <div className={styles["event"]}>
-                                    <div>
-                                        <img
-                                            width={"200px"}
-                                            alt="example"
-                                            src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${jobDetail.event?.logo}`}
-                                        />
+                                        <div className="job-meta-section">
+                                            <div className="meta-item salary">
+                                                <DollarOutlined />
+                                                <span>
+                                                    {(jobDetail.stipend + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ
+                                                </span>
+                                            </div>
+                                            <div className="meta-item">
+                                                <EnvironmentOutlined />
+                                                <span>{getLocationName(jobDetail.location)}</span>
+                                            </div>
+                                            <div className="meta-item">
+                                                <HistoryOutlined />
+                                                <span>
+                                                    {jobDetail.updatedAt
+                                                        ? dayjs(jobDetail.updatedAt).locale("en").fromNow()
+                                                        : dayjs(jobDetail.createdAt).locale("en").fromNow()}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="job-skills">
+                                            {jobDetail?.skills?.map((item, index) => (
+                                                <Tag
+                                                key={`${index}-key`}
+                                                className="job-skill-tag"
+                                                >
+                                                {item.name}
+                                                </Tag>
+                                            ))}
+                                        </div>
+
+                                        <div className="btn-apply-container">
+                                            <button
+                                                onClick={() => setIsModalOpen(true)}
+                                                className="btn-apply"
+                                            >
+                                                Apply Now
+                                            </button>
+                                        </div>
+
+                                        <Divider style={{ margin: '24px 0' }} />
+
+                                        <div className="job-description">
+                                            {parse(jobDetail.description)}
+                                        </div>
                                     </div>
-                                    <div>
-                                        {jobDetail.event?.name}
+                                </Col>
+
+                                <Col span={24} md={8}>
+                                    <div className="company-card">
+                                        <div className="company-logo-wrapper">
+                                            <img
+                                                alt="company-logo"
+                                                src={`${import.meta.env.VITE_BACKEND_URL}/storage/event/${jobDetail.event?.logo}`}
+                                            />
+                                        </div>
+                                        <div className="company-name">
+                                            {jobDetail.event?.name}
+                                        </div>
                                     </div>
-                                </div>
-                            </Col>
-                        </>
-                    }
-                </Row>
-            }
+                                </Col>
+                            </>
+                        )}
+                    </Row>
+                )}
+            </div>
+
             <ApplyModal
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
                 jobDetail={jobDetail}
             />
         </div>
-    )
-}
+    );
+};
+
 export default ClientJobDetailPage;
