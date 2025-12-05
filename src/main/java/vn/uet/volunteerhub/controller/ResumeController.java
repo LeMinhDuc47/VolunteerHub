@@ -116,7 +116,7 @@ public class ResumeController {
     @ApiMessage("Fetch all resume with pagination")
     public ResponseEntity<ResultPaginationDTO> getAllResumes(@Filter Specification<Resume> spec, Pageable pageable) {
         List<Long> arrJobIds = null;
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+        String email = SecurityUtil.getCurrentUserLogin().isPresent()
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
         User currentUser = this.userService.handleGetUserByUsername(email);
@@ -124,15 +124,24 @@ public class ResumeController {
             Event userEvent = currentUser.getEvent();
             if (userEvent != null) {
                 List<Job> companyJobs = userEvent.getJobs();
-                if (companyJobs != null && companyJobs.size() > 0) {
-                    arrJobIds = companyJobs.stream().map(x -> x.getId())
+                if (companyJobs != null && !companyJobs.isEmpty()) {
+                    arrJobIds = companyJobs.stream()
+                            .map(Job::getId)
                             .collect(Collectors.toList());
-                }
             }
         }
-        Specification<Resume> jobInSpec = filterSpecificationConverter.convert(filterBuilder.field("job")
-                .in(filterBuilder.input(arrJobIds)).get());
-        Specification<Resume> finalSpec = jobInSpec.and(spec);
+        }
+
+        Specification<Resume> finalSpec = spec;
+
+        if (arrJobIds != null && !arrJobIds.isEmpty()) {
+            Specification<Resume> jobInSpec = filterSpecificationConverter.convert(
+                    filterBuilder.field("job")
+                            .in(filterBuilder.input(arrJobIds))
+                            .get()
+            );
+            finalSpec = jobInSpec.and(spec);
+        }
 
         ResultPaginationDTO listResumes = this.resumeService.fetchAllResumes(finalSpec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(listResumes);
