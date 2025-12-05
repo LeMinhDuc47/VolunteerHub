@@ -276,11 +276,9 @@ const ViewUpsertJob = (props: any) => {
                                     name="level"
                                     label="Trình độ"
                                     valueEnum={{
-                                        INTERN: 'INTERN',
-                                        FRESHER: 'FRESHER',
-                                        JUNIOR: 'JUNIOR',
-                                        MIDDLE: 'MIDDLE',
-                                        SENIOR: 'SENIOR',
+                                        BEGINNER: 'BEGINNER',
+                                        INTERMEDIATE: 'INTERMEDIATE',
+                                        ADVANCED: 'ADVANCED',
                                         NOT_REQUIRED: 'NOT REQUIRED',
                                     }}
                                     placeholder="Hãy chọn trình độ yêu cầu"

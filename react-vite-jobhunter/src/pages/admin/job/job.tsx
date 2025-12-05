@@ -86,11 +86,9 @@ const JobPage = () => {
                     mode="multiple"
                     allowClear
                     valueEnum={{
-                        INTERN: 'INTERN',
-                        FRESHER: 'FRESHER',
-                        JUNIOR: 'JUNIOR',
-                        MIDDLE: 'MIDDLE',
-                        SENIOR: 'SENIOR',
+                        BEGINNER: 'BEGINNER',
+                        INTERMEDIATE: 'INTERMEDIATE',
+                        ADVANCED: 'ADVANCED',
                         NOT_REQUIRED: 'NOT REQUIRED',
                     }}
                     placeholder="Chọn level"
