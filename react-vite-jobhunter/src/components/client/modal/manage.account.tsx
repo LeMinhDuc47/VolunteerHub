@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { MonitorOutlined, DeleteOutlined } from "@ant-design/icons";
 import { SKILLS_LIST } from "@/config/utils";
 import { useAppSelector } from "@/redux/hooks";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
     open: boolean;
@@ -18,6 +19,8 @@ interface IProps {
 const UserResume = (props: any) => {
     const [listCV, setListCV] = useState<IResume[]>([]);
     const [isFetching, setIsFetching] = useState<boolean>(false);
+    const navigate = useNavigate();
+    const { onClose } = props; 
 
     const fetchResumes = async () => {
         setIsFetching(true);
@@ -80,10 +83,6 @@ const UserResume = (props: any) => {
             render: (text, record, index) => <>{index + 1}</>
         },
         {
-            title: 'Sự Kiện',
-            dataIndex: 'eventName'
-        },
-        {
             title: 'Job title',
             dataIndex: ['job', 'name']
         },
@@ -100,13 +99,21 @@ const UserResume = (props: any) => {
         {
             title: '',
             dataIndex: '',
-            render: (value: any, record: IResume) => (
-                <a
-                    href={`${import.meta.env.VITE_BACKEND_URL}/storage/resume/${record?.url}`}
-                    target="_blank"
-                >Chi tiết</a>
+            render: (_value: any, record: IResume) => (
+                <Button
+                    type="link"
+                    onClick={() => {
+                        if (record.job?.id) {
+                            if (onClose) onClose(false);         
+                            navigate(`/home/job/${record.job.id}`); 
+                        }
+                    }}
+                >
+                    Chi tiết
+                </Button>
             )
         },
+
         {
             title: 'Thao tác',
             key: 'actions',
@@ -288,7 +295,7 @@ const ManageAccount = (props: IProps) => {
         {
             key: 'user-resume',
             label: `Rải CV`,
-            children: <UserResume />,
+            children: <UserResume onClose={onClose} />,
         },
         {
             key: 'email-by-skills',
