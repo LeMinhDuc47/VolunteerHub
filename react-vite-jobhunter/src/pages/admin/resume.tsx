@@ -2,7 +2,7 @@ import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { IResume } from "@/types/backend";
 import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
-import { Space, message, notification } from "antd";
+import { Space, Tag, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { callDeleteResume } from "@/config/api";
@@ -45,116 +45,97 @@ const ResumePage = () => {
     }
 
     const columns: ProColumns<IResume>[] = [
+        // STT
         {
-            title: 'Id',
-            dataIndex: 'id',
-            width: 50,
-            render: (text, record, index, action) => {
+            title: 'STT',
+            key: 'index',
+            width: 60,
+            align: 'center',
+            render: (_text, _record, index) => {
                 return (
-                    <a href="#" onClick={() => {
-                        setOpenViewDetail(true);
-                        setDataInit(record);
-                    }}>
-                        {record.id}
-                    </a>
-                )
+                    <span>
+                        {(index + 1) + (meta.page - 1) * meta.pageSize}
+                    </span>
+                );
             },
             hideInSearch: true,
         },
+        // User name
         {
-            title: 'Trạng Thái',
-            dataIndex: 'status',
-            sorter: true,
-            renderFormItem: (item, props, form) => (
-                <ProFormSelect
-                    showSearch
-                    mode="multiple"
-                    allowClear
-                    valueEnum={{
-                        PENDING: 'PENDING',
-                        REVIEWING: 'REVIEWING',
-                        APPROVED: 'APPROVED',
-                        REJECTED: 'REJECTED',
-                    }}
-                    placeholder="Chọn level"
-                />
-            ),
+            title: 'Người ứng tuyển',
+            dataIndex: ['user', 'name'],
+            hideInSearch: true,
         },
-
+        // Email
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            hideInSearch: true,
+        },
+        // Job
         {
             title: 'Job',
-            dataIndex: ["job", "name"],
+            dataIndex: ['job', 'name'],
             hideInSearch: true,
         },
+        // Event
         {
             title: 'Event',
-            dataIndex: "eventName",
+            dataIndex: 'eventName',
             hideInSearch: true,
         },
-
+        // CreatedAt
         {
             title: 'CreatedAt',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
-            render: (text, record, index, action) => {
-                return (
-                    <>{record.createdAt ? dayjs(record.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</>
-                )
-            },
-            hideInSearch: true,
-        },
-        {
-            title: 'UpdatedAt',
-            dataIndex: 'updatedAt',
-            width: 200,
-            sorter: true,
-            render: (text, record, index, action) => {
-                return (
-                    <>{record.updatedAt ? dayjs(record.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</>
-                )
-            },
-            hideInSearch: true,
-        },
-        {
-
-            title: 'Actions',
-            hideInSearch: true,
-            width: 100,
-            render: (_value, entity, _index, _action) => (
-                <Space>
-                    <EditOutlined
-                        style={{
-                            fontSize: 20,
-                            color: '#ffa500',
-                        }}
-                        type=""
-                        onClick={() => {
-                            setOpenViewDetail(true);
-                            setDataInit(entity);
-                        }}
-                    />
-
-                    {/* <Popconfirm
-                        placement="leftTop"
-                        title={"Xác nhận xóa resume"}
-                        description={"Bạn có chắc chắn muốn xóa resume này ?"}
-                        onConfirm={() => handleDeleteResume(entity.id)}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
-                    >
-                        <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                            <DeleteOutlined
-                                style={{
-                                    fontSize: 20,
-                                    color: '#ff4d4f',
-                                }}
-                            />
-                        </span>
-                    </Popconfirm> */}
-                </Space>
+            render: (_text, record) => (
+                <>{record.createdAt ? dayjs(record.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</>
             ),
+            hideInSearch: true,
+        },
+        // Trạng thái 
+        {
+            title: 'Trạng Thái',
+            dataIndex: 'status',
+            sorter: true,
+            renderFormItem: () => (
+            <ProFormSelect
+                showSearch
+                mode="multiple"
+                allowClear
+                valueEnum={{
+                PENDING: 'PENDING',
+                REVIEWING: 'REVIEWING',
+                APPROVED: 'APPROVED',
+                REJECTED: 'REJECTED',
+                }}
+                placeholder="Chọn trạng thái"
+            />
+            ),
+            render: (_dom, entity) => {
+            const colorMap: Record<string, string> = {
+                PENDING: 'default',
+                REVIEWING: 'processing',
+                APPROVED: 'success',
+                REJECTED: 'error',
+            };
 
+            return (
+                <span
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                    setOpenViewDetail(true);
+                    setDataInit(entity);   // truyền dữ liệu sang ViewDetailResume
+                }}
+                >
+                <Tag color={colorMap[entity.status] || 'default'}>
+                    {entity.status}
+                </Tag>
+                </span>
+            );
+            },
         },
     ];
 

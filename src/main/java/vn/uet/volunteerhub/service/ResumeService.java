@@ -113,16 +113,24 @@ public class ResumeService {
         dto.setUpdatedAt(resume.getUpdatedAt());
         dto.setUpdatedBy(resume.getUpdatedBy());
 
-        ResFetchResumeDTO.UserResume user = new ResFetchResumeDTO.UserResume(resume.getUser().getId(),
+        if (resume.getJob() != null && resume.getJob().getEvent() != null) {
+            dto.setEventName(resume.getJob().getEvent().getName());
+        }
+
+        ResFetchResumeDTO.UserResume user = new ResFetchResumeDTO.UserResume(
+                resume.getUser().getId(),
                 resume.getUser().getName());
         dto.setUser(user);
-
-        ResFetchResumeDTO.JobResume job = new ResFetchResumeDTO.JobResume(resume.getJob().getId(),
-                resume.getJob().getName(), resume.getJob().getEvent().getId());
+        
+        ResFetchResumeDTO.JobResume job = new ResFetchResumeDTO.JobResume(
+                resume.getJob().getId(),
+                resume.getJob().getName(),
+                resume.getJob().getEvent().getId());
         dto.setJob(job);
 
         return dto;
     }
+
 
     public ResultPaginationDTO fetchAllResumes(Specification<Resume> spec, Pageable pageable) {
         Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
