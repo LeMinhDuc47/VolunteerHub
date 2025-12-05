@@ -2,18 +2,26 @@ import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchUser } from "@/redux/slice/userSlide";
 import { IUser } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined, ExportOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteUser } from "@/config/api";
+import { callDeleteUser, callFetchEvent, callFetchUser } from "@/config/api";
 import queryString from 'query-string';
 import ModalUser from "@/components/admin/user/modal.user";
 import ViewDetailUser from "@/components/admin/user/view.user";
 import Access from "@/components/share/access";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfLike } from "spring-filter-query-builder";
+import { DebounceSelect } from "@/components/admin/user/debouce.select";
+import * as XLSX from 'xlsx';
+
+interface IEventSelect {
+    label: string;
+    value: string;
+    key?: string;
+}
 
 const UserPage = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -21,6 +29,9 @@ const UserPage = () => {
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
 
     const tableRef = useRef<ActionType>();
+    
+    // 1. Dùng Ref này để lưu lại các tham số tìm kiếm mỗi khi người dùng nhấn Search
+    const lastSearchParams = useRef<any>({}); 
 
     const isFetching = useAppSelector(state => state.user.isFetching);
     const meta = useAppSelector(state => state.user.meta);
@@ -34,10 +45,7 @@ const UserPage = () => {
                 message.success('Xóa User thành công');
                 reloadTable();
             } else {
-                notification.error({
-                    message: 'Có lỗi xảy ra',
-                    description: res.message
-                });
+                notification.error({ message: 'Có lỗi xảy ra', description: res.message });
             }
         }
     }
@@ -46,18 +54,26 @@ const UserPage = () => {
         tableRef?.current?.reload();
     }
 
+    async function fetchEventList(name: string): Promise<IEventSelect[]> {
+        const res = await callFetchEvent(`page=1&size=100&name~'${name}'`);
+        if (res && res.data) {
+            const list = res.data.result || [];
+            return list.map((item: any) => ({
+                label: item.name as string,
+                value: item.id as string,
+                key: item.id as string,
+            }));
+        }
+        return [];
+    }
+
     const columns: ProColumns<IUser>[] = [
         {
             title: 'STT',
             key: 'index',
             width: 50,
             align: "center",
-            render: (text, record, index) => {
-                return (
-                    <>
-                        {(index + 1) + (meta.page - 1) * (meta.pageSize)}
-                    </>)
-            },
+            render: (text, record, index) => (<>{(index + 1) + (meta.page - 1) * (meta.pageSize)}</>),
             hideInSearch: true,
         },
         {
@@ -70,31 +86,37 @@ const UserPage = () => {
             dataIndex: 'email',
             sorter: true,
         },
-
         {
             title: 'Role',
             dataIndex: ["role", "name"],
             sorter: true,
             hideInSearch: true
         },
-
         {
             title: 'Event',
+            key: 'event', // <--- Key này QUAN TRỌNG để form nhận diện
             dataIndex: ["event", "name"],
             sorter: true,
-            hideInSearch: true
+            hideInSearch: false,
+            renderFormItem: (item, props, form) => {
+                return (
+                    <DebounceSelect
+                        allowClear
+                        showSearch
+                        placeholder="Chọn sự kiện"
+                        fetchOptions={fetchEventList}
+                        {...props}
+                        style={{ width: '100%' }}
+                    />
+                )
+            }
         },
-
         {
             title: 'CreatedAt',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
-            render: (text, record, index, action) => {
-                return (
-                    <>{record.createdAt ? dayjs(record.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</>
-                )
-            },
+            render: (text, record, index) => (<>{record.createdAt ? dayjs(record.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</>),
             hideInSearch: true,
         },
         {
@@ -102,41 +124,22 @@ const UserPage = () => {
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
-            render: (text, record, index, action) => {
-                return (
-                    <>{record.updatedAt ? dayjs(record.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</>
-                )
-            },
+            render: (text, record, index) => (<>{record.updatedAt ? dayjs(record.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</>),
             hideInSearch: true,
         },
         {
-
             title: 'Actions',
             hideInSearch: true,
             width: 50,
-            render: (_value, entity, _index, _action) => (
+            render: (_value, entity) => (
                 <Space>
-                    < Access
-                        permission={ALL_PERMISSIONS.USERS.UPDATE}
-                        hideChildren
-                    >
+                    <Access permission={ALL_PERMISSIONS.USERS.UPDATE} hideChildren>
                         <EditOutlined
-                            style={{
-                                fontSize: 20,
-                                color: '#ffa500',
-                            }}
-                            type=""
-                            onClick={() => {
-                                setOpenModal(true);
-                                setDataInit(entity);
-                            }}
+                            style={{ fontSize: 20, color: '#ffa500' }}
+                            onClick={() => { setOpenModal(true); setDataInit(entity); }}
                         />
-                    </Access >
-
-                    <Access
-                        permission={ALL_PERMISSIONS.USERS.DELETE}
-                        hideChildren
-                    >
+                    </Access>
+                    <Access permission={ALL_PERMISSIONS.USERS.DELETE} hideChildren>
                         <Popconfirm
                             placement="leftTop"
                             title={"Xác nhận xóa user"}
@@ -146,18 +149,12 @@ const UserPage = () => {
                             cancelText="Hủy"
                         >
                             <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                                <DeleteOutlined
-                                    style={{
-                                        fontSize: 20,
-                                        color: '#ff4d4f',
-                                    }}
-                                />
+                                <DeleteOutlined style={{ fontSize: 20, color: '#ff4d4f' }} />
                             </span>
                         </Popconfirm>
                     </Access>
-                </Space >
+                </Space>
             ),
-
         },
     ];
 
@@ -175,39 +172,78 @@ const UserPage = () => {
                 q.filter + " and " + `${sfLike("email", clone.email)}`
                 : `${sfLike("email", clone.email)}`;
         }
+        
+        // Lấy giá trị Event (hỗ trợ cả object từ DebounceSelect)
+        const eventValue = clone.event?.value || clone["event.name"]?.value;
+        if (eventValue) {
+            q.filter = q.filter
+                ? `${q.filter} and event.id:${eventValue}`
+                : `event.id:${eventValue}`;
+        }
 
         if (!q.filter) delete q.filter;
         let temp = queryString.stringify(q);
 
         let sortBy = "";
-        if (sort && sort.name) {
-            sortBy = sort.name === 'ascend' ? "sort=name,asc" : "sort=name,desc";
-        }
-        if (sort && sort.email) {
-            sortBy = sort.email === 'ascend' ? "sort=email,asc" : "sort=email,desc";
-        }
-        if (sort && sort.createdAt) {
-            sortBy = sort.createdAt === 'ascend' ? "sort=createdAt,asc" : "sort=createdAt,desc";
-        }
-        if (sort && sort.updatedAt) {
-            sortBy = sort.updatedAt === 'ascend' ? "sort=updatedAt,asc" : "sort=updatedAt,desc";
-        }
+        if (sort && sort.name) sortBy = sort.name === 'ascend' ? "sort=name,asc" : "sort=name,desc";
+        if (sort && sort.email) sortBy = sort.email === 'ascend' ? "sort=email,asc" : "sort=email,desc";
+        if (sort && sort.createdAt) sortBy = sort.createdAt === 'ascend' ? "sort=createdAt,asc" : "sort=createdAt,desc";
+        if (sort && sort.updatedAt) sortBy = sort.updatedAt === 'ascend' ? "sort=updatedAt,asc" : "sort=updatedAt,desc";
 
-        //mặc định sort theo updatedAt
         if (Object.keys(sortBy).length === 0) {
             temp = `${temp}&sort=updatedAt,desc`;
         } else {
             temp = `${temp}&${sortBy}`;
         }
-
         return temp;
+    }
+
+    const handleExportData = async () => {
+        try {
+            // 2. Sử dụng params đã lưu từ lần search cuối cùng
+            const currentParams = lastSearchParams.current || {};
+            
+            const params: any = {
+                ...currentParams,
+                current: 1,
+                pageSize: 1000, // Lấy nhiều dữ liệu để export
+            };
+            
+            const query = buildQuery(params, {}, {});
+            const res = await callFetchUser(query);
+            
+            if (res && res.data) {
+                const list: IUser[] = res.data.result || [];
+                
+                // 3. Map dữ liệu
+                const rows = list.map(u => ({
+                    "ID": u.id,
+                    "Tên hiển thị": u.name,
+                    "Email": u.email,
+                    "Tên Sự Kiện": u.event?.name || "",
+                    "Vai trò": u.role?.name || "",
+                    "Ngày tạo": u.createdAt ? dayjs(u.createdAt).format('DD-MM-YYYY HH:mm:ss') : "",
+                }));
+
+                // 4. Ép buộc thứ tự cột bằng Header
+                const header = ["ID", "Tên hiển thị", "Email", "Tên Sự Kiện", "Vai trò", "Ngày tạo"];
+
+                const worksheet = XLSX.utils.json_to_sheet(rows, { header });
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
+                XLSX.writeFile(workbook, 'Danh_Sach_Tinh_Nguyen_Vien.xlsx');
+                message.success('Xuất dữ liệu thành công');
+            } else {
+                notification.error({ message: 'Có lỗi xảy ra', description: res?.message });
+            }
+        } catch (e: any) {
+            notification.error({ message: 'Có lỗi xảy ra', description: e?.message });
+        }
     }
 
     return (
         <div>
-            <Access
-                permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
-            >
+            <Access permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}>
                 <DataTable<IUser>
                     actionRef={tableRef}
                     headerTitle="Danh sách Users"
@@ -216,22 +252,23 @@ const UserPage = () => {
                     columns={columns}
                     dataSource={users}
                     request={async (params, sort, filter): Promise<any> => {
+                        // 5. LƯU LẠI PARAMS TÌM KIẾM MỖI KHI BẢNG RELOAD
+                        lastSearchParams.current = params;
+                        
                         const query = buildQuery(params, sort, filter);
                         dispatch(fetchUser({ query }))
                     }}
                     scroll={{ x: true }}
-                    pagination={
-                        {
-                            current: meta.page,
-                            pageSize: meta.pageSize,
-                            showSizeChanger: true,
-                            total: meta.total,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
-                        }
-                    }
+                    pagination={{
+                        current: meta.page,
+                        pageSize: meta.pageSize,
+                        showSizeChanger: true,
+                        total: meta.total,
+                        showTotal: (total, range) => (<div> {range[0]}-{range[1]} trên {total} rows</div>)
+                    }}
                     rowSelection={false}
-                    toolBarRender={(_action, _rows): any => {
-                        return (
+                    toolBarRender={() => [
+                        <Space key="buttons">
                             <Button
                                 icon={<PlusOutlined />}
                                 type="primary"
@@ -239,8 +276,14 @@ const UserPage = () => {
                             >
                                 Thêm mới
                             </Button>
-                        );
-                    }}
+                            <Button
+                                icon={<ExportOutlined />}
+                                onClick={handleExportData}
+                            >
+                                Export Excel
+                            </Button>
+                        </Space>
+                    ]}
                 />
             </Access>
             <ModalUser
@@ -256,7 +299,7 @@ const UserPage = () => {
                 dataInit={dataInit}
                 setDataInit={setDataInit}
             />
-        </div >
+        </div>
     )
 }
 

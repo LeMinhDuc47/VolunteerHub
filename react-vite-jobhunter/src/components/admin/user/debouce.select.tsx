@@ -15,6 +15,7 @@ export function DebounceSelect<
     const [fetching, setFetching] = useState(false);
     const [options, setOptions] = useState<ValueType[]>([]);
     const fetchRef = useRef(0);
+
     const debounceFetcher = useMemo(() => {
         const loadOptions = (value: string) => {
             fetchRef.current += 1;
@@ -24,10 +25,8 @@ export function DebounceSelect<
 
             fetchOptions(value).then((newOptions) => {
                 if (fetchId !== fetchRef.current) {
-                    // for fetch callback order
                     return;
                 }
-
                 setOptions(newOptions);
                 setFetching(false);
             });
@@ -37,17 +36,11 @@ export function DebounceSelect<
     }, [fetchOptions, debounceTimeout]);
 
     const handleOnFocus = () => {
-        //fetching init data when focus to input
-        if (options && options.length > 0) {
-            return;
+        if (options.length === 0) {
+            fetchOptions("").then((newOptions) => {
+                setOptions(newOptions);
+            });
         }
-        fetchOptions("").then((newOptions) => {
-            setOptions([...options, ...newOptions]);
-        });
-    }
-
-    const handleOnBlur = () => {
-        setOptions([]);
     }
 
     return (
@@ -57,10 +50,10 @@ export function DebounceSelect<
             onSearch={debounceFetcher}
             notFoundContent={fetching ? <Spin size="small" /> : null}
             {...props}
+            value={value} 
             options={options}
             onFocus={handleOnFocus}
-            onBlur={handleOnBlur}
+            onBlur={() => { /* Không clear options để tránh mất hiển thị label */ }}
         />
     );
 }
-
