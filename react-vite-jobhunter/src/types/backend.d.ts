@@ -114,6 +114,7 @@ export interface IJob {
 }
 
 export interface IResume {
+    job: any;
     id?: string;
     email: string;
     userId: string;

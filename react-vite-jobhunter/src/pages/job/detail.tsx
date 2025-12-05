@@ -1,15 +1,16 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { IJob } from "@/types/backend";
-import { callFetchJobById } from "@/config/api";
+import { IJob, IResume } from "@/types/backend";
+import { callFetchJobById, callFetchResumeByUser } from "@/config/api";
 import "@/styles/pages/job_detail_style.css";
 import parse from 'html-react-parser';
-import { Col, Divider, Row, Skeleton, Tag } from "antd";
+import { Col, Divider, Row, Skeleton, Tag, message } from "antd";
 import { DollarOutlined, EnvironmentOutlined, HistoryOutlined } from "@ant-design/icons";
 import { getLocationName } from "@/config/utils";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ApplyModal from "@/components/client/modal/apply.modal";
+import { useAppSelector } from "@/redux/hooks";
 
 dayjs.extend(relativeTime);
 
@@ -17,6 +18,10 @@ const ClientJobDetailPage = (props: any) => {
     const [jobDetail, setJobDetail] = useState<IJob | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    
+    const [hasApproved, setHasApproved] = useState<boolean>(false);
+
+    const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
 
     const { id } = useParams<{ id: string }>();
     let location = useLocation();
@@ -37,6 +42,41 @@ const ClientJobDetailPage = (props: any) => {
         };
         init();
     }, [id, queryId]);
+
+    useEffect(() => {
+        const fetchMyResumes = async () => {
+            if (!isAuthenticated || !jobDetail?.id) {
+                setHasApproved(false);
+                return;
+            }
+            try {
+                const res = await callFetchResumeByUser();
+                if (res && res.data) {
+                    const list = (res.data.result || []) as IResume[];
+                    const found = list.find(
+                        (item) =>
+                            item.job?.id === jobDetail.id &&
+                            item.status === "APPROVED"
+                    );
+                    setHasApproved(!!found);
+                } else {
+                    setHasApproved(false);
+                }
+            } catch (e) {
+                setHasApproved(false);
+            }
+        };
+
+        fetchMyResumes();
+    }, [isAuthenticated, jobDetail?.id]);
+
+    const handleApplyClick = () => {
+        if (hasApproved) {
+            message.info("Bạn đã tham gia công việc này.");
+            return;
+        }
+        setIsModalOpen(true);
+    };
 
     return (
         <div className="job-detail-container">
@@ -77,17 +117,17 @@ const ClientJobDetailPage = (props: any) => {
                                         <div className="job-skills">
                                             {jobDetail?.skills?.map((item, index) => (
                                                 <Tag
-                                                key={`${index}-key`}
-                                                className="job-skill-tag"
+                                                    key={`${index}-key`}
+                                                    className="job-skill-tag"
                                                 >
-                                                {item.name}
+                                                    {item.name}
                                                 </Tag>
                                             ))}
                                         </div>
 
                                         <div className="btn-apply-container">
                                             <button
-                                                onClick={() => setIsModalOpen(true)}
+                                                onClick={handleApplyClick}
                                                 className="btn-apply"
                                             >
                                                 Apply Now
