@@ -79,11 +79,11 @@ const ResumePage = () => {
             hideInSearch: true,
         },
         // Event
-        {
-            title: 'Event',
-            dataIndex: 'eventName',
-            hideInSearch: true,
-        },
+        // {
+        //     title: 'Event',
+        //     dataIndex: 'eventName',
+        //     hideInSearch: true,
+        // },
         // CreatedAt
         {
             title: 'CreatedAt',
