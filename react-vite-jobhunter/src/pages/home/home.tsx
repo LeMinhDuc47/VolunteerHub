@@ -104,7 +104,7 @@ const HomePage = () => {
                         <div className="feature-card">
                             <div className="feature-icon">💎</div>
                             <h3>Giá trị cốt lõi</h3>
-                            <p>Lòng trcompassion, chính trực, hợp tác và tác động bền vững</p>
+                            <p>Lòng nhân ái, chính trực, hợp tác và tác động bền vững</p>
                         </div>
                     </div>
                 </div>
