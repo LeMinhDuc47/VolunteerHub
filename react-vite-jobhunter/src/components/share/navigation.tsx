@@ -30,28 +30,54 @@ const Navigation = () => {
         const handleScroll = () => {
             if (isScrollingByClick.current) return;
 
-            const sections = ['home', 'about', 'gallery'];
-            const scrollPosition = window.scrollY + 150; 
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
 
-            for (const section of sections) {
-                const element = document.getElementById(section);
+            const home = document.getElementById("home");
+            const about = document.getElementById("about");
+            const gallery = document.getElementById("gallery");
+            const footer = document.getElementById("footer");
+
+            if (footer) {
+                const footerTop = footer.offsetTop;
+                const footerHeight = footer.offsetHeight;
+
+                const footerVisible = scrollY + viewportHeight - footerTop; 
+                const threshold = footerHeight * 0.6; 
+
+                if (footerVisible >= threshold) {
+                    setTimeout(() => setActiveSection("footer"), 120);
+                    return; 
+                }
+            }
+
+            const sections = [
+                { id: "home", element: home },
+                { id: "about", element: about },
+                { id: "gallery", element: gallery }
+            ];
+
+            const scrollPosition = scrollY + 150;
+
+            for (const { id, element } of sections) {
                 if (element) {
-                    const { offsetTop, offsetHeight } = element;
-                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                        setActiveSection(section);
-                        break;
-                    } 
+                    const top = element.offsetTop;
+                    const height = element.offsetHeight;
+
+                    if (scrollPosition >= top && scrollPosition < top + height) {
+                        setTimeout(() => setActiveSection(id), 120);
+                        return;
+                    }
                 }
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     const scrollToSection = (sectionId: string) => {
         setActiveSection(sectionId);
-        
         isScrollingByClick.current = true;
 
         if (scrollTimeoutRef.current) {
@@ -60,8 +86,11 @@ const Navigation = () => {
 
         const element = document.getElementById(sectionId);
         if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-            
+            window.scrollTo({
+                top: element.offsetTop,
+                behavior: "smooth"
+            });
+     
             scrollTimeoutRef.current = setTimeout(() => {
                 isScrollingByClick.current = false;
             }, 1000);
@@ -103,7 +132,7 @@ const Navigation = () => {
                                     Thư viện ảnh
                                 </button>
                                 <button 
-                                    className="nav-link" 
+                                    className={`nav-link ${activeSection === 'footer' ? 'active' : ''}`}
                                     onClick={() => scrollToSection('footer')}
                                 >
                                     Liên hệ
