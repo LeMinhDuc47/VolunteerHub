@@ -1,5 +1,7 @@
 import logo from '@/assets/logo.png';
 import '@/styles/footer_style.css';
+import { FaGoogle, FaFacebookF, FaInstagram } from 'react-icons/fa';
+import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 const Footer = () => {
     return (
@@ -19,10 +21,15 @@ const Footer = () => {
                     </p>
 
                     <div className="social-links">
-                        {/* Placeholder */}
-                        <a href="#" className="social-icon" aria-label="Instagram"></a>
-                        <a href="#" className="social-icon" aria-label="YouTube"></a>
-                        <a href="#" className="social-icon" aria-label="Chat"></a>
+                        <a href="https://www.google.com" className="social-icon" aria-label="Google">
+                            <FaGoogle />
+                        </a>
+                        <a href="https://www.facebook.com" className="social-icon" aria-label="Facebook">
+                            <FaFacebookF />
+                        </a>
+                        <a href="https://www.instagram.com" className="social-icon" aria-label="Instagram">
+                            <FaInstagram />
+                        </a>
                     </div>
                 </div>
 
@@ -31,21 +38,33 @@ const Footer = () => {
                     <h1 className="footer-title">Liên hệ</h1>
                     
                     <div className="contact-item">
-                        <span className="contact-label">Email</span>
-                        <a href="volunteerhub@gmail.com" className="contact-detail">volunteerhub@gmail.com</a>
+                        <FaEnvelope className="contact-icon" />
+                        <div>
+                            <span className="contact-label">Email</span>
+                            <a href="mailto:volunteerhub@gmail.com" className="contact-detail">
+                                volunteerhub@gmail.com
+                            </a>
+                        </div>
                     </div>
-                    
+
                     <div className="contact-item">
-                        <span className="contact-label">Điện thoại</span>
-                        <a href="tel:+925190856789" className="contact-detail">+84 312 141 205</a>
+                        <FaPhoneAlt className="contact-icon" />
+                        <div>
+                            <span className="contact-label">Điện thoại</span>
+                            <a href="tel:+84312141205" className="contact-detail">
+                                +84 312 141 205
+                            </a>
+                        </div>
                     </div>
-                    
-                    <div className="contact-item contact-address">
-                        <span className="contact-label">Địa chỉ</span>
-                        <p className="contact-detail">
-                            144 Xuân Thủy, Hà Nội
-                        </p>
+
+                    <div className="contact-item">
+                        <FaMapMarkerAlt className="contact-icon" />
+                        <div>
+                            <span className="contact-label">Địa chỉ</span>
+                            <p className="contact-detail">144 Xuân Thủy, Hà Nội</p>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
