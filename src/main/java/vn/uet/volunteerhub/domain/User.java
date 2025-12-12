@@ -23,6 +23,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.uet.volunteerhub.util.SecurityUtil;
+import vn.uet.volunteerhub.util.constant.AuthProviderEnum;
 import vn.uet.volunteerhub.util.constant.GenderEnum;
 
 @Entity
@@ -61,6 +62,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProviderEnum provider = AuthProviderEnum.LOCAL;
 
     @PrePersist
     public void handleBeforeCreate() {

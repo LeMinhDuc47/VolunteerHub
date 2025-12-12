@@ -19,6 +19,7 @@ import vn.uet.volunteerhub.domain.response.ResUpdateUserDTO;
 import vn.uet.volunteerhub.domain.response.ResUserDTO;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.UserRepository;
+import vn.uet.volunteerhub.util.constant.AuthProviderEnum;
 import vn.uet.volunteerhub.util.error.IdInvalidException;
 
 @Service
@@ -49,6 +50,9 @@ public class UserService {
         if (user.getRole() != null) {
             Role role = this.roleService.fetchRoleById(user.getRole().getId());
             user.setRole(role != null ? role : null);
+        }
+        if (user.getProvider() == null) {
+            user.setProvider(AuthProviderEnum.LOCAL);
         }
         return this.userRepository.save(user);
     }

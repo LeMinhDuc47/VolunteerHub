@@ -10,6 +10,7 @@ import NotFound from 'components/share/not.found';
 import Loading from 'components/share/loading';
 import LoginPage from 'pages/auth/login';
 import RegisterPage from 'pages/auth/register';
+import OAuth2RedirectPage from 'pages/auth/oauth2.redirect';
 import LayoutAdmin from 'components/admin/layout.admin';
 import ProtectedRoute from 'components/share/protected-route.ts';
 import Header from 'components/client/header.client';
@@ -170,6 +171,11 @@ export default function App() {
     {
       path: "/register",
       element: <RegisterPage />,
+    },
+
+    {
+      path: "/oauth2/redirect",
+      element: <OAuth2RedirectPage />,
     },
   ]);
 

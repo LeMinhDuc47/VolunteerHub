@@ -1,4 +1,5 @@
 import { Button, Divider, Form, Input, message, notification } from 'antd';
+import { GoogleOutlined } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { callLogin } from 'config/api';
 import { useState, useEffect } from 'react';
@@ -44,6 +45,10 @@ const LoginPage = () => {
                 duration: 5
             })
         }
+    };
+
+    const handleGoogleLogin = () => {
+        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
     };
 
     return (
@@ -93,6 +98,15 @@ const LoginPage = () => {
                         </Form.Item>
                         
                         <Divider>Hoặc</Divider>
+
+                        <Button
+                            icon={<GoogleOutlined />}
+                            size="large"
+                            block
+                            onClick={handleGoogleLogin}
+                        >
+                            Đăng nhập bằng Google
+                        </Button>
                         
                         <p className="login-footer-text">
                             Chưa có tài khoản?{' '}
