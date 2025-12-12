@@ -86,7 +86,6 @@ public class SubscriberService {
 // @Scheduled(cron = "*/30 * * * * *")
 // @Transactional
     public void sendSubscribersEmailJobs() {
-        System.out.println(">>> Checking for jobs to send email...");
         System.out.println(">>> RUN SEND EMAIL TO SUBSCRIBERS");
         List<Subscriber> listSubs = this.subscriberRepository.findAll();
         if (listSubs != null && listSubs.size() > 0) {
