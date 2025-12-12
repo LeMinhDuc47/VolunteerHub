@@ -1,19 +1,27 @@
-import { Button, Col, Form, Modal, Row, Select, Table, Tabs, message, notification, Popconfirm, Tag } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Spin, Table, Tabs, message, notification, Popconfirm, Tag } from "antd";
 import { isMobile } from "react-device-detect";
 import type { TabsProps } from 'antd';
 import { IResume, ISubscribers } from "@/types/backend";
 import { useState, useEffect } from 'react';
-import { callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber, callDeleteResume } from "@/config/api";
+import { callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber, callDeleteResume, callFetchUserById, callUpdateUserInfo, callChangePassword } from "@/config/api";
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { MonitorOutlined, DeleteOutlined } from "@ant-design/icons";
-import { SKILLS_LIST } from "@/config/utils";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { fetchAccount } from "@/redux/slice/accountSlide";
 import { useNavigate } from "react-router-dom";
 
 interface IProps {
     open: boolean;
     onClose: (v: boolean) => void;
+}
+
+interface IUserUpdateInfoProps {
+    open: boolean;
+}
+
+interface IUserPasswordProps {
+    open: boolean;
 }
 
 const UserResume = (props: any) => {
@@ -146,12 +154,139 @@ const UserResume = (props: any) => {
     );
 };
 
-const UserUpdateInfo = (props: any) => {
+const genderOptions = [
+    { label: 'Nam', value: 'MALE' },
+    { label: 'Nữ', value: 'FEMALE' },
+    { label: 'Khác', value: 'OTHER' },
+];
+
+const UserUpdateInfo = ({ open }: IUserUpdateInfoProps) => {
+    const [form] = Form.useForm();
+    const user = useAppSelector(state => state.account.user);
+    const dispatch = useAppDispatch();
+    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (!open) {
+            form.resetFields();
+            return;
+        }
+        const fetchProfile = async () => {
+            if (!user?.id) return;
+            setIsFetching(true);
+            try {
+                const res = await callFetchUserById(user.id);
+                if (res?.data) {
+                    form.setFieldsValue({
+                        email: res.data.email,
+                        name: res.data.name,
+                        age: res.data.age,
+                        gender: res.data.gender,
+                        address: res.data.address,
+                    });
+                }
+            } catch (error: any) {
+                notification.error({
+                    message: 'Không thể tải thông tin người dùng',
+                    description: error?.message || 'Vui lòng thử lại sau',
+                });
+            } finally {
+                setIsFetching(false);
+            }
+        };
+        fetchProfile();
+    }, [open, user?.id]);
+
+    const onFinish = async (values: any) => {
+        if (!user?.id) return;
+        setIsSubmitting(true);
+        try {
+            const payload = {
+                id: user.id,
+                name: values.name,
+                age: values.age,
+                gender: values.gender,
+                address: values.address,
+            };
+            const res = await callUpdateUserInfo(payload);
+            if (res?.data) {
+                message.success('Cập nhật thông tin thành công');
+                dispatch(fetchAccount());
+            } else {
+                notification.error({
+                    message: 'Có lỗi xảy ra',
+                    description: res?.message || 'Không thể cập nhật thông tin',
+                });
+            }
+        } catch (error: any) {
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: error?.message || 'Không thể cập nhật thông tin',
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
-        <div>
-            //todo
-        </div>
-    )
+        <Spin spinning={isFetching}>
+            <Form
+                layout="vertical"
+                form={form}
+                onFinish={onFinish}
+            >
+                <Row gutter={[20, 0]}>
+                    <Col span={24}>
+                        <Form.Item label="Email" name="email">
+                            <Input disabled />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Họ và tên"
+                            name="name"
+                            rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}
+                        >
+                            <Input placeholder="Nhập họ tên" />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Tuổi"
+                            name="age"
+                            rules={[{ required: true, message: 'Vui lòng nhập tuổi' }]}
+                        >
+                            <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập tuổi" />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Giới tính"
+                            name="gender"
+                            rules={[{ required: true, message: 'Vui lòng chọn giới tính' }]}
+                        >
+                            <Select options={genderOptions} placeholder="Chọn giới tính" />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Địa chỉ"
+                            name="address"
+                            rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
+                        >
+                            <Input placeholder="Nhập địa chỉ" />
+                        </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                        <Button type="primary" loading={isSubmitting} onClick={() => form.submit()}>
+                            Lưu thay đổi
+                        </Button>
+                    </Col>
+                </Row>
+            </Form>
+        </Spin>
+    );
 }
 
 const JobByEmail = (props: any) => {
@@ -284,6 +419,126 @@ const JobByEmail = (props: any) => {
     )
 }
 
+const UserPassword = ({ open }: IUserPasswordProps) => {
+    const [form] = Form.useForm();
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (!open) {
+            form.resetFields();
+        }
+    }, [open, form]);
+
+    const onFinish = async (values: any) => {
+        setIsSubmitting(true);
+        try {
+            const res = await callChangePassword({
+                currentPassword: values.currentPassword,
+                newPassword: values.newPassword,
+            });
+            const parsedStatus =
+                res && typeof res === 'object' && 'statusCode' in res
+                    ? Number((res as any).statusCode)
+                    : typeof res === 'string'
+                        ? 200
+                        : NaN;
+
+            if (!Number.isNaN(parsedStatus) && parsedStatus >= 200 && parsedStatus < 300) {
+                const successMessage =
+                    (typeof res === 'object' && (res as any)?.message) || (typeof res === 'string' ? res : null) ||
+                    'Đổi mật khẩu thành công';
+                message.success(Array.isArray(successMessage) ? successMessage[0] : successMessage);
+                form.resetFields();
+            } else {
+                const errorMessage =
+                    (typeof res === 'object' && (res as any)?.message) || 'Không thể đổi mật khẩu';
+                notification.error({
+                    message: 'Có lỗi xảy ra',
+                    description: Array.isArray(errorMessage) ? errorMessage[0] : errorMessage,
+                });
+            }
+        } catch (error: any) {
+            const description = error?.response?.data?.message || error?.message || 'Không thể đổi mật khẩu';
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: Array.isArray(description) ? description[0] : description,
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <Form
+            layout="vertical"
+            form={form}
+            onFinish={onFinish}
+        >
+            <Row gutter={[20, 0]}>
+                <Col span={24}>
+                    <Form.Item
+                        label="Mật khẩu hiện tại"
+                        name="currentPassword"
+                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu hiện tại' }]}
+                    >
+                        <Input.Password autoComplete="current-password" placeholder="Nhập mật khẩu hiện tại" />
+                    </Form.Item>
+                </Col>
+                <Col span={24}>
+                    <Form.Item
+                        label="Mật khẩu mới"
+                        name="newPassword"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập mật khẩu mới' },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value) {
+                                        return Promise.resolve();
+                                    }
+                                    if (value === getFieldValue('currentPassword')) {
+                                        return Promise.reject(new Error('Mật khẩu mới phải khác mật khẩu cũ'));
+                                    }
+                                    return Promise.resolve();
+                                },
+                            })
+                        ]}
+                    >
+                        <Input.Password autoComplete="new-password" placeholder="Nhập mật khẩu mới" />
+                    </Form.Item>
+                </Col>
+                <Col span={24}>
+                    <Form.Item
+                        label="Nhập lại mật khẩu mới"
+                        name="confirmPassword"
+                        dependencies={["newPassword"]}
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập lại mật khẩu mới' },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value) {
+                                        return Promise.resolve();
+                                    }
+                                    if (value !== getFieldValue('newPassword')) {
+                                        return Promise.reject(new Error('Mật khẩu xác nhận không khớp'));
+                                    }
+                                    return Promise.resolve();
+                                },
+                            })
+                        ]}
+                    >
+                        <Input.Password autoComplete="new-password" placeholder="Nhập lại mật khẩu mới" />
+                    </Form.Item>
+                </Col>
+                <Col span={24}>
+                    <Button type="primary" loading={isSubmitting} onClick={() => form.submit()}>
+                        Đổi mật khẩu
+                    </Button>
+                </Col>
+            </Row>
+        </Form>
+    );
+}
+
 const ManageAccount = (props: IProps) => {
     const { open, onClose } = props;
 
@@ -305,12 +560,12 @@ const ManageAccount = (props: IProps) => {
         {
             key: 'user-update-info',
             label: `Cập nhật thông tin`,
-            children: <UserUpdateInfo />,
+            children: <UserUpdateInfo open={open} />,
         },
         {
             key: 'user-password',
             label: `Thay đổi mật khẩu`,
-            children: `//todo`,
+            children: <UserPassword open={open} />,
         },
     ];
 

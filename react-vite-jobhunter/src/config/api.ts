@@ -25,6 +25,10 @@ export const callLogout = () => {
     return axios.post<IBackendRes<string>>('/api/v1/auth/logout')
 }
 
+export const callChangePassword = (payload: { currentPassword: string; newPassword: string }) => {
+    return axios.post<IBackendRes<string>>('/api/v1/auth/change-password', payload)
+}
+
 /**
  * Upload single file
  */
@@ -131,6 +135,14 @@ export const callDeleteUser = (id: string) => {
 
 export const callFetchUser = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IUser>>>(`/api/v1/users?${query}`);
+}
+
+export const callFetchUserById = (id: string | number) => {
+    return axios.get<IBackendRes<IUser>>(`/api/v1/users/${id}`);
+}
+
+export const callUpdateUserInfo = (payload: Partial<IUser>) => {
+    return axios.put<IBackendRes<IUser>>(`/api/v1/users`, { ...payload })
 }
 
 /**

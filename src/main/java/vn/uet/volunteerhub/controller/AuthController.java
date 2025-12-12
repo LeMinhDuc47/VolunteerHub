@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.uet.volunteerhub.domain.User;
+import vn.uet.volunteerhub.domain.request.ReqChangePasswordDTO;
 import vn.uet.volunteerhub.domain.request.ReqLoginDTO;
 import vn.uet.volunteerhub.domain.response.ResCreateUserDTO;
 import vn.uet.volunteerhub.domain.response.ResLoginDTO;
@@ -217,6 +218,19 @@ public class AuthController {
         ResCreateUserDTO resCreateUserDTO = this.userService.convertToResCreateUserDTO(newUser);
 
         return ResponseEntity.status(HttpStatus.OK).body(resCreateUserDTO);
+    }
+
+    @PostMapping("/auth/change-password")
+    @ApiMessage("Đổi mật khẩu thành công")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ReqChangePasswordDTO request)
+            throws IdInvalidException {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        if (email.equals("")) {
+            throw new IdInvalidException("Access Token không hợp lệ");
+        }
+        this.userService.handleChangePassword(email, request.getCurrentPassword(), request.getNewPassword(),
+                this.passwordEncoder);
+        return ResponseEntity.ok().build();
     }
 }
 // Create Cookies: https://reflectoring.io/spring-boot-cookies/

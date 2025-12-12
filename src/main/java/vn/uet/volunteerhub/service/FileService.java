@@ -25,7 +25,7 @@ public class FileService {
         File tmpDir = new File(path.toString());
         if (!tmpDir.isDirectory()) {
             try {
-                Files.createDirectory(tmpDir.toPath());
+                Files.createDirectories(tmpDir.toPath());
                 System.out.println(">>> CREATE NEW DIRECTORY SUCCESSFUL, PATH = " + tmpDir.toPath());
             } catch (IOException e) {
                 e.printStackTrace();

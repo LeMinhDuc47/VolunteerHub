@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import vn.uet.volunteerhub.domain.Event;
@@ -18,6 +19,7 @@ import vn.uet.volunteerhub.domain.response.ResUpdateUserDTO;
 import vn.uet.volunteerhub.domain.response.ResUserDTO;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.repository.UserRepository;
+import vn.uet.volunteerhub.util.error.IdInvalidException;
 
 @Service
 public class UserService {
@@ -199,5 +201,21 @@ public class UserService {
 
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
+    public void handleChangePassword(String email, String currentPassword, String newPassword,
+            PasswordEncoder passwordEncoder) throws IdInvalidException {
+        User currentUser = this.handleGetUserByUsername(email);
+        if (currentUser == null) {
+            throw new IdInvalidException("Tài khoản không tồn tại");
+        }
+
+        boolean isMatch = passwordEncoder.matches(currentPassword, currentUser.getPassword());
+        if (!isMatch) {
+            throw new IdInvalidException("Mật khẩu hiện tại không chính xác");
+        }
+
+        currentUser.setPassword(passwordEncoder.encode(newPassword));
+        this.userRepository.save(currentUser);
     }
 }
