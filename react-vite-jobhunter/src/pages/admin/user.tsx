@@ -306,6 +306,20 @@ const UserPage = () => {
                 color: rgba(0, 0, 0, 0.88) !important;
                 margin-left: 30px;
             }
+
+            .ant-pro-table-search .ant-btn {
+                height: 40px !important;
+                padding: 0 20px !important;
+                border-radius: 6px !important;
+                font-size: 14px !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            .ant-pro-table-search .ant-space-item {
+                display: flex !important;
+                align-items: center !important;
+            }
             `}
             </style>
             <Access permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}>
