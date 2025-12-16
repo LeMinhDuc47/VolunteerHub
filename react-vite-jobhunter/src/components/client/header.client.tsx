@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { callLogout } from '@/config/api';
+import { callFetchNotifications, callLogout, callReadNotifications } from '@/config/api';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import ManageAccount from './modal/manage.account';
-import { Badge, Dropdown, Space, notification } from 'antd';
+import { Badge, Dropdown, notification } from 'antd';
 import type { MenuProps } from 'antd';
 import { BellOutlined, CheckCircleTwoTone } from '@ant-design/icons';
 import SockJS from 'sockjs-client';
@@ -12,8 +12,10 @@ import { Client, IMessage } from '@stomp/stompjs';
 import dayjs from 'dayjs';
 import '@/styles/client/header_style.css';
 import logo from '@/assets/logo.png';
+import { IBackendRes, INotification } from '@/types/backend';
 
 type ServerNotificationPayload = {
+    notificationId?: number;
     resumeId?: number;
     status?: string;
     email?: string;
@@ -21,33 +23,37 @@ type ServerNotificationPayload = {
     eventName?: string;
     message?: string;
     timestamp?: string;
-};
-
-type ResumeNotification = {
-    id: string;
-    resumeId?: number;
-    message: string;
-    status?: string;
-    jobName?: string;
-    eventName?: string;
-    timestamp: string;
+    isRead?: boolean;
 };
 
 const WS_ENDPOINT = import.meta.env.VITE_WS_ENDPOINT ?? 'http://localhost:8080/ws';
 
-const mapServerNotification = (payload: ServerNotificationPayload): ResumeNotification => {
-    const id = typeof crypto !== 'undefined' && crypto.randomUUID
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random()}`;
+const mapServerNotification = (payload: ServerNotificationPayload): INotification => {
+    const fallbackId = Date.now();
     return {
-        id,
+        id: payload.notificationId ?? fallbackId,
         resumeId: payload.resumeId,
         status: payload.status,
         jobName: payload.jobName,
         eventName: payload.eventName,
         message: payload.message ?? 'Hồ sơ của bạn vừa được cập nhật.',
-        timestamp: payload.timestamp ?? new Date().toISOString()
+        receiverEmail: payload.email ?? '',
+        createdAt: payload.timestamp ?? new Date().toISOString(),
+        isRead: payload.isRead ?? false,
     };
+};
+
+const normalizeNotifications = (
+    payload: IBackendRes<INotification[]> | INotification[] | undefined
+): INotification[] => {
+    if (!payload) return [];
+    if (Array.isArray(payload)) {
+        return payload;
+    }
+    if (Array.isArray(payload.data)) {
+        return payload.data;
+    }
+    return [];
 };
 
 const Header = (props: any) => {
@@ -62,11 +68,15 @@ const Header = (props: any) => {
     const [current, setCurrent] = useState('/home');
     const [openMangeAccount, setOpenManageAccount] = useState<boolean>(false);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
-    const [notifications, setNotifications] = useState<ResumeNotification[]>([]);
-    const [unreadCount, setUnreadCount] = useState<number>(0);
+    const [notifications, setNotifications] = useState<INotification[]>([]);
     const [openNotifications, setOpenNotifications] = useState<boolean>(false);
     const [isMobileMode, setIsMobileMode] = useState<boolean>(window.innerWidth <= 768);
     const stompClientRef = useRef<Client | null>(null);
+
+    const unreadCount = useMemo(
+        () => notifications.filter(item => !item.isRead).length,
+        [notifications]
+    );
 
     useEffect(() => {
         setCurrent(location.pathname);
@@ -85,8 +95,24 @@ const Header = (props: any) => {
 
     useEffect(() => {
         if (!isAuthenticated || !user?.email) {
+            return;
+        }
+
+        const fetchHistory = async () => {
+            try {
+                const res = await callFetchNotifications();
+                setNotifications(normalizeNotifications(res));
+            } catch (error) {
+                console.error('Không thể tải lịch sử thông báo', error);
+            }
+        };
+
+        fetchHistory();
+    }, [isAuthenticated, user?.email]);
+
+    useEffect(() => {
+        if (!isAuthenticated || !user?.email) {
             setNotifications([]);
-            setUnreadCount(0);
             setOpenNotifications(false);
             if (stompClientRef.current) {
                 stompClientRef.current.deactivate();
@@ -116,49 +142,42 @@ const Header = (props: any) => {
                         const payload = JSON.parse(message.body) as ServerNotificationPayload;
                         const model = mapServerNotification(payload);
                         setNotifications(prev => [model, ...prev].slice(0, 20));
-                        setUnreadCount(prev => prev + 1);
-        
 
-notification.open({
-    message: <span style={{ fontWeight: 600 }}>Thông báo mới</span>,
-    description: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {}
-            <div>
-                {model.message}
-            </div>
-
-            {}
-            {model.jobName && (
-                <div style={{ fontSize: '13px', color: '#555' }}>
-                    Công việc: <b>{model.jobName}</b>
-                </div>
-            )}
-
-            {}
-            <div style={{ 
-                fontSize: '11px', 
-                color: '#888', 
-                marginTop: '6px', 
-                borderTop: '1px solid #eee', 
-                paddingTop: '4px',
-                display: 'flex',
-                justifyContent: 'flex-end' 
-            }}>
-                {dayjs(model.timestamp).format('HH:mm - DD/MM/YYYY')}
-            </div>
-        </div>
-    ),
-    placement: 'topRight', 
-    icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
-    duration: 5,
-    style: {
-        width: 350,
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-        borderLeft: '4px solid #52c41a'
-    }
-});
+                        notification.open({
+                            message: <span style={{ fontWeight: 600 }}>Thông báo mới</span>,
+                            description: (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                    <div>{model.message}</div>
+                                    {model.jobName && (
+                                        <div style={{ fontSize: '13px', color: '#555' }}>
+                                            Công việc: <b>{model.jobName}</b>
+                                        </div>
+                                    )}
+                                    <div
+                                        style={{
+                                            fontSize: '11px',
+                                            color: '#888',
+                                            marginTop: '6px',
+                                            borderTop: '1px solid #eee',
+                                            paddingTop: '4px',
+                                            display: 'flex',
+                                            justifyContent: 'flex-end'
+                                        }}
+                                    >
+                                        {dayjs(model.createdAt).format('HH:mm - DD/MM/YYYY')}
+                                    </div>
+                                </div>
+                            ),
+                            placement: 'topRight',
+                            icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+                            duration: 5,
+                            style: {
+                                width: 350,
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                borderLeft: '4px solid #52c41a'
+                            }
+                        });
                     } catch (error) {
                         console.error('Không thể phân tích thông báo', error);
                     }
@@ -192,15 +211,25 @@ notification.open({
         { key: '/home/event', label: 'Sự kiện nổi bật', path: '/home/event' }
     ];
 
+    const handleMarkNotificationsAsRead = async () => {
+        if (unreadCount === 0) return;
+        try {
+            await callReadNotifications();
+            setNotifications(prev => prev.map(item => ({ ...item, isRead: true })));
+        } catch (error) {
+            console.error('Không thể cập nhật trạng thái thông báo', error);
+        }
+    };
+
     const notificationMenuItems: MenuProps['items'] = notifications.length
         ? notifications.map(item => ({
               key: item.id,
               label: (
-                  <div className="header-notification-item">
+                  <div className={`header-notification-item ${item.isRead ? '' : 'unread'}`}>
                       <div className="header-notification-message">{item.message}</div>
                       <div className="header-notification-meta">
                           {item.jobName && <span className="job-name">{item.jobName}</span>}
-                          <span>{dayjs(item.timestamp).format('HH:mm DD/MM')}</span>
+                          <span>{dayjs(item.createdAt ?? new Date().toISOString()).format('HH:mm DD/MM')}</span>
                       </div>
                   </div>
               )
@@ -244,7 +273,7 @@ notification.open({
                                         onOpenChange={(open) => {
                                             setOpenNotifications(open);
                                             if (open) {
-                                                setUnreadCount(0);
+                                                handleMarkNotificationsAsRead();
                                             }
                                         }}
                                     >

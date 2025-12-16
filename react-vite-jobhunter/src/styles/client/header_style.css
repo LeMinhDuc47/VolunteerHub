@@ -373,3 +373,40 @@ body .layout-app {
     line-height: 16px;
     font-size: 10px;
 }
+
+.header-notification-item {
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.header-notification-item.unread {
+    background: #eef5ff;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.header-notification-message {
+    font-weight: 600;
+    color: #111;
+}
+
+.header-notification-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+}
+
+.header-notification-meta .job-name {
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.header-notification-empty {
+    min-width: 220px;
+    text-align: center;
+    color: #999;
+}

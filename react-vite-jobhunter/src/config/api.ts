@@ -1,4 +1,4 @@
-import { IBackendRes, IEvent, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IPost, IComment, ILike } from '@/types/backend';
+import { IBackendRes, IEvent, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IPost, IComment, ILike, INotification } from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -280,5 +280,16 @@ export const callFetchSubscriber = (query: string) => {
 
 export const callFetchSubscriberById = (id: string) => {
     return axios.get<IBackendRes<ISubscribers>>(`/api/v1/subscribers/${id}`);
+}
+
+/**
+ * Notification APIs
+ */
+export const callFetchNotifications = () => {
+    return axios.get<IBackendRes<INotification[]>>('/api/v1/notifications');
+}
+
+export const callReadNotifications = (notificationId?: number) => {
+    return axios.put<IBackendRes<string>>('/api/v1/notifications/read', { notificationId });
 }
 

@@ -18,6 +18,7 @@ import com.turkraft.springfilter.parser.FilterParser;
 import com.turkraft.springfilter.parser.node.FilterNode;
 
 import vn.uet.volunteerhub.domain.Job;
+import vn.uet.volunteerhub.domain.Notification;
 import vn.uet.volunteerhub.domain.Resume;
 import vn.uet.volunteerhub.domain.User;
 import vn.uet.volunteerhub.domain.notification.ResumeStatusNotification;
@@ -42,13 +43,16 @@ public class ResumeService {
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationService notificationService;
 
     public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository,
-            JobRepository jobRepository, SimpMessagingTemplate messagingTemplate) {
+            JobRepository jobRepository, SimpMessagingTemplate messagingTemplate,
+            NotificationService notificationService) {
         this.resumeRepository = resumeRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
         this.messagingTemplate = messagingTemplate;
+        this.notificationService = notificationService;
     }
 
     public Optional<Resume> fetchResumeById(long id) {
@@ -116,15 +120,29 @@ public class ResumeService {
                 : null;
         String status = String.valueOf(resume.getStatus());
 
+        String message = String.format("Hồ sơ của bạn đã được cập nhật sang trạng thái %s", status);
+
+        Notification notification = new Notification();
+        notification.setMessage(message);
+        notification.setReceiverEmail(resume.getUser().getEmail());
+        notification.setJobName(jobName);
+        notification.setStatus(status);
+
+        Notification savedNotification = this.notificationService.save(notification);
+
+        Instant createdAt = savedNotification.getCreatedAt() != null ? savedNotification.getCreatedAt() : Instant.now();
+
         ResumeStatusNotification payload = ResumeStatusNotification.builder()
-                .resumeId(resume.getId())
-                .status(status)
-                .email(resume.getUser().getEmail())
-                .jobName(jobName)
-                .eventName(eventName)
-                .message(String.format("Hồ sơ của bạn đã được cập nhật sang trạng thái %s", status))
-                .timestamp(Instant.now())
-                .build();
+            .notificationId(savedNotification.getId())
+            .resumeId(resume.getId())
+            .status(status)
+            .email(savedNotification.getReceiverEmail())
+            .jobName(jobName)
+            .eventName(eventName)
+            .message(message)
+            .timestamp(createdAt)
+            .isRead(savedNotification.isRead())
+            .build();
 
         String destination = String.format("/user/%s/queue/notifications", resume.getUser().getEmail());
         this.messagingTemplate.convertAndSend(destination, payload);

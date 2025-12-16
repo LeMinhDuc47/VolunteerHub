@@ -141,6 +141,18 @@ export interface IResume {
     updatedAt?: string;
 }
 
+export interface INotification {
+    id: number;
+    message: string;
+    receiverEmail: string;
+    jobName?: string;
+    status?: string;
+    resumeId?: number;
+    eventName?: string;
+    isRead: boolean;
+    createdAt: string;
+}
+
 export interface IPermission {
     id?: string;
     name?: string;

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResumeStatusNotification {
+    private Long notificationId;
     private Long resumeId;
     private String status;
     private String email;
@@ -19,4 +20,5 @@ public class ResumeStatusNotification {
     private String eventName;
     private String message;
     private Instant timestamp;
+    private boolean isRead;
 }
