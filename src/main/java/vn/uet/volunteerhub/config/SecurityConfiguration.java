@@ -47,10 +47,11 @@ public class SecurityConfiguration {
                 "/api/v1/companies/**", "/api/v1/jobs/**", "/api/v1/auth/register", "/api/v1/email/**"
         };
         http
-                .csrf(c -> c.disable())
+            .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(whiteList).permitAll()
+                .requestMatchers("/ws/**").permitAll()
                     .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
