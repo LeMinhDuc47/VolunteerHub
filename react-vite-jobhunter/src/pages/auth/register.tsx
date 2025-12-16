@@ -121,7 +121,7 @@ const RegisterPage = () => {
                                 block
                                 className="register-button"
                             >
-                                Register
+                                Đăng ký
                             </Button>
                         </Form.Item>
                         
