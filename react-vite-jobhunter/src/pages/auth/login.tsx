@@ -103,6 +103,7 @@ const LoginPage = () => {
                             icon={<GoogleOutlined />}
                             size="large"
                             block
+                            className="google-login-btn"
                             onClick={handleGoogleLogin}
                         >
                             Đăng nhập bằng Google
