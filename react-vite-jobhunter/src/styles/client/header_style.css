@@ -343,3 +343,33 @@ body .layout-app {
         display: none;
     }
 }
+.header-bell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 20px;
+    padding: 0 8px;
+}
+
+.header-bell .anticon {
+    font-size: 24px !important; 
+    color: rgba(255, 255, 255, 0.65) !important; 
+    transition: all 0.3s ease; 
+}
+
+.header-bell:hover .anticon {
+    color: #ffffff !important;
+    transform: scale(1.1);    
+}
+
+.header-bell .ant-badge .ant-badge-count {
+    box-shadow: none;          
+    background-color: #ff4d4f; 
+    top: 2px;                 
+    right: 4px;
+    min-width: 16px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 10px;
+}
