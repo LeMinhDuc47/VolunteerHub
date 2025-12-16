@@ -243,6 +243,71 @@ const UserPage = () => {
 
     return (
         <div>
+            <style>
+            {`
+            .ant-pro-table-search .ant-form-item,
+            .ant-pro-table-search .ant-form-item-control,
+            .ant-pro-table-search .ant-form-item-control-input,
+            .ant-pro-table-search .ant-form-item-control-input-content {
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+
+            .ant-pro-table-search .ant-input-affix-wrapper {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                background: transparent !important;
+                height: auto !important;
+            }
+
+            .ant-pro-table-search input.ant-input {
+                height: 40px !important;
+                border: 1px solid #d9d9d9 !important;
+                border-radius: 6px !important;
+                padding: 0 12px !important;
+                font-size: 14px !important;
+                width: 100% !important;
+            }
+
+            .ant-pro-table-search input.ant-input:hover {
+                border-color: #1a73e8 !important;
+            }
+
+            .ant-pro-table-search input.ant-input:focus {
+                border-color: #1a73e8 !important;
+                box-shadow: 0 0 0 2px rgba(26,115,232,0.15) !important;
+            }
+            
+            .ant-pro-table-search input.ant-input {
+                height: 40px !important;
+                line-height: 40px !important;
+                padding: 0 12px !important;
+            }
+
+            .ant-pro-table-search .ant-select-selector {
+                height: 40px !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            .ant-pro-table-search .ant-form-item-label > label {
+                height: 40px !important;
+                display: flex !important;
+                align-items: center !important;
+                padding: 0 !important;
+            }
+
+            .ant-pro-table-search .ant-form-item-label > label {
+                font-weight: 500 !important;  
+                color: rgba(0, 0, 0, 0.88) !important;
+                margin-left: 30px;
+            }
+            `}
+            </style>
             <Access permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}>
                 <DataTable<IUser>
                     actionRef={tableRef}
