@@ -211,6 +211,95 @@ const PermissionPage = () => {
 
     return (
         <div>
+            <style>
+            {`
+            .ant-pro-table-search .ant-form-item,
+            .ant-pro-table-search .ant-form-item-control,
+            .ant-pro-table-search .ant-form-item-control-input,
+            .ant-pro-table-search .ant-form-item-control-input-content {
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+
+            .ant-pro-table-search .ant-input-affix-wrapper {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                background: transparent !important;
+                height: auto !important;
+            }
+
+            .ant-pro-table-search input.ant-input {
+                height: 40px !important;
+                border: 1px solid #d9d9d9 !important;
+                border-radius: 6px !important;
+                padding: 0 12px !important;
+                font-size: 14px !important;
+                width: 100% !important;
+            }
+
+            .ant-pro-table-search input.ant-input:hover {
+                border-color: #1a73e8 !important;
+            }
+
+            .ant-pro-table-search input.ant-input:focus {
+                border-color: #1a73e8 !important;
+                box-shadow: 0 0 0 2px rgba(26,115,232,0.15) !important;
+            }
+            
+            .ant-pro-table-search input.ant-input {
+                height: 40px !important;
+                line-height: 40px !important;
+                padding: 0 12px !important;
+            }
+
+            .ant-pro-table-search .ant-select-selector {
+                height: 40px !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            .ant-pro-table-search .ant-form-item-label{
+            flex: 0 0 90px !important;      
+            max-width: 90px !important;
+            padding: 0 12px 0 0 !important; 
+            text-align: right !important;
+            }
+
+            .ant-pro-table-search .ant-form-item-label > label{
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            padding: 0 !important;         
+            margin: 0 !important;
+            font-weight: 500 !important;
+            color: rgba(0, 0, 0, 0.88) !important;
+            }
+
+            .ant-pro-table-search .ant-form-item-control{
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            }
+
+            .ant-pro-table-search .ant-btn {
+                height: 40px !important;
+                padding: 0 20px !important;
+                border-radius: 6px !important;
+                font-size: 14px !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            .ant-pro-table-search .ant-space-item {
+                display: flex !important;
+                align-items: center !important;
+            }
+            `}
+            </style>
             <Access
                 permission={ALL_PERMISSIONS.PERMISSIONS.GET_PAGINATE}
             >

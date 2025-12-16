@@ -298,13 +298,13 @@ const UserPage = () => {
                 height: 40px !important;
                 display: flex !important;
                 align-items: center !important;
-                padding: 0 !important;
+                padding: 0 20px !important;
             }
 
             .ant-pro-table-search .ant-form-item-label > label {
                 font-weight: 500 !important;  
                 color: rgba(0, 0, 0, 0.88) !important;
-                margin-left: 30px;
+                margin-left: 0px;
             }
 
             .ant-pro-table-search .ant-btn {

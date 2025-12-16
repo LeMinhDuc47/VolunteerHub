@@ -250,9 +250,11 @@ const EventPage = () => {
             .ant-pro-table-search .ant-form-item-label > label {
                 font-weight: 500 !important;  
                 color: rgba(0, 0, 0, 0.88) !important;
-                margin-left: 0 !important;
-                display: flex !important;
-                align-items: center !important;
+                margin-left: 0px;
+            }
+
+            .ant-pro-table-search .ant-form .ant-row > .ant-col:first-child .ant-form-item-label{
+                padding-left: 18px !important; 
             }
 
             .ant-pro-table-search .ant-btn {
