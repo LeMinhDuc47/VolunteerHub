@@ -348,9 +348,7 @@ const ModalUser = (props: IProps) => {
                                 placeholder="Chọn sự kiện"
                                 fetchOptions={fetchEventList}
                                 onChange={(newValue: any) => {
-                                    if (newValue?.length === 0 || newValue?.length === 1) {
-                                        setEvents(newValue as IEventSelect[]);
-                                    }
+                                    setEvents(newValue ? [newValue] : []);
                                 }}
                                 style={{ width: '100%' }}
                             />
