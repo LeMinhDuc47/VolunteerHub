@@ -224,6 +224,15 @@ const ViewUpsertJob = (props: any) => {
                                         { required: true, message: 'Vui lòng không bỏ trống' },
                                     ]}
                                     placeholder="Nhập tên job"
+                                    fieldProps={{
+                                        className: "ant-input",
+                                        style: {
+                                            height: 32,
+                                            borderRadius: 6,
+                                            padding: "0 20px",
+                                            border: "1px solid #d9d9d9",
+                                        }
+                                    }}
                                 />
                             </Col>
                             <Col span={24} md={6}>
