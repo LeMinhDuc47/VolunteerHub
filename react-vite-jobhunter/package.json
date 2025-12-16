@@ -16,6 +16,7 @@
     "@ant-design/pro-components": "2.6.46",
     "@ant-design/pro-layout": "7.17.19",
     "@reduxjs/toolkit": "1.9.3",
+    "@stomp/stompjs": "7.0.0",
     "antd": "5.13.1",
     "async-mutex": "0.4.0",
     "axios": "1.6.5",
@@ -33,6 +34,7 @@
     "react-redux": "8.0.5",
     "react-router-dom": "6.11.2",
     "react-spinners": "0.13.8",
+    "sockjs-client": "1.6.1",
     "spring-filter-query-builder": "1.1.0",
     "uuid": "9.0.0",
     "xlsx": "^0.18.5"
@@ -43,6 +45,7 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "@types/react-router-dom": "5.3.3",
+    "@types/sockjs-client": "^1.5.4",
     "@types/uuid": "9.0.2",
     "@vitejs/plugin-react-swc": "3.0.0",
     "rollup-plugin-visualizer": "5.9.0",

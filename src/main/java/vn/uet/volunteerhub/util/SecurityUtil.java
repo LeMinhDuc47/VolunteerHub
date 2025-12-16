@@ -105,12 +105,20 @@ public class SecurityUtil {
     }
 
     public Jwt checkValidRefreshToken(String token) {
+        return this.decodeToken(token, "Refresh");
+    }
+
+    public Jwt decodeAccessToken(String token) {
+        return this.decodeToken(token, "Access");
+    }
+
+    private Jwt decodeToken(String token, String tokenType) {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
                 getSecretKey()).macAlgorithm(JWT_ALGORITHM).build();
         try {
             return jwtDecoder.decode(token);
         } catch (Exception e) {
-            System.out.println(">>> Refresh Token error: " + e.getMessage());
+            System.out.println(">>> " + tokenType + " Token error: " + e.getMessage());
             throw e;
         }
     }

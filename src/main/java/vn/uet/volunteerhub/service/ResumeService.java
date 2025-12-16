@@ -1,5 +1,6 @@
 package vn.uet.volunteerhub.service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.turkraft.springfilter.converter.FilterSpecification;
@@ -18,6 +20,7 @@ import com.turkraft.springfilter.parser.node.FilterNode;
 import vn.uet.volunteerhub.domain.Job;
 import vn.uet.volunteerhub.domain.Resume;
 import vn.uet.volunteerhub.domain.User;
+import vn.uet.volunteerhub.domain.notification.ResumeStatusNotification;
 import vn.uet.volunteerhub.domain.response.Meta;
 import vn.uet.volunteerhub.domain.response.ResultPaginationDTO;
 import vn.uet.volunteerhub.domain.response.resume.ResCreateResumeDTO;
@@ -38,12 +41,14 @@ public class ResumeService {
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository,
-            JobRepository jobRepository) {
+            JobRepository jobRepository, SimpMessagingTemplate messagingTemplate) {
         this.resumeRepository = resumeRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     public Optional<Resume> fetchResumeById(long id) {
@@ -90,12 +95,39 @@ public class ResumeService {
         // update database
         this.resumeRepository.save(currentResume);
 
+        this.publishStatusNotification(currentResume);
+
         // convert Resume Object into DTO
         ResUpdateResumeDTO dto = new ResUpdateResumeDTO();
         dto.setUpdatedAt(currentResume.getUpdatedAt());
         dto.setUpdatedBy(currentResume.getUpdatedBy());
 
         return dto;
+    }
+
+    private void publishStatusNotification(Resume resume) {
+        if (resume.getUser() == null || resume.getUser().getEmail() == null) {
+            return;
+        }
+
+        String jobName = resume.getJob() != null ? resume.getJob().getName() : null;
+        String eventName = (resume.getJob() != null && resume.getJob().getEvent() != null)
+                ? resume.getJob().getEvent().getName()
+                : null;
+        String status = String.valueOf(resume.getStatus());
+
+        ResumeStatusNotification payload = ResumeStatusNotification.builder()
+                .resumeId(resume.getId())
+                .status(status)
+                .email(resume.getUser().getEmail())
+                .jobName(jobName)
+                .eventName(eventName)
+                .message(String.format("Hồ sơ của bạn đã được cập nhật sang trạng thái %s", status))
+                .timestamp(Instant.now())
+                .build();
+
+        String destination = String.format("/user/%s/queue/notifications", resume.getUser().getEmail());
+        this.messagingTemplate.convertAndSend(destination, payload);
     }
 
     public void deleteResume(long id) {
