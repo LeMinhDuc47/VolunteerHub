@@ -67,6 +67,48 @@
     color: #333;
 }
 
+.register-form .ant-input-password {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+}
+
+.register-form .ant-input-password input {
+    height: 42px !important;
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 6px !important;
+    padding-right: 40px !important;
+    width: 100% !important;
+    font-size: 15px !important;
+}
+
+.register-form .ant-input-password input:hover {
+    border-color: #4096ff !important;
+}
+
+.register-form .ant-input-password input:focus {
+    border-color: #4096ff !important;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+}
+
+.register-form .ant-input-password .ant-input-suffix {
+    position: absolute !important;
+    right: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+    height: auto !important;
+    display: flex;
+    align-items: center;
+}
+
+.register-form .ant-input-password .ant-input-suffix svg {
+    font-size: 18px !important;
+    opacity: 0.7;
+}
+
 .register-button {
     height: 44px;
     background-color: #0d47a1;
