@@ -119,13 +119,13 @@ const SearchClient = () => {
                                 allowClear
                                 suffixIcon={null}
                                 style={{ width: '100%' }}
+                                maxTagCount="responsive"
                                 placeholder={
                                     <>
                                         <MonitorOutlined className="search-placeholder-icon" />
                                         <span>Tìm theo kỹ năng...</span>
                                     </>
                                 }
-                                optionLabelProp="label"
                                 options={optionsSkills}
                             />
                         </ProForm.Item>
@@ -138,13 +138,13 @@ const SearchClient = () => {
                                 allowClear
                                 suffixIcon={null}
                                 style={{ width: '100%' }}
+                                maxTagCount="responsive"
                                 placeholder={
                                     <>
                                         <EnvironmentOutlined className="search-placeholder-icon" />
                                         <span>Địa điểm...</span>
                                     </>
                                 }
-                                optionLabelProp="label"
                                 options={optionsLocations}
                             />
                         </ProForm.Item>
