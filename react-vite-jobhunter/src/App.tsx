@@ -33,6 +33,7 @@ import ClientEventDetailPage from './pages/event/detail';
 import JobTabs from './pages/admin/job/job.tabs';
 import LandingPage from './pages/home/home';
 import DonateUsPage from 'pages/home/donate_us';
+import AchievementsPage from './pages/achievements/achievements';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -97,7 +98,8 @@ export default function App() {
         { path: "job/:id", element: <ClientJobDetailPage /> },
         { path: "event", element: <ClientEventPage /> },
         { path: "event/:id", element: <ClientEventDetailPage /> },
-        { path: "donate-us", element: <DonateUsPage /> }, 
+        { path: "donate-us", element: <DonateUsPage /> },
+        { path: "achievements", element: <AchievementsPage /> },
       ],
     },
 

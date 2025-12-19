@@ -202,7 +202,7 @@ export const callFetchResumeById = (id: string) => {
     return axios.get<IBackendRes<IResume>>(`/api/v1/resumes/${id}`);
 }
 
-export const callFetchResumeByUser = () => {
+export const callFetchResumeByUser = (p0?: string) => {
     return axios.post<IBackendRes<IModelPaginate<IResume>>>(`/api/v1/resumes/by-user`);
 }
 

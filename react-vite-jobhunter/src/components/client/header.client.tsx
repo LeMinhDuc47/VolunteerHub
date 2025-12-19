@@ -208,7 +208,8 @@ const Header = (props: any) => {
     const menuItems = [
         { key: '/home', label: 'Trang chủ', path: '/home' },
         { key: '/home/job', label: 'Hoạt động tình nguyện', path: '/home/job' },
-        { key: '/home/event', label: 'Sự kiện nổi bật', path: '/home/event' }
+        { key: '/home/event', label: 'Sự kiện nổi bật', path: '/home/event' },
+        ...(isAuthenticated ? [{ key: '/home/achievements', label: 'Thành tích', path: '/home/achievements' }] : [])
     ];
 
     const handleMarkNotificationsAsRead = async () => {
