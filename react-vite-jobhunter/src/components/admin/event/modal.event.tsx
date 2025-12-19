@@ -211,7 +211,7 @@ const ModalEvent = (props: IProps) => {
 
     return (
         <>
-                        <style>
+            <style>
             {`
             .ant-modal .ant-form-item-control-input {
                 border: none !important;
