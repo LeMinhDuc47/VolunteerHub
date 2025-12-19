@@ -4,6 +4,7 @@ import CountUp from 'react-countup';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { callFetchUser, callFetchEvent, callFetchJob } from '@/config/api';
+import DashboardChart from "@/components/admin/dashboard/chart";
 import 'styles/pages/admin/dashboard_style.css';
 
 const DashboardPage = () => {
@@ -48,8 +49,8 @@ const DashboardPage = () => {
             <div className="dashboard-container">
                 <Row gutter={[24, 24]}>
                     <Col span={24} sm={24} md={12} lg={8}>
-                        <Card 
-                            bordered={false} 
+                        <Card
+                            bordered={false}
                             className="dashboard-card card-user"
                             bodyStyle={{ padding: '32px 24px' }}
                             onClick={() => navigate('/admin/user')}
@@ -71,8 +72,8 @@ const DashboardPage = () => {
                         </Card>
                     </Col>
                     <Col span={24} sm={24} md={12} lg={8}>
-                        <Card 
-                            bordered={false} 
+                        <Card
+                            bordered={false}
                             className="dashboard-card card-event"
                             bodyStyle={{ padding: '32px 24px' }}
                             onClick={() => navigate('/admin/event')}
@@ -94,8 +95,8 @@ const DashboardPage = () => {
                         </Card>
                     </Col>
                     <Col span={24} sm={24} md={12} lg={8}>
-                        <Card 
-                            bordered={false} 
+                        <Card
+                            bordered={false}
                             className="dashboard-card card-job"
                             bodyStyle={{ padding: '32px 24px' }}
                             onClick={() => navigate('/admin/job')}
@@ -114,6 +115,17 @@ const DashboardPage = () => {
                                     />
                                 </div>
                             </div>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+                    <Col span={24}>
+                        <Card
+                            bordered={false}
+                            className="dashboard-card"
+                            bodyStyle={{ padding: '32px 24px' }}
+                        >
+                            <DashboardChart />
                         </Card>
                     </Col>
                 </Row>
