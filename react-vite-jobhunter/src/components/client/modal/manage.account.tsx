@@ -257,7 +257,7 @@ const UserUpdateInfo = ({ open }: IUserUpdateInfoProps) => {
                             name="age"
                             rules={[{ required: true, message: 'Vui lòng nhập tuổi' }]}
                         >
-                            <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập tuổi" />
+                            <InputNumber min={1} style={{ width: '100%', height: '40px'}} placeholder="Nhập tuổi" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -266,7 +266,7 @@ const UserUpdateInfo = ({ open }: IUserUpdateInfoProps) => {
                             name="gender"
                             rules={[{ required: true, message: 'Vui lòng chọn giới tính' }]}
                         >
-                            <Select options={genderOptions} placeholder="Chọn giới tính" />
+                            <Select options={genderOptions} style={{ width: '100%', height: '40px'}} placeholder="Chọn giới tính" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -383,83 +383,6 @@ const JobByEmail = (props: any) => {
 
     return (
         <>
-        <style>
-            {`
-            .ant-modal .ant-form-item-control-input {
-                border: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                background: transparent !important;
-                box-shadow: none !important;
-            }
-
-            .ant-modal .ant-form-item-control-input-content {
-                border: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                background: transparent !important;
-                box-shadow: none !important;
-            }
-
-            .ant-modal input.ant-input {
-                height: 40px !important;
-                border: 1px solid #d9d9d9 !important;
-                border-radius: 6px !important;
-                padding: 0 12px !important;
-                font-size: 14px !important;
-            }
-
-            .ant-modal .ant-input-password .ant-input-suffix {
-                position: absolute !important;
-                right: 12px !important;
-                top: 50% !important;
-                transform: translateY(-50%) !important;
-            }
-
-            .ant-modal .ant-select-selector {
-                height: 40px !important;
-                display: flex !important;
-                align-items: center !important;
-                border-radius: 6px !important;
-            }
-
-            .ant-modal .ant-form-item-label > label {
-                height: 40px !important;
-                display: flex !important;
-                align-items: center !important;
-                font-weight: 500 !important;
-                color: rgba(0,0,0,0.88) !important;
-            }
-
-            .ant-modal-body .ant-input-affix-wrapper {
-                border: none !important;
-                background: transparent !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-                height: auto !important;
-            }
-
-            .ant-modal-body .ant-input-affix-wrapper > input.ant-input {
-                height: 40px !important;
-                border: 1px solid #d9d9d9 !important;
-                border-radius: 6px !important;
-                padding: 0 12px !important;
-                font-size: 14px !important;
-            }
-
-            .ant-modal-body .ant-input-affix-wrapper-focused > input.ant-input {
-                border-color: #4096ff !important;
-                box-shadow: 0 0 0 2px rgba(64,150,255,0.2) !important;
-            }
-
-            .ant-modal-body .ant-input-affix-wrapper .ant-input-suffix {
-                position: absolute !important;
-                right: 12px !important;
-                top: 50% !important;
-                transform: translateY(-50%) !important;
-            }
-            `}
-            </style>
             <Form
                 onFinish={onFinish}
                 form={form}
@@ -546,6 +469,84 @@ const UserPassword = ({ open }: IUserPasswordProps) => {
     };
 
     return (
+        <>
+        <style>
+        {`
+        .ant-modal .ant-form-item-control-input {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .ant-modal .ant-form-item-control-input-content {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .ant-modal input.ant-input {
+            height: 40px !important;
+            border: 1px solid #d9d9d9 !important;
+            border-radius: 6px !important;
+            padding: 0 12px !important;
+            font-size: 14px !important;
+        }
+
+        .ant-modal .ant-input-password .ant-input-suffix {
+            position: absolute !important;
+            right: 12px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+        }
+
+        .ant-modal .ant-select-selector {
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            border-radius: 6px !important;
+        }
+
+        .ant-modal .ant-form-item-label > label {
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            font-weight: 500 !important;
+            color: rgba(0,0,0,0.88) !important;
+        }
+
+        .ant-modal-body .ant-input-affix-wrapper {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            height: auto !important;
+        }
+
+        .ant-modal-body .ant-input-affix-wrapper > input.ant-input {
+            height: 40px !important;
+            border: 1px solid #d9d9d9 !important;
+            border-radius: 6px !important;
+            padding: 0 12px !important;
+            font-size: 14px !important;
+        }
+
+        .ant-modal-body .ant-input-affix-wrapper-focused > input.ant-input {
+            border-color: #4096ff !important;
+            box-shadow: 0 0 0 2px rgba(64,150,255,0.2) !important;
+        }
+
+        .ant-modal-body .ant-input-affix-wrapper .ant-input-suffix {
+            position: absolute !important;
+            right: 12px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+        }
+        `}
+        </style>
         <Form
             layout="vertical"
             form={form}
@@ -613,6 +614,7 @@ const UserPassword = ({ open }: IUserPasswordProps) => {
                 </Col>
             </Row>
         </Form>
+    </>
     );
 }
 
