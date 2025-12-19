@@ -1,6 +1,4 @@
 .search-client-wrapper {
-    max-width: 100%;
-    margin: 0 auto;
     font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -229,16 +227,6 @@
     background-color: #1557b0 !important;
     box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3) !important;
     transform: translateY(-2px);
-}
-
-@media (max-width: 1200px) {
-    .search-client-wrapper {
-        max-width: 100%;
-    }
-
-    .search-client-title {
-        font-size: 26px;
-    }
 }
 
 @media (max-width: 768px) {

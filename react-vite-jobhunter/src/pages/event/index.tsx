@@ -2,16 +2,12 @@ import { Col, Row } from 'antd';
 import styles from 'styles/client.module.scss';
 import EventCard from '@/components/client/card/event.card';
 
-const ClientEventPage = (props: any) => {
+const ClientEventPage = () => {
     return (
-        <div style={{ marginTop: 20, maxWidth: '1600px', margin: '0 auto', padding: '20px 0;' }}>
-            <Row gutter={[20, 20]}>
-                <Col span={24}>
-                    <EventCard
-                        showPagination={true}
-                    />
-                </Col>
-            </Row>
+        <div className="main-content-container">
+            <div style={{ marginTop: 40, marginBottom: 40 }}>
+                <EventCard showPagination={true} />
+            </div>
         </div>
     )
 }

@@ -1,7 +1,23 @@
+.main-content-container {
+    width: 100%;
+    max-width: 1300px; 
+    margin: 0 auto;   
+    padding: 0 24px;  
+    box-sizing: border-box;
+}
+
+.home-section-spacing {
+    margin: 40px 0;
+}
+
+.home-section-divider {
+    margin: 20px 0 !important;
+}
+
 .home-page-container {
-    max-width: 1600px;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 20 0px;
     font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -27,14 +43,11 @@
     margin: 60px 0;
 }
 
-@media (max-width: 1400px) {
-    .home-page-container {
-        max-width: 100%;
-        padding: 0 30px;
-    }
-}
-
 @media (max-width: 768px) {
+    .main-content-container {
+        padding: 0 20px;
+    }
+
     .home-page-container {
         padding: 0 20px;
     }
@@ -54,6 +67,10 @@
 }
 
 @media (max-width: 480px) {
+    .main-content-container {
+        padding: 0 16px;
+    }
+    
     .home-page-container {
         padding: 0 16px;
     }

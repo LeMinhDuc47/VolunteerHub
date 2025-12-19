@@ -6,8 +6,8 @@ import '@/styles/pages/home_page_style.css';
 
 const HomePage = () => {
     return (
-        <div className="home-page-container">
-            <div className="home-search-section">
+        <div className="main-content-container">
+            <div className="home-search-section" style={{ marginTop: 40 }}>
                 <SearchClient />
             </div>
             
@@ -16,8 +16,6 @@ const HomePage = () => {
             <div className="home-events-section">
                 <EventCard />
             </div>
-            
-            <div className="home-section-spacing"></div>
             
             <Divider className="home-section-divider" />
             

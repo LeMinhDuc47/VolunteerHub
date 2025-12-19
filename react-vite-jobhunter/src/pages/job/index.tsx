@@ -3,21 +3,16 @@ import { Col, Divider, Row } from 'antd';
 import styles from 'styles/client.module.scss';
 import JobCard from '@/components/client/card/job.card';
 
-const ClientJobPage = (props: any) => {
+const ClientJobPage = () => {
     return (
-        <div className={styles["container"]} style={{ marginTop: 20 }}>
-            <Row gutter={[20, 20]}>
-                <Col span={24}>
-                    <SearchClient />
-                </Col>
-                <Divider />
-
-                <Col span={24}>
-                    <JobCard
-                        showPagination={true}
-                    />
-                </Col>
-            </Row>
+        <div className="main-content-container"> 
+            <div style={{ marginTop: 40 }}>
+                <SearchClient />
+            </div>
+            <Divider />
+            <div style={{ marginBottom: 40 }}>
+                <JobCard showPagination={true} />
+            </div>
         </div>
     )
 }
