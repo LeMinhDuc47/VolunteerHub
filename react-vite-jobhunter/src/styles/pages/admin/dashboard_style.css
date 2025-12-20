@@ -258,7 +258,46 @@
   animation-delay: 0.2s;
 }
 
-/* Smooth CountUp */
 .ant-statistic-content-value {
   font-variant-numeric: tabular-nums;
+}
+
+.vh-chart-tooltip {
+  padding: 6px 8px;
+}
+
+.vh-tt-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 6px;
+}
+
+.vh-tt-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.vh-tt-name {
+  padding: 4px 12px 4px 0;
+  color: #595959;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.vh-tt-val {
+  padding: 4px 0;
+  text-align: right;
+  color: #262626;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.vh-tt-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
 }

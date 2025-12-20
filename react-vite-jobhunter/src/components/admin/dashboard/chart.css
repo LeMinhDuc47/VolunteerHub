@@ -1,17 +1,48 @@
+.vh-chart-wrap {
+  width: 100%;
+}
+
 .custom-tooltip {
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  min-width: 190px;
 }
 
-.custom-tooltip .label {
-    font-weight: bold;
-    margin-bottom: 5px;
+.vh-tt-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 13px;
 }
 
-.custom-tooltip .intro {
-    margin: 0;
-    padding: 2px 0;
+.vh-tt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vh-tt-row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.vh-tt-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.vh-tt-name {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.vh-tt-val {
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
 }

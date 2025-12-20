@@ -293,25 +293,19 @@ export const callReadNotifications = (notificationId?: number) => {
     return axios.put<IBackendRes<string>>('/api/v1/notifications/read', { notificationId });
 }
 
-/**
- * Dashboard Chart API
- */
-export const callFetchChartData = () => {
-    // This is a mock API call. Replace with your actual API endpoint.
-    const mockData = [
-        { name: '10:00', users: 40, events: 24, jobs: 24 },
-        { name: '11:00', users: 30, events: 13, jobs: 22 },
-        { name: '12:00', users: 20, events: 98, jobs: 22 },
-        { name: '13:00', users: 27, events: 39, jobs: 20 },
-        { name: '14:00', users: 18, events: 48, jobs: 21 },
-        { name: '15:00', users: 23, events: 38, jobs: 25 },
-        { name: '16:00', users: 34, events: 43, jobs: 21 },
-    ];
-
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve({ data: mockData });
-        }, 500);
-    });
+export interface IDashboardHourlyPointDTO {
+  hour: string;
+  label: string;
+  users: number;
+  events: number;
+  jobs: number;
 }
+
+export const callFetchDashboardHourlyStats = (hours: number = 12) => {
+  return axios.get<IBackendRes<IDashboardHourlyPointDTO[]>>(`/api/v1/dashboard/hourly?hours=${hours}`);
+};
+
+export const callFetchChartData = (hours: number = 12) => {
+  return callFetchDashboardHourlyStats(hours);
+};
 
