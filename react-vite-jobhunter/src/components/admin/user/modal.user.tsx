@@ -325,9 +325,7 @@ const ModalUser = (props: IProps) => {
                                 placeholder="Chọn công vai trò"
                                 fetchOptions={fetchRoleList}
                                 onChange={(newValue: any) => {
-                                    if (newValue?.length === 0 || newValue?.length === 1) {
-                                        setRoles(newValue as IEventSelect[]);
-                                    }
+                                    setRoles(newValue ? [newValue] : []);
                                 }}
                                 style={{ width: '100%' }}
                             />
