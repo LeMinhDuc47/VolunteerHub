@@ -20,7 +20,7 @@ import type { MenuProps } from 'antd';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import { ALL_PERMISSIONS } from '@/config/permissions';
 
-import uetLogo from '@/assets/uet-logo.png';
+import uetLogo from '@/assets/logo.png';
 import "@/styles/components/admin/layout_style.css"
 
 const { Content, Sider } = Layout;
