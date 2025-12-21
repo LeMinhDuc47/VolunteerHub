@@ -6,8 +6,9 @@ import Loading from "../loading";
 const RoleBaseRoute = (props: any) => {
     const user = useAppSelector(state => state.account.user);
     const userRole = user.role.name;
+    const isAdminRole = (userRole ?? '').toUpperCase().includes('ADMIN');
 
-    if (userRole !== 'NORMAL_USER') {
+    if (isAdminRole) {
         return (<>{props.children}</>)
     } else {
         return (<NotPermitted />)

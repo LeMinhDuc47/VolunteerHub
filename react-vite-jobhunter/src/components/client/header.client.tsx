@@ -312,7 +312,7 @@ const Header = (props: any) => {
                                                     <span>Quản lý tài khoản</span>
                                                 </div>
                                                 
-                                                {(user.role?.permissions?.length ?? 0) > 0 && (
+                                                {((user.role?.name ?? '').toUpperCase().includes('ADMIN')) && (
                                                     <Link 
                                                         to="/admin"
                                                         className="header-dropdown-item"
@@ -394,7 +394,7 @@ const Header = (props: any) => {
                                         Quản lý tài khoản
                                     </div>
                                     
-                                    {(user.role?.permissions?.length ?? 0) > 0 && (
+                                    {((user.role?.name ?? '').toUpperCase().includes('ADMIN')) && (
                                         <Link 
                                             to="/admin"
                                             className="header-drawer-item"
