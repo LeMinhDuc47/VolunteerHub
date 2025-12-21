@@ -21,12 +21,21 @@ public class GlobalException {
 
     // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html
     @ExceptionHandler(value = {
-
             UsernameNotFoundException.class,
-            BadCredentialsException.class,
-            IdInvalidException.class
+            BadCredentialsException.class
     })
     public ResponseEntity<RestResponse<Object>> handleLoginException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        res.setError("Unauthorized");
+        // Do not leak whether username exists
+        res.setMessage("Bạn đã nhập sai tài khoản hoặc mật khẩu");
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
+    }
+
+    @ExceptionHandler(value = { IdInvalidException.class })
+    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setMessage(ex.getMessage());
