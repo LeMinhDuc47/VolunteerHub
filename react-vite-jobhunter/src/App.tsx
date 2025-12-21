@@ -105,7 +105,7 @@ export default function App() {
 
     {
       path: "/admin",
-      element: (<LayoutApp><LayoutAdmin /> </LayoutApp>),
+      element: (<LayoutApp><ProtectedRoute><LayoutAdmin /> </ProtectedRoute></LayoutApp>),
       errorElement: <NotFound />,
       children: [
         {
