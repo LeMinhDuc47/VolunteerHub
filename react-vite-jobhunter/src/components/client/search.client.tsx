@@ -8,6 +8,9 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import '@/styles/client/search_style.css';
 import viVN from 'antd/locale/vi_VN';
 import dayjs from 'dayjs';
+import 'dayjs/locale/vi';
+
+dayjs.locale('vi');
 
 const SearchClient = () => {
     const navigate = useNavigate();
