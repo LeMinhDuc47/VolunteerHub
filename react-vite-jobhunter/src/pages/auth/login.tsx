@@ -38,10 +38,17 @@ const LoginPage = () => {
             // Redirect đến /home sau khi đăng nhập, hoặc callback nếu có
             window.location.href = callback ? callback : '/home';
         } else {
+            const rawMessage = res?.message && Array.isArray(res.message) ? res.message[0] : res?.message;
+            const isBadCredentials =
+                res?.statusCode === 401 ||
+                rawMessage === 'Bad credentials' ||
+                (typeof rawMessage === 'string' && rawMessage.toLowerCase().includes('bad credential'));
+
             notification.error({
-                message: "Error!",
-                description:
-                    res.message && Array.isArray(res.message) ? res.message[0] : res.message,
+                message: "Đăng nhập thất bại",
+                description: isBadCredentials
+                    ? "Bạn đã nhập sai tài khoản hoặc mật khẩu"
+                    : (rawMessage ?? "Đã có lỗi xảy ra. Vui lòng thử lại."),
                 duration: 5
             })
         }
