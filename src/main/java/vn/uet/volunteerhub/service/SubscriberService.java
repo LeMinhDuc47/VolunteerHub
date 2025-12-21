@@ -1,8 +1,10 @@
 package vn.uet.volunteerhub.service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -92,7 +94,7 @@ public class SubscriberService {
             for (Subscriber sub : listSubs) {
                 List<Skill> listSkills = sub.getSkills();
                 if (listSkills != null && listSkills.size() > 0) {
-                    List<Job> listJobs = this.jobRepository.findBySkillsIn(listSkills);
+                    List<Job> listJobs = this.jobRepository.findDistinctBySkillsIn(listSkills);
                     if (listJobs != null && listJobs.size() > 0) {
 
                         List<ResEmailJob> arr = listJobs.stream().map(job -> this.convertJobToSendEmail(job))
@@ -112,6 +114,7 @@ public class SubscriberService {
 
     public ResEmailJob convertJobToSendEmail(Job job) {
         ResEmailJob res = new ResEmailJob();
+        res.setId(job.getId());
         res.setName(job.getName());
         res.setStipend(job.getStipend());
 
@@ -120,15 +123,22 @@ public class SubscriberService {
 
         res.setEvent(event);
 
-        List<ResEmailJob.SkillEmail> skill = new ArrayList<>();
-        ResEmailJob.SkillEmail skillName = new ResEmailJob.SkillEmail();
-
-        for (Skill sk : job.getSkills()) {
-            skillName.setName(sk.getName());
-            skill.add(skillName);
+        List<ResEmailJob.SkillEmail> skills = new ArrayList<>();
+        Set<String> seenSkillNames = new LinkedHashSet<>();
+        if (job.getSkills() != null) {
+            for (Skill sk : job.getSkills()) {
+                if (sk == null || sk.getName() == null) {
+                    continue;
+                }
+                String skillName = sk.getName().trim();
+                if (skillName.isEmpty() || !seenSkillNames.add(skillName)) {
+                    continue;
+                }
+                skills.add(new ResEmailJob.SkillEmail(skillName));
+            }
         }
 
-        res.setSkills(skill);
+        res.setSkills(skills);
 
         return res;
     }

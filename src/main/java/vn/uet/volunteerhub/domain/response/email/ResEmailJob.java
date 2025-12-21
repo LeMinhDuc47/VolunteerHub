@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResEmailJob {
+    private long id;
     private String name;
     private double stipend;
     private EventEmail event;
