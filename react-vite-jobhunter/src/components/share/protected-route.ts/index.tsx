@@ -5,10 +5,11 @@ import Loading from "../loading";
 
 const RoleBaseRoute = (props: any) => {
     const user = useAppSelector(state => state.account.user);
-    const userRole = user.role.name;
-    const isAdminRole = (userRole ?? '').toUpperCase().includes('ADMIN');
+    const userRole = (user.role.name ?? '').toUpperCase();
+    // Requirement: only USER cannot access admin pages
+    const isUserRole = userRole.includes('USER');
 
-    if (isAdminRole) {
+    if (!isUserRole) {
         return (<>{props.children}</>)
     } else {
         return (<NotPermitted />)

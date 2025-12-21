@@ -63,6 +63,13 @@ const Header = (props: any) => {
 
     const isAuthenticated = useAppSelector(state => state.account.isAuthenticated);
     const user = useAppSelector(state => state.account.user);
+
+    const canAccessAdmin = useMemo(() => {
+        const roleName = (user?.role?.name ?? '').toUpperCase();
+        if (!roleName) return false;
+        // Requirement: only USER cannot access admin pages
+        return !roleName.includes('USER');
+    }, [user?.role?.name]);
     
     const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false);
     const [current, setCurrent] = useState('/home');
@@ -312,7 +319,7 @@ const Header = (props: any) => {
                                                     <span>Quản lý tài khoản</span>
                                                 </div>
                                                 
-                                                {((user.role?.name ?? '').toUpperCase().includes('ADMIN')) && (
+                                                {canAccessAdmin && (
                                                     <Link 
                                                         to="/admin"
                                                         className="header-dropdown-item"
@@ -394,7 +401,7 @@ const Header = (props: any) => {
                                         Quản lý tài khoản
                                     </div>
                                     
-                                    {((user.role?.name ?? '').toUpperCase().includes('ADMIN')) && (
+                                    {canAccessAdmin && (
                                         <Link 
                                             to="/admin"
                                             className="header-drawer-item"
